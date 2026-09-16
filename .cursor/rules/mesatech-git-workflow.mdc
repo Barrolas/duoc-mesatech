@@ -1,0 +1,48 @@
+---
+description: Ramas, PRs y commits MesaTech EV1
+alwaysApply: true
+---
+
+# Git — MesaTech EV1
+
+**Reglas para todo el equipo (repo):** `docs/equipo/reglas-repositorio.md` §1–3.  
+Detalle branching: `docs/equipo/estrategia-branching.md`.
+
+## Branching
+
+- Rama estable: **`main`**. Integración solo vía **Pull Request** (≥1 revisión de otro integrante).
+- Trabajo: **`feature/<integrante>-<tema>`** (ej. `feature/ari-entra`, `feature/ninna-gateway`, `feature/nico-ec2`, `feature/skarlet-negocio`).
+- Pre-entrega opcional: **`release/ev1`** → merge a `main` → tag **`ev1.0.0`**.
+- Orden de merge: Ari (Entra/docs env) → Skarlet/Nico (negocio + infra) → Ninna (Gateway/marca) → integración E2E.
+- No commitear: `.env`, `.pem`, `target/`, `node_modules/`, tokens, IDs del profesor.
+
+## Convención de commit (obligatoria)
+
+```text
+[ TIPO ]: Detalle del commit
+```
+
+- Español; una idea por commit; imperativo o descriptivo claro.
+- `TIPO` en mayúsculas, sin espacios dentro de los corchetes.
+
+| TIPO | Uso |
+| --- | --- |
+| `FEAT` | Funcionalidad nueva (front, BFF, MS) |
+| `FIX` | Corrección de bug |
+| `DOCS` | Solo documentación (`docs/`, README) |
+| `CHORE` | Mantenimiento (gitignore, deps menores) |
+| `REFACTOR` | Cambio interno sin alterar comportamiento |
+| `TEST` | Pruebas |
+
+Ejemplos:
+
+```text
+[ FEAT ]: Rechazar GET /v1/solicitudes para rol cliente en BFF
+[ DOCS ]: Capturas Gateway en guía de Ninna
+[ FIX ]: CORS PATCH en SecurityConfig del BFF
+```
+
+## PR
+
+- Tamaño preferido &lt; 400 líneas; marcar bloque EV1 (A–P) en descripción.
+- Revisores: BFF/JWT → Ari o Skarlet; `infra/` → Nico; Gateway/CORS docs → Ninna; `frontend/` → Skarlet.

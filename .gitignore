@@ -1,0 +1,31 @@
+# Referencias de análisis (repos del profesor). Ver docs/onboarding/refs-y-entorno.md
+_refs/
+
+# Node
+frontend/node_modules/
+frontend/build/
+
+# Maven
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Entornos y secretos (usar env.example / frontend/.env.example)
+.env
+.env.local
+frontend/.env
+frontend/.env.local
+**/application-local.properties
+
+# Claves de EC2 / SSH (nunca versionar)
+*.pem
+*.ppk
+
+# IDE (config local)
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Python auxiliar
+__pycache__/
+_draw_arquitectura.py

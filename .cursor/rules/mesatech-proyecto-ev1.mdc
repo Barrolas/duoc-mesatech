@@ -1,0 +1,13 @@
+---
+description: Reglas de producto y carpetas MesaTech EV1
+alwaysApply: true
+---
+
+# Proyecto MesaTech EV1
+
+**Texto oficial (todo el equipo):** `docs/equipo/reglas-repositorio.md` §4–5.
+
+- Entra ID + scope `access_as_user`; Gateway único en AWS; BFF Resource Server sin JPA.
+- MS en 8081/8082 + PostgreSQL `infra/`; roles → 403 en BFF.
+- Secretos fuera de Git; docs en `docs/`.
+- Commits: `[ TIPO ]: Detalle` — ver `reglas-repositorio.md` §2.
