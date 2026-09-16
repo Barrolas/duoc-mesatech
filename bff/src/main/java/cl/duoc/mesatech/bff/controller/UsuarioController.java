@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,6 +23,8 @@ public class UsuarioController {
         respuesta.put("oid", jwt.getClaimAsString("oid"));
         respuesta.put("scopes", jwt.getClaimAsString("scp"));
         respuesta.put("audience", jwt.getAudience());
+        Object roles = jwt.getClaims().get("roles");
+        respuesta.put("roles", roles != null ? roles : List.of());
         return respuesta;
     }
 }

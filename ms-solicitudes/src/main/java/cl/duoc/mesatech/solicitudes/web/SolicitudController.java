@@ -2,6 +2,7 @@ package cl.duoc.mesatech.solicitudes.web;
 
 import cl.duoc.mesatech.solicitudes.domain.EstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.Solicitud;
+import cl.duoc.mesatech.solicitudes.domain.TransicionesEstado;
 import cl.duoc.mesatech.solicitudes.repo.SolicitudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -29,6 +30,12 @@ public class SolicitudController {
 
     @PostMapping("/v1/solicitudes")
     public Solicitud crear(@AuthenticationPrincipal Jwt jwt, @RequestBody Solicitud body) {
+        if (body.getTitulo() == null || body.getTitulo().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El título es obligatorio");
+        }
+        if (body.getDescripcion() == null || body.getDescripcion().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La descripción es obligatoria");
+        }
         body.setId(null);
         body.setUsuarioSolicitante(jwt.getClaimAsString("preferred_username"));
         body.setEstado(EstadoSolicitud.CREADA);
@@ -50,11 +57,22 @@ public class SolicitudController {
         Solicitud solicitud = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        EstadoSolicitud nuevo = EstadoSolicitud.valueOf(body.get("estado"));
-        if (nuevo == EstadoSolicitud.RESUELTA && solicitud.getEstado() != EstadoSolicitud.EN_PROCESO) {
+        String raw = body == null ? null : body.get("estado");
+        if (raw == null || raw.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar el campo estado");
+        }
+
+        EstadoSolicitud nuevo;
+        try {
+            nuevo = EstadoSolicitud.valueOf(raw.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado no válido: " + raw);
+        }
+
+        if (!TransicionesEstado.esPermitida(solicitud.getEstado(), nuevo)) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Una solicitud no puede pasar a RESUELTA si no está EN_PROCESO"
+                    TransicionesEstado.mensajeRechazo(solicitud.getEstado(), nuevo)
             );
         }
 
