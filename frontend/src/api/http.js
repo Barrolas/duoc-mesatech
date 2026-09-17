@@ -1,17 +1,69 @@
 import Axios from "axios";
 import { apiBaseUrl, apiRequest } from "../authConfig";
 
-export async function apiGet(instance, account, path) {
+export class ApiError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+function mensajeDesdeError(err) {
+  const status = err.response?.status;
+  const data = err.response?.data;
+
+  if (status === 403) {
+    return "No tienes permiso para esta acción.";
+  }
+  if (status === 401) {
+    return "Sesión no válida. Inicie sesión de nuevo.";
+  }
+
+  if (typeof data === "string" && data.trim()) {
+    return data;
+  }
+  if (data?.message) {
+    return data.message;
+  }
+  if (data?.detail) {
+    return data.detail;
+  }
+  if (data?.error) {
+    return data.error;
+  }
+  return err.message || "No se pudo consumir la API.";
+}
+
+async function conToken(instance, account) {
   const tokenResponse = await instance.acquireTokenSilent({
     ...apiRequest,
     account,
   });
+  return {
+    Authorization: `Bearer ${tokenResponse.accessToken}`,
+  };
+}
 
-  const response = await Axios.get(`${apiBaseUrl}${path}`, {
-    headers: {
-      Authorization: `Bearer ${tokenResponse.accessToken}`,
-    },
-  });
+async function ejecutar(peticion) {
+  try {
+    const response = await peticion;
+    return response.data;
+  } catch (err) {
+    throw new ApiError(err.response?.status, mensajeDesdeError(err));
+  }
+}
 
-  return response.data;
+export async function apiGet(instance, account, path) {
+  const headers = await conToken(instance, account);
+  return ejecutar(Axios.get(`${apiBaseUrl}${path}`, { headers }));
+}
+
+export async function apiPost(instance, account, path, body) {
+  const headers = await conToken(instance, account);
+  return ejecutar(Axios.post(`${apiBaseUrl}${path}`, body, { headers }));
+}
+
+export async function apiPatch(instance, account, path, body) {
+  const headers = await conToken(instance, account);
+  return ejecutar(Axios.patch(`${apiBaseUrl}${path}`, body, { headers }));
 }

@@ -26,6 +26,7 @@ frontend/.env.local
 .vscode/
 .DS_Store
 
-# Python auxiliar
+# Capturas de informe (van a Drive/OneDrive, no al repo)
+**/capturas/
 __pycache__/
 _draw_arquitectura.py

@@ -1,17 +1,71 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
   useMsal,
 } from "@azure/msal-react";
 import { loginRequest } from "./authConfig";
-import { apiGet } from "./api/http";
+import { ApiError, apiGet, apiPatch, apiPost } from "./api/http";
+import { etiquetaRol, navDesdePermisos, permisosDesdeRoles } from "./roles";
+import Layout from "./components/Layout";
+import EspacioTrabajo from "./components/EspacioTrabajo";
 
 function App() {
   const { instance, accounts } = useMsal();
   const [sesionApi, setSesionApi] = useState(null);
-  const [solicitudes, setSolicitudes] = useState(null);
-  const [error, setError] = useState(null);
+  const [catalogo, setCatalogo] = useState({ categorias: [], prioridades: [] });
+  const [mias, setMias] = useState([]);
+  const [todas, setTodas] = useState([]);
+  const [vista, setVista] = useState("mias");
+  const [mensaje, setMensaje] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
+
+  const cuenta = accounts[0];
+  const permisos = permisosDesdeRoles(sesionApi?.roles);
+
+  const avisar = (texto, tipo = "danger") => {
+    setMensaje({ texto, tipo });
+  };
+
+  const cargar = useCallback(async () => {
+    if (!cuenta) {
+      return;
+    }
+    try {
+      const usuario = await apiGet(instance, cuenta, "/api/usuario");
+      setSesionApi(usuario);
+
+      const [miasData, catalogoData] = await Promise.all([
+        apiGet(instance, cuenta, "/v1/solicitudes/mias"),
+        apiGet(instance, cuenta, "/v1/catalogo"),
+      ]);
+      setMias(Array.isArray(miasData) ? miasData : []);
+      setCatalogo(catalogoData || { categorias: [], prioridades: [] });
+
+      const puedeVerTodas = permisosDesdeRoles(usuario.roles).verTodas;
+      if (puedeVerTodas) {
+        try {
+          const todasData = await apiGet(instance, cuenta, "/v1/solicitudes");
+          setTodas(Array.isArray(todasData) ? todasData : []);
+        } catch (err) {
+          if (err instanceof ApiError && err.status === 403) {
+            setTodas([]);
+            avisar(err.message);
+          } else {
+            throw err;
+          }
+        }
+      } else {
+        setTodas([]);
+      }
+    } catch (err) {
+      avisar(err.message || "No fue posible conectar con el servicio. Verifique la sesión y el backend.");
+    }
+  }, [cuenta, instance]);
+
+  useEffect(() => {
+    cargar();
+  }, [cargar]);
 
   const iniciarSesion = () => {
     instance.loginRedirect(loginRequest).catch((err) => console.error(err));
@@ -21,69 +75,95 @@ function App() {
     instance.logoutRedirect();
   };
 
-  useEffect(() => {
-    if (accounts.length === 0) {
-      return;
-    }
-
-    const cargar = async () => {
-      try {
-        const usuario = await apiGet(instance, accounts[0], "/api/usuario");
-        setSesionApi(usuario);
-        const mias = await apiGet(instance, accounts[0], "/v1/solicitudes/mias");
-        setSolicitudes(mias);
-      } catch (err) {
-        setError("No se pudo consumir la API. Revise Gateway/BFF y el Access Token.");
+  const ejecutar = async (accion, ok) => {
+    setOcupado(true);
+    setMensaje(null);
+    try {
+      await accion();
+      if (ok) {
+        avisar(ok, "success");
       }
-    };
-
-    cargar();
-  }, [accounts, instance]);
-
-  const cuenta = accounts[0];
-  const claims = cuenta?.idTokenClaims || {};
+      await cargar();
+    } catch (err) {
+      avisar(err.message);
+    } finally {
+      setOcupado(false);
+    }
+  };
 
   return (
-    <div className="container py-4">
-      <h1>MesaTech Cloud</h1>
-      <p className="text-muted">Gestión de solicitudes de soporte</p>
-
+    <>
       <UnauthenticatedTemplate>
-        <div className="alert alert-warning">El usuario no está autenticado.</div>
-        <button className="btn btn-primary" onClick={iniciarSesion}>
-          Iniciar sesión con Microsoft Entra ID
-        </button>
+        <Layout>
+          <div className="mt-card mt-login">
+            <div className="mt-card-body">
+              <img src={`${process.env.PUBLIC_URL}/logo.svg`} alt="" />
+              <p className="mt-kicker">Acceso institucional</p>
+              <h1>MesaTech Cloud</h1>
+              <p className="text-muted">
+                Identifíquese con la cuenta corporativa de Microsoft Entra ID
+                para gestionar solicitudes de soporte.
+              </p>
+              <button className="btn btn-primary" onClick={iniciarSesion}>
+                Iniciar sesión
+              </button>
+            </div>
+          </div>
+        </Layout>
       </UnauthenticatedTemplate>
 
       <AuthenticatedTemplate>
-        <div className="card mb-3">
-          <div className="card-body">
-            <h2 className="h5">Sesión</h2>
-            <p><strong>Nombre:</strong> {cuenta?.name}</p>
-            <p><strong>Usuario / correo:</strong> {cuenta?.username}</p>
-            <p><strong>Claim oid:</strong> {claims.oid}</p>
-            <button className="btn btn-outline-danger" onClick={cerrarSesion}>
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-
-        {error && <div className="alert alert-danger">{error}</div>}
-
-        {sesionApi && (
-          <pre className="bg-light p-3">{JSON.stringify(sesionApi, null, 2)}</pre>
-        )}
-
-        {solicitudes && (
-          <div className="card">
-            <div className="card-body">
-              <h2 className="h5">Mis solicitudes</h2>
-              <pre className="mb-0">{JSON.stringify(solicitudes, null, 2)}</pre>
-            </div>
-          </div>
-        )}
+        <Layout
+          usuario={{
+            nombre: cuenta?.name || cuenta?.username,
+            rol: etiquetaRol(sesionApi?.roles),
+          }}
+          onCerrarSesion={cerrarSesion}
+          nav={navDesdePermisos(permisos)}
+          vista={vista}
+          onVista={setVista}
+        >
+          <EspacioTrabajo
+            aviso={
+              permisos.sinRolEnToken
+                ? "El perfil institucional aún no figura en el token. Se muestran todas las funciones hasta que se asignen los roles."
+                : null
+            }
+            mensaje={mensaje}
+            vista={vista}
+            permisos={permisos}
+            catalogo={catalogo}
+            mias={mias}
+            todas={todas}
+            ocupado={ocupado}
+            onCrear={(body) =>
+              ejecutar(
+                () => apiPost(instance, cuenta, "/v1/solicitudes", body),
+                "La solicitud fue registrada."
+              )
+            }
+            onCambiarEstado={(id, estado) =>
+              ejecutar(
+                () => apiPatch(instance, cuenta, `/v1/solicitudes/${id}/estado`, { estado }),
+                `El estado se actualizó a ${estado.replaceAll("_", " ")}.`
+              )
+            }
+            onCrearCategoria={(body) =>
+              ejecutar(
+                () => apiPost(instance, cuenta, "/v1/catalogo/categorias", body),
+                "La categoría fue registrada."
+              )
+            }
+            onCrearPrioridad={(body) =>
+              ejecutar(
+                () => apiPost(instance, cuenta, "/v1/catalogo/prioridades", body),
+                "La prioridad fue registrada."
+              )
+            }
+          />
+        </Layout>
       </AuthenticatedTemplate>
-    </div>
+    </>
   );
 }
 

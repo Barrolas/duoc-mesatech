@@ -22,3 +22,5 @@ export const apiRequest = {
 };
 
 export const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080";
+
+export const entraConfigurado = Boolean(clientId && tenantId);
