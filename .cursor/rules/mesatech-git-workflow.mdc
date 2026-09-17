@@ -10,7 +10,7 @@ Detalle branching: `docs/equipo/estrategia-branching.md`.
 
 ## Branching
 
-- Rama estable: **`main`**. Integración solo vía **Pull Request** (≥1 revisión de otro integrante).
+- Rama estable: **`main`**. Integración del equipo en **`dev`**; features vía **PR → `dev`** (≥1 revisión); **`dev` → `main`** cuando E2E cierre.
 - Trabajo: **`feature/<integrante>-<tema>`** (ej. `feature/ari-entra`, `feature/ninna-gateway`, `feature/nico-ec2`, `feature/skarlet-negocio`).
 - Pre-entrega opcional: **`release/ev1`** → merge a `main` → tag **`ev1.0.0`**.
 - Orden de merge: Ari (Entra/docs env) → Skarlet/Nico (negocio + infra) → Ninna (Gateway/marca) → integración E2E.

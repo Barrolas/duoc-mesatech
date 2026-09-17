@@ -10,10 +10,10 @@ Remote de referencia: `origin` → repositorio del equipo en GitHub.
 
 | Rama | Propósito | Quién commitea | Reglas |
 | --- | --- | --- | --- |
-| **`main`** | Código **integrado** y demostrable; historial limpio para evaluación | Solo vía **PR merge** | Siempre compilable en local (BFF + MS + front); sin `.env` ni secretos |
-| **`develop`** *(opcional)* | Integración continua antes de estabilizar `main` | PR desde features | Usar solo si `main` debe quedar “congelada” cerca de la entrega; si son 4 personas y pocos conflictos, **pueden omitir** `develop` y mergear features directo a `main` |
+| **`main`** | Código **estable** y demostrable; historial limpio para evaluación y tag de entrega | Solo vía **PR merge** desde `dev` (o `release/ev1`) | Siempre compilable en local (BFF + MS + front); sin `.env` ni secretos |
+| **`dev`** | **Integración continua** del equipo antes de estabilizar `main` | PR desde `feature/*` | Probar merges y E2E aquí; no commitear secretos |
 
-**Recomendación EV1 (equipo pequeño):** **`main` + ramas `feature/*`** sin `develop`, salvo que el docente exija una rama de entrega aparte.
+**Flujo acordado EV1:** **`main` ← `dev` ← `feature/*`**. Rama remota: `origin/dev` (creada desde `main`).
 
 ---
 
@@ -63,28 +63,30 @@ feature/<capa>-<descripcion>
 ```mermaid
 gitGraph
     commit id: "inicio"
+    branch dev
+    checkout dev
     branch feature/ari-entra
     checkout feature/ari-entra
     commit id: "ari: entra docs"
-    checkout main
-    merge feature/ari-entra id: "PR1 merge"
+    checkout dev
+    merge feature/ari-entra id: "PR → dev"
+    branch feature/skarlet-negocio
+    checkout feature/skarlet-negocio
+    commit id: "skarlet: ui"
+    checkout dev
+    merge feature/skarlet-negocio id: "PR → dev"
     branch feature/nico-ec2
     checkout feature/nico-ec2
     commit id: "nico: infra"
-    branch feature/skarlet-negocio
-    checkout feature/skarlet-negocio
-    commit id: "skarlet: bff roles"
-    checkout main
-    merge feature/nico-ec2 id: "PR2"
-    checkout feature/skarlet-negocio
-    commit id: "skarlet: ui"
-    checkout main
-    merge feature/skarlet-negocio id: "PR3"
+    checkout dev
+    merge feature/nico-ec2 id: "PR → dev"
     branch feature/ninna-gateway
     checkout feature/ninna-gateway
     commit id: "ninna: gateway doc"
+    checkout dev
+    merge feature/ninna-gateway id: "PR → dev"
     checkout main
-    merge feature/ninna-gateway id: "PR4"
+    merge dev id: "PR dev → main"
     branch release/ev1
     checkout release/ev1
     commit id: "tag entrega"
@@ -95,11 +97,11 @@ gitGraph
 | Paso | Comando / acción |
 | --- | --- |
 | 1 | `git fetch origin` |
-| 2 | `git checkout main && git pull origin main` |
-| 3 | `git checkout -b feature/<tu-rama>` *(o pull de rama existente)* |
+| 2 | `git fetch origin && git checkout dev && git pull origin dev` |
+| 3 | `git checkout -b feature/<tu-rama>` *(desde `dev`, o pull de rama existente)* |
 | 4 | Commits pequeños y descriptivos (español) |
 | 5 | `git push -u origin feature/<tu-rama>` |
-| 6 | Abrir **Pull Request** → `main` |
+| 6 | Abrir **Pull Request** → **`dev`** |
 | 7 | Revisión cruzada → merge |
 | 8 | Borrar rama remota tras merge (opcional, recomendado) |
 
@@ -110,18 +112,18 @@ gitGraph
 Respetar el orden lógico reduce conflictos y “main roto”.
 
 ```text
-Fase 0 — docs + esqueleto (cualquiera, PR chicos)
+Fase 0 — docs + esqueleto (cualquiera, PR chicos → dev)
     ↓
-1) feature/ari-*     → env.example, docs Entra, sin IDs reales
+1) feature/ari-*     → env.example, docs Entra, sin IDs reales  → merge dev
     ↓
-2) feature/skarlet-* (paralelo temprano) → autorización BFF + UI local :8080
-3) feature/nico-*    → infra/, scripts despliegue, docs EC2
+2) feature/skarlet-* (paralelo temprano) → autorización BFF + UI local :8080  → merge dev
+3) feature/nico-*    → infra/, scripts despliegue, docs EC2  → merge dev
     ↓
-4) feature/ninna-*   → docs Gateway, README REACT_APP_API_BASE_URL, assets marca
+4) feature/ninna-*   → docs Gateway, README REACT_APP_API_BASE_URL, assets marca  → merge dev
     ↓
-5) Integración       → Skarlet: front apunta a Gateway; pruebas E2E
+5) Integración en dev → front apunta a Gateway; pruebas E2E
     ↓
-6) release/ev1       → congelar, checklist §15, tag ev1.0.0
+6) PR dev → main; opcional release/ev1 → congelar, checklist §15, tag ev1.0.0
 ```
 
 | Bloqueo | Rama que espera | Rama que desbloquea |
@@ -234,7 +236,7 @@ Texto oficial para todo el equipo: [`reglas-repositorio.md`](reglas-repositorio.
 | --- | --- | --- |
 | 1 | 0, A, inicio E | `feature/ari-entra`, `feature/skarlet-negocio` |
 | 2 | C, D, B (parcial), H | `feature/nico-ec2`, `feature/ninna-marca`, `feature/ninna-gateway` |
-| 3 | E cloud, F, G, P | `feature/skarlet-*`, merges a `main`, `release/ev1` |
+| 3 | E cloud, F, G, P | merges a `dev`, PR `dev` → `main`, `release/ev1` |
 | Entrega | Tag + informe | `main` @ tag `ev1.0.0`; opcional `release/ev1` → merge → tag |
 
 ---
@@ -270,18 +272,22 @@ El código entregable al docente = **`main`** en el commit del tag (o último co
 ## 11. Comandos de referencia
 
 ```bash
-# Actualizar main y crear rama
-git checkout main
-git pull origin main
+# Actualizar dev y crear rama feature
+git fetch origin
+git checkout dev
+git pull origin dev
 git checkout -b feature/nico-ec2
 
-# Subir y abrir PR (GitHub CLI)
+# Subir y abrir PR hacia integración (GitHub CLI)
 git push -u origin feature/nico-ec2
-gh pr create --base main --title "docs: guía despliegue EC2" --body "..."
+gh pr create --base dev --title "..." --body "..."
 
-# Tras merge: limpiar local
-git checkout main
-git pull origin main
+# Integrar dev en main (cuando E2E cierre)
+gh pr create --base main --head dev --title "Integrar dev en main"
+
+# Tras merge de feature: limpiar local
+git checkout dev
+git pull origin dev
 git branch -d feature/nico-ec2
 
 # Tag entrega
@@ -294,7 +300,8 @@ git push origin ev1.0.0
 ## 12. Checklist acuerdo del equipo
 
 - [ ] Todos tienen acceso **write** al repo `origin`
-- [ ] Rama por defecto en GitHub: **`main`**
+- [ ] Rama por defecto en GitHub: **`main`** (integración diaria en **`dev`**)
+- [x] Rama **`dev`** en `origin` para PRs de `feature/*`
 - [ ] Regla: PR + 1 revisión antes de merge
 - [ ] Cada uno conoce su `feature/<nombre>-*` principal
 - [ ] `env.example` actualizado en un PR acordado (Ari + Skarlet)
