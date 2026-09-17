@@ -30,3 +30,9 @@ frontend/.env.local
 **/capturas/
 __pycache__/
 _draw_arquitectura.py
+
+# JARs generados localmente
+infra/out/
+
+# JARs generados localmente
+infra/out/

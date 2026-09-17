@@ -1,0 +1,15 @@
+[Unit]
+Description=MesaTech ms-catalogo :8082
+After=network.target docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+EnvironmentFile=/home/ubuntu/mesatech.env
+WorkingDirectory=/home/ubuntu/apps
+ExecStart=/usr/bin/java -jar /home/ubuntu/apps/ms-catalogo.jar
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

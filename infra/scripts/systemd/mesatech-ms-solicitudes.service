@@ -1,0 +1,15 @@
+[Unit]
+Description=MesaTech ms-solicitudes :8081
+After=network.target docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+EnvironmentFile=/home/ubuntu/mesatech.env
+WorkingDirectory=/home/ubuntu/apps
+ExecStart=/usr/bin/java -jar /home/ubuntu/apps/ms-solicitudes.jar
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

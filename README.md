@@ -39,7 +39,7 @@ Toda la guía del proyecto está en **[`docs/README.md`](docs/README.md)**:
 | `bff/` | 8080 | OAuth2 Resource Server, **sin JPA**, proxy a MS |
 | `ms-solicitudes/` | 8081 | Solicitudes y reglas de estado |
 | `ms-catalogo/` | 8082 | Categorías y prioridades |
-| `infra/` | 5432 | `docker compose` — PostgreSQL 16 |
+| `infra/` | 5432 | `docker compose` — PostgreSQL 16; despliegue EC2 en [`infra/ec2/README.md`](infra/ec2/README.md) |
 
 Origen conceptual: repos de ejemplo del profesor (ver onboarding); código entregable solo en las carpetas anteriores.
 

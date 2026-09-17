@@ -210,3 +210,47 @@ Spring valida **iss** (tenant) y **aud** (API). El claim `scp=access_as_user` se
 | Un backend genérico | BFF `:8080` + dos MS `:8081` / `:8082` |
 
 La topología de la guía se mantiene: identidad aparte, Gateway al frente, BFF en el medio, microservicios y persistencia detrás.
+
+---
+
+## Despliegue EV1 — 3 EC2 (equipo, us-east-1)
+
+Topología elegida: **una EC2 por capa** (DB, MS, BFF). Región **us-east-1** (Learner Lab).
+
+| Recurso | Name | IP pública | IP privada | Puertos |
+| --- | --- | --- | --- | --- |
+| PostgreSQL Docker | `mesatech-ev1-db` | `54.90.194.247` | `172.31.25.66` | 5432 (solo MS-SG) |
+| Microservicios | `mesatech-ev1-ms` | `54.227.0.33` | `172.31.24.74` | 8081, 8082 (solo BFF-SG) |
+| BFF | `mesatech-ev1-bff` | **`54.90.110.67`** | `172.31.20.75` | **8080** (integración Gateway) |
+
+**Ninna (API Gateway):** integración HTTP hacia `http://54.90.110.67:8080`.  
+**Invoke URL (front):** `REACT_APP_API_BASE_URL` = URL del Gateway cuando esté creada (completar en NIC-10 cuando Ninna entregue el enlace).
+
+```mermaid
+flowchart LR
+    subgraph Azure
+        ENTRA[Entra ID]
+    end
+    subgraph Cliente
+        R[React + MSAL]
+    end
+    subgraph AWS["AWS us-east-1"]
+        GW[API Gateway<br/>Invoke URL TBD]
+        BFF[EC2 BFF<br/>54.90.110.67:8080]
+        MS[EC2 MS<br/>172.31.24.74<br/>8081 / 8082]
+        DB[EC2 DB<br/>172.31.25.66<br/>Postgres Docker]
+    end
+    R --> ENTRA
+    R -->|Bearer| GW
+    GW --> BFF
+    BFF --> MS
+    MS --> DB
+```
+
+![Despliegue EV1 — 3 EC2](../assets/diagramas/arquitectura_mesatech_ev1_despliegue.png)
+
+Regenerar PNG (Windows, con Pillow):
+
+```bash
+python infra/scripts/draw-despliegue-ev1.py
+```
