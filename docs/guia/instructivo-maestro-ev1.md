@@ -21,16 +21,19 @@ Hoja de ruta única para cerrar la evaluación. Detalle técnico por capa en los
 
 ## Fase A — Identidad Azure (**Ari**)
 
-Seguir [`entra-spring-react.md`](entra-spring-react.md) **Parte A** (pasos 1–11 del portal).
+Seguir [`entra-spring-react.md`](entra-spring-react.md) **Parte A** (pasos 1–11 del portal).  
+**Estado (2026-09-17):** ítems 1–5 de este listado **hechos** (portal + roles). Pendiente: prueba local (Fase 0 con IDs del equipo), handoff confirmado y capturas. Ver [`../equipo/guias/ari-identidad-azure.md`](../equipo/guias/ari-identidad-azure.md).
 
-1. Registro SPA React (redirect URI localhost + producción).
-2. Registro API `api-cloud-native`.
-3. Exponer scope `access_as_user`; token **v2** en manifiesto.
-4. Permisos de la SPA sobre la API + consentimiento admin.
-5. Roles de negocio (`cliente`, `operador`, `administrador`) y usuarios de prueba.
-6. Entregar por canal seguro: tenant, client IDs, issuer, scope, usuarios demo.
+1. ~~Registro SPA React (redirect URI localhost + producción).~~ **Hecho** (producción: cuando haya URL).
+2. ~~Registro API `api-cloud-native`.~~ **Hecho**
+3. ~~Exponer scope `access_as_user`; token **v2** en manifiesto.~~ **Hecho**
+4. ~~Permisos de la SPA sobre la API + consentimiento admin.~~ **Hecho**
+5. ~~Roles de negocio (`cliente`, `operador`, `administrador`) y usuarios de prueba.~~ **Hecho**
+6. Entregar por canal seguro: tenant, client IDs, issuer, scope, usuarios demo — **confirmar**.
 
 **Handoff:** Ninna (Authorizer), Nico (env EC2), Skarlet (403 por rol).
+
+Las Partes B y C de `entra-spring-react.md` (Spring Initializr / React desde cero) **no** se rehacen: el código está en `bff/` y `frontend/`.
 
 ---
 
@@ -122,6 +125,7 @@ Referencia: [`../caso/ep1-guia-oficial.md`](../caso/ep1-guia-oficial.md) §10, �
 
 ```text
 Semana 1: Fase 0 + A (Ari) + inicio E en local (Skarlet)
+          → Portal Entra + roles: listos. Cerrar prueba local + handoff.
 Semana 2: C + D (Nico) en paralelo con B (Ninna tras handoff)
 Semana 3: E en Gateway + F + H (Ninna) + G + informe + P (Nico)
 ```

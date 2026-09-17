@@ -330,6 +330,8 @@ Sin este paso, React pide un scope que la SPA no tiene asignado y no obtiene Acc
 
 ## Checkpoint Entra ID
 
+**Estado MesaTech (2026-09-17):** pasos 1–11 del portal **cumplidos** (SPA `SPA React App`, API `api-cloud-native`, scope, consentimiento, manifiesto v2). Roles de negocio y usuarios de demo: ver [`../equipo/guias/ari-identidad-azure.md`](../equipo/guias/ari-identidad-azure.md). **No** seguir los pasos 12–19 creando proyectos nuevos; usar `bff/` y `frontend/` de este monorepo.
+
 Con los pasos 1–11 ya se puede usar el **Id. de aplicación** de la API en React y en Spring Boot.
 
 - El Spring Boot usa **token versión 2.0** → el manifiesto **tiene** que estar en `2`.
@@ -349,7 +351,7 @@ Con los pasos 1–11 ya se puede usar el **Id. de aplicación** de la API en Rea
 
 # Parte B — Spring Boot (Resource Server)
 
-
+> **MesaTech:** no generar un proyecto en Initializr ni pegarlo en este repo. El Resource Server ya está en `bff/` (`ENTRA_ISSUER_URI`, `ENTRA_AUDIENCE`). Los pasos 12–15 sirven para **entender** la PPT de clases. Lo que falta es **exportar** esas variables con los IDs del equipo y probar `GET /api/usuario`.
 
 ## Paso 12. Crear el proyecto en Spring Initializr
 
@@ -478,6 +480,8 @@ En MesaTech este patrón se replica en el **BFF**: público solo lo mínimo; `/v
 
 # Parte C — React (MSAL + Axios)
 
+> **MesaTech:** Axios y MSAL ya están en `frontend/`. No instales un CRA nuevo. Equivalente al paso 17: crear `frontend/.env` (desde `.env.example`) con IDs **literales**. El Bearer al Gateway (paso 18) es para cuando Ninna entregue la URL; en local `REACT_APP_API_BASE_URL=http://localhost:8080`.
+
 
 
 ## Paso 16. Instalar Axios
@@ -572,6 +576,7 @@ Front de ejemplo:
 - [x] Permiso delegado `access_as_user` en la API **y** en la SPA.
 - [x] Consentimiento de administrador concedido (tilde verde).
 - [x] Manifiesto: `requestedAccessTokenVersion` = **2**.
-- [ ] Spring Boot con OAuth2 Resource Server; `issuer-uri` y `audiences` del equipo.
-- [ ] `/api/**` exige `SCOPE_access_as_user`.
-- [ ] React pide `api://<API_CLIENT_ID>/access_as_user` y manda el Bearer al Gateway.
+- [x] Código Spring Resource Server en `bff/` (`issuer-uri` / `audiences` por `ENTRA_*`).
+- [x] `/api/**` (y `/v1/**`, `/v2/**`) exigen `SCOPE_access_as_user` en `SecurityConfig` del BFF.
+- [ ] Arrancar BFF/MS con `ENTRA_ISSUER_URI` y `ENTRA_AUDIENCE` **del equipo** y probar `GET /api/usuario`.
+- [ ] `frontend/.env` con scope `api://<API_CLIENT_ID>/access_as_user` y login OK. (Bearer al Gateway: cuando Ninna tenga la URL.)

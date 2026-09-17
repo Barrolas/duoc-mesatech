@@ -4,7 +4,7 @@ Documentos pensados para quien **no ha hecho antes** esa parte del proyecto. Cad
 
 | Integrante | Archivo | Bloques del plan |
 | --- | --- | --- |
-| **Ari** | [ari-identidad-azure.md](ari-identidad-azure.md) | A — Microsoft Entra ID |
+| **Ari** | [ari-identidad-azure.md](ari-identidad-azure.md) | A — Microsoft Entra ID. Portal + roles **hechos**; falta prueba local, handoff y capturas (ver estado en esa guía). |
 | **Ninna** | [ninna-gateway-marca-versiones.md](ninna-gateway-marca-versiones.md) | B, F, H — Gateway, v1/v2, identidad corporativa |
 | **Nico** | [nico-ec2-seguridad-presentacion.md](nico-ec2-seguridad-presentacion.md) | C, D, P — EC2, seguridad, presentación |
 | **Skarlet** | [skarlet-negocio-pruebas-informe.md](skarlet-negocio-pruebas-informe.md) | E, G — Negocio, UI, pruebas, informe |
