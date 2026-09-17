@@ -1,7 +1,11 @@
 package cl.duoc.mesatech.bff.controller;
 
 import cl.duoc.mesatech.bff.client.MicroservicioClient;
+import cl.duoc.mesatech.bff.security.AccesoDenegadoException;
+import cl.duoc.mesatech.bff.security.EntraRoles;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,16 +37,26 @@ public class SolicitudesGatewayController {
     }
 
     @GetMapping("/v1/solicitudes")
-    public ResponseEntity<Object> todas(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<Object> todas(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestHeader("Authorization") String authorization
+    ) {
+        if (!EntraRoles.esOperadorOAdmin(jwt)) {
+            throw new AccesoDenegadoException();
+        }
         return client.getSolicitudes("/v1/solicitudes", authorization);
     }
 
     @PatchMapping("/v1/solicitudes/{id}/estado")
     public ResponseEntity<Object> estado(
             @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt,
             @RequestHeader("Authorization") String authorization,
             @RequestBody Object body
     ) {
+        if (!EntraRoles.esOperadorOAdmin(jwt)) {
+            throw new AccesoDenegadoException();
+        }
         return client.patchSolicitudes("/v1/solicitudes/" + id + "/estado", authorization, body);
     }
 

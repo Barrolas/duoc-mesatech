@@ -25,9 +25,9 @@ export function permisosDesdeRoles(roles) {
   const lista = Array.isArray(roles) ? roles : roles ? [roles] : [];
   if (lista.length === 0) {
     return {
-      verTodas: true,
-      cambiarEstado: true,
-      catalogo: true,
+      verTodas: false,
+      cambiarEstado: false,
+      catalogo: false,
       sinRolEnToken: true,
     };
   }

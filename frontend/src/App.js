@@ -126,7 +126,7 @@ function App() {
           <EspacioTrabajo
             aviso={
               permisos.sinRolEnToken
-                ? "El perfil institucional aún no figura en el token. Se muestran todas las funciones hasta que se asignen los roles."
+                ? "El token no incluye app roles de Entra (Cliente, Operador o Administrador). Solicite la asignación al equipo de identidad."
                 : null
             }
             mensaje={mensaje}
