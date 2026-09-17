@@ -1,10 +1,17 @@
-# Topología EC2 — decisión del equipo
+# Topología EC2 — decisión del equipo (EV1)
 
-**Opción elegida:** una sola instancia EC2 (Ubuntu 22.04 LTS) ejecutando:
+**Opción elegida:** **tres instancias EC2** en **us-east-1** (Learner Lab), una por capa:
 
-- Contenedor Docker **PostgreSQL 16** (puerto 5432 enlazado a `127.0.0.1`).
-- Procesos JVM: **BFF** (8080), **ms-solicitudes** (8081), **ms-catalogo** (8082).
+| Capa | Name tag | Puertos | Persistencia / procesos |
+| --- | --- | --- | --- |
+| Base de datos | `mesatech-ev1-db` | 5432 (solo SG del MS) | Docker **PostgreSQL 16** |
+| Microservicios | `mesatech-ev1-ms` | 8081, 8082 (solo SG del BFF) | `ms-solicitudes.jar`, `ms-catalogo.jar` |
+| BFF | `mesatech-ev1-bff` | 8080 (integración API Gateway + pruebas) | `bff.jar` (Resource Server, sin JPA) |
 
-**Justificación EV1:** costo y simplicidad operativa; cumple la rúbrica (BFF + 2 MS + persistencia en EC2) sin VPC Link ni balanceadores. Los microservicios no se publican a Internet; el único backend HTTP expuesto hacia el Gateway es el BFF en 8080, con JWT validado en Gateway y en BFF.
+**Justificación EV1:** separación clara para la rúbrica (MS y DB no expuestos a Internet, BFF como único backend HTTP hacia el Gateway), SG demostrables (NIC-08, NIC-09) y trazabilidad por capa en informe §12.
 
-**Alternativa descartada para EV1:** tres instancias EC2 (sobrecarga de red y SG para el plazo del curso).
+**Alternativa descartada para esta entrega:** una sola EC2 con 8080+8081+8082+Docker (válida para EV1 pero el equipo optó por 3 instancias para evidencia de red).
+
+IPs y diagrama visual: [`docs/arquitectura/diagrama.md`](../../docs/arquitectura/diagrama.md) y PNG `docs/assets/diagramas/arquitectura_mesatech_ev1_despliegue.png`.
+
+Reglas de firewall: [`SECURITY-GROUPS.md`](SECURITY-GROUPS.md).

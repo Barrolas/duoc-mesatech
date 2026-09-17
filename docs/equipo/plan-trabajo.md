@@ -223,10 +223,11 @@ Nico (presentación)
 
 ### Checklist Nico
 
-- [ ] Tres servicios Java + Postgres arriba en EC2.
-- [ ] MS no accesibles desde Internet.
-- [ ] BFF valida JWT con issuer/audience del tenant del equipo.
-- [ ] Documento corto: topología EC2 (1 vs N instancias).
+- [x] Tres servicios Java + Postgres arriba en EC2 (3 instancias; ver [`estado/nico-ev1.md`](estado/nico-ev1.md)).
+- [x] MS no accesibles desde Internet.
+- [x] BFF valida JWT con issuer/audience del tenant del equipo (EC2 + local).
+- [x] Documento topología EC2: [`infra/ec2/TOPOLOGIA.md`](../infra/ec2/TOPOLOGIA.md) + diagrama en repo.
+- [x] `infra/`, CORS BFF, doc rutas Gateway; integración en rama **`dev`** (sin merge a `main` aún).
 - [ ] Presentación lista, con identidad corporativa y capturas acordadas del equipo.
 
 ---

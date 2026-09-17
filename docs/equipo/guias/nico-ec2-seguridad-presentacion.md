@@ -4,6 +4,8 @@
 
 **Bloques del plan:** C (despliegue), D (seguridad), P (presentación).
 
+**Estado EV1 (checklist vivo):** [`../estado/nico-ev1.md`](../estado/nico-ev1.md) — qué ya está en Git, en AWS y qué capturas faltan.
+
 ---
 
 ## 0. Conceptos mínimos
@@ -58,7 +60,7 @@ flowchart LR
 | **1 EC2** con 8080+8081+8082+Docker | Más barato, simple para EV1 | Todo cae junto si falla la instancia |
 | **Varias EC2** | Más “real” | Más configuración de red |
 
-**Para EV1:** una instancia suele bastar. Documenta la decisión en 1 párrafo para el informe.
+**Para EV1:** el equipo eligió **3 EC2** (DB, MS, BFF). Documentado en [`../../../infra/ec2/TOPOLOGIA.md`](../../../infra/ec2/TOPOLOGIA.md) y [`../../arquitectura/diagrama.md`](../../arquitectura/diagrama.md).
 
 ---
 
@@ -416,22 +418,27 @@ Seleccionar **2–3** por bloque (no todas): NIC-01, NIC-03, NIC-07, NIC-09, dia
 
 ### Checklist capturas Nico
 
-- [ ] NIC-01 … NIC-11 (las que apliquen) en carpeta compartida
-- [ ] Sin `.pem`, passwords ni tokens en imágenes
-- [ ] IP EC2 comunicada a Ninna (integración Gateway)
+- [x] NIC-01, NIC-02, NIC-03, NIC-04, NIC-05, NIC-07, NIC-08, NIC-09 (capturas locales / informe)
+- [ ] NIC-06 persistencia JWT (coordinar Skarlet/Ninna)
+- [ ] NIC-10 Invoke URL en diagrama cuando Ninna entregue enlace
+- [ ] NIC-11 BFF sin JPA + log proxy MS
+- [ ] Carpeta compartida `capturas/nico/` consolidada para informe
+- [x] Sin `.pem` en repo; revisar que imágenes no muestren tokens
+- [x] URL BFF `http://54.90.110.67:8080` comunicada a Ninna
 - [ ] Material PPT armado con marca Ninna
 
 ---
 
 ## Checklist final Nico
 
-- [ ] EC2 accesible por SSH
-- [ ] Docker Postgres corriendo
-- [ ] BFF + 2 MS arriba con variables Entra
-- [ ] MS no expuestos a Internet
-- [ ] Evidencia 401 / SG
-- [ ] URL BFF entregada a Ninna
-- [ ] Diagrama actualizado
+- [x] EC2 accesible por SSH (3 instancias)
+- [x] Docker Postgres corriendo (EC2 DB)
+- [x] BFF + 2 MS arriba con variables Entra (`nohup`, `~/mesatech.env`)
+- [x] MS no expuestos a Internet (NIC-08)
+- [x] Evidencia 401 / SG (NIC-07, NIC-09)
+- [x] URL BFF entregada a Ninna
+- [x] Diagrama y `infra/` en Git (`dev`); Invoke URL TBD en figura
+- [x] Repo: CORS, rutas Gateway doc, integración rama `dev`
 - [ ] Presentación exportada (PPT/PDF) con marca Ninna
 - [ ] Ensayo con el equipo
 

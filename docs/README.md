@@ -30,6 +30,7 @@ En la **raíz del repo** solo queda `README.md` como entrada; el resto de docume
 | 3 | [Instructivo maestro EV1](guia/instructivo-maestro-ev1.md) | Todos (fases A→G en orden) |
 | 4 | [Plan de trabajo del equipo](equipo/plan-trabajo.md) | Reparto y dependencias |
 | 4a | [Guías paso a paso por persona](equipo/guias/README.md) | Ari, Ninna, Nico, Skarlet |
+| 4b | [Estado EV1 — Nico (EC2/Git)](equipo/estado/nico-ev1.md) | Nico, coordinación informe |
 | 5 | **[Reglas del repositorio](equipo/reglas-repositorio.md)** | **Git, commits `[ TIPO ]`, PR, producto — todo el equipo** |
 | 5b | [Convenciones de desarrollo](equipo/convenciones-desarrollo.md) | Detalle código por carpeta |
 | 5c | [Estrategia de branching](equipo/estrategia-branching.md) | Ramas, PRs, entrega `ev1.0.0` |

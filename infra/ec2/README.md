@@ -1,6 +1,6 @@
 # Despliegue EC2 — MesaTech (Nico)
 
-Topología EV1: **1 instancia** con BFF `:8080`, `ms-solicitudes` `:8081`, `ms-catalogo` `:8082`, PostgreSQL Docker.
+Topología EV1: **3 instancias** (DB + MS + BFF). Ver [`TOPOLOGIA.md`](TOPOLOGIA.md) e IPs en [`docs/arquitectura/diagrama.md`](../../docs/arquitectura/diagrama.md).
 
 ## Checklist rápido
 
