@@ -97,6 +97,7 @@ No mergear a **`main`** hasta checklist §15 y E2E en `dev`.
 
 ## Documentos relacionados
 
+- Estado Skarlet (UI/pruebas): [`skarlet-ev1.md`](skarlet-ev1.md)
 - Guía operativa: [`guias/nico-ec2-seguridad-presentacion.md`](../guias/nico-ec2-seguridad-presentacion.md)
 - Plan equipo: [`plan-trabajo.md`](../plan-trabajo.md) (sección Nico)
 - Branching: [`estrategia-branching.md`](../estrategia-branching.md)

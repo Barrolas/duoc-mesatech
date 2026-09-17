@@ -271,10 +271,10 @@ Nico (presentación)
 
 ### Checklist Skarlet
 
-- [ ] Matriz de permisos implementada y demostrada.
-- [ ] UI mínima usable (no solo JSON en pantalla).
+- [x] Matriz de permisos implementada en BFF + UI (demostración SKA-T05 pendiente con roles Ari).
+- [x] UI mínima usable en `dev` (pantallas MesaTech, no JSON crudo).
 - [ ] Informe único con índice por responsable.
-- [ ] Checklist §15 completo.
+- [ ] Checklist §15 completo con figuras (ver [`estado/skarlet-ev1.md`](estado/skarlet-ev1.md)).
 
 ---
 

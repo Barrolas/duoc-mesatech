@@ -4,6 +4,8 @@
 
 **Bloques del plan:** E (negocio y autorización), G (pruebas y entrega).
 
+**Estado EV1 (checklist vivo):** [`../estado/skarlet-ev1.md`](../estado/skarlet-ev1.md) — qué está en Git, qué capturas faltan.
+
 ---
 
 ## 0. Conceptos mínimos
@@ -65,13 +67,13 @@ Dominio de negocio: [`../../dominio/README.md`](../../dominio/README.md).
 
 ### Paso E.2 — Implementar autorización en el BFF (orden sugerido)
 
-| Sub | Tarea | Archivos típicos |
-| --- | --- | --- |
-| E.2.1 | Leer rol desde JWT | `JwtAuthenticationConverter` o claims en controller |
-| E.2.2 | Crear helper `tieneRol("operador")` | paquete `bff/.../security` o similar |
-| E.2.3 | En gateway controllers, antes de proxy | Si cliente llama `GET /v1/solicitudes` → **403** |
-| E.2.4 | Catálogo POST | Solo admin → **403** para otros |
-| E.2.5 | Probar con 3 usuarios | Postman o React |
+| Sub | Tarea | Archivos típicos | Estado |
+| --- | --- | --- | --- |
+| E.2.1 | Leer rol desde JWT | claim `roles` en controller | [x] `UsuarioController` |
+| E.2.2 | Crear helper `tieneRol("operador")` | `bff/.../security` | [x] `EntraRoles.java` |
+| E.2.3 | En gateway controllers, antes de proxy | `GET /v1/solicitudes` → **403** | [x] `SolicitudesGatewayController` |
+| E.2.4 | Catálogo POST | Solo admin → **403** | [x] `CatalogoGatewayController` |
+| E.2.5 | Probar con 3 usuarios | Postman o React | [ ] Requiere app roles **Ari** + SKA-T05 |
 
 **Ejemplo lógico (pseudocódigo):**
 
@@ -94,21 +96,21 @@ La regla **RESUELTA solo desde EN_PROCESO** vive en `ms-solicitudes` (ya esquele
 
 Carpeta: `frontend/src/`
 
-| Sub | Pantalla / comportamiento | Visible para |
-| --- | --- | --- |
-| E.3.1 | Login / logout (ya base MSAL) | Todos |
-| E.3.2 | Mostrar **rol actual** y nombre | Todos |
-| E.3.3 | Formulario **crear solicitud** | Todos autenticados |
-| E.3.4 | Lista **mis solicitudes** | Todos |
-| E.3.5 | Lista **todas** + filtro | Operador, admin (ocultar botón/menú a cliente) |
-| E.3.6 | Selector **cambiar estado** | Operador, admin |
-| E.3.7 | Sección **catálogo** CRUD | Solo admin |
-| E.3.8 | Aplicar CSS/logo de Ninna | Todos |
+| Sub | Pantalla / comportamiento | Visible para | Estado |
+| --- | --- | --- | --- |
+| E.3.1 | Login / logout (MSAL) | Todos | [x] |
+| E.3.2 | Mostrar **rol actual** y nombre | Todos | [x] |
+| E.3.3 | Formulario **crear solicitud** | Todos autenticados | [x] |
+| E.3.4 | Lista **mis solicitudes** | Todos | [x] |
+| E.3.5 | Lista **todas** + filtro | Operador, admin | [x] UI |
+| E.3.6 | Selector **cambiar estado** | Operador, admin | [x] |
+| E.3.7 | Sección **catálogo** CRUD | Solo admin | [x] UI |
+| E.3.8 | Aplicar CSS/logo de Ninna | Todos | [~] logo/CSS base |
 
-| Sub | UX |
-| --- | --- |
-| E.3.9 | Si API responde 403, mensaje “No tienes permiso” |
-| E.3.10 | No mostrar JSON crudo en producción demo |
+| Sub | UX | Estado |
+| --- | --- | --- |
+| E.3.9 | Si API responde 403, mensaje “No tienes permiso” | [x] |
+| E.3.10 | No mostrar JSON crudo en producción demo | [x] |
 
 Archivos clave existentes: `App.js`, `api/http.js`, `authConfig.js`.
 
@@ -300,18 +302,18 @@ Formato: Word/Google Docs según indique el profesor.
 
 Del [`../../caso/ep1-guia-oficial.md`](../../caso/ep1-guia-oficial.md):
 
-- [ ] React login/logout Entra
-- [ ] Access Token válido para API
+- [x] React login/logout Entra (código; captura informe pendiente)
+- [x] Access Token válido para API (local BFF; Gateway pendiente Ninna)
 - [ ] Front consume solo vía Gateway (entrega final)
-- [ ] CORS OK
-- [ ] Gateway rechaza sin JWT
-- [ ] BFF revalida JWT
-- [ ] BFF → MS, sin BD en BFF
-- [ ] Dos MS persisten
-- [ ] v1 + v2 coexisten
-- [ ] Despliegue EC2
-- [ ] Diferencias por tipo usuario
-- [ ] Sin secretos en repo
+- [ ] CORS OK (cloud)
+- [ ] Gateway rechaza sin JWT (Ninna)
+- [x] BFF revalida JWT (NIC-07 / local)
+- [x] BFF → MS, sin BD en BFF (código; NIC-11 captura)
+- [x] Dos MS persisten (cloud; SKA-T09 / NIC-06 captura)
+- [x] v1 + v2 coexisten (código; SKA-T08 captura)
+- [x] Despliegue EC2 (Nico)
+- [ ] Diferencias por tipo usuario (SKA-T05 + demo E.4 con roles Ari)
+- [x] Sin secretos en repo (revisión G.5 continua)
 
 Añade columna “Evidencia (pág./captura)”.
 
@@ -352,16 +354,16 @@ Entra (tenant) emite JWT validado en Gateway y BFF
 
 ## Checklist final Skarlet
 
-- [ ] Matriz permisos en BFF (403 demostrados)
-- [ ] UI: crear, listar, estados, catálogo admin
-- [ ] Tres usuarios demo documentados
+- [x] Matriz permisos en BFF (403 en código; demostrar SKA-T05)
+- [x] UI: crear, listar, estados, catálogo admin (rama `dev`)
+- [ ] Tres usuarios demo documentados (Entra — Ari)
 - [ ] 9 pruebas ejecutadas: SKA-T01 … SKA-T09 (+ NIN/NIC donde corresponda)
-- [ ] E2E: SKA-E01 … SKA-E12 (o collage documentado)
-- [ ] SKA-UI01 … SKA-UI07 en informe
+- [ ] E2E: SKA-E01 … SKA-E12 (Gateway Ninna para pasos 6–8)
+- [ ] SKA-UI01 … SKA-UI07 en informe (UI lista; faltan capturas)
 - [ ] Carpetas ari/ninna/nico integradas con pies de figura
 - [ ] Checklist §15 con columna “Figura evidencia”
-- [ ] Repo sin secretos; capturas sin Bearer completo
-- [ ] Diagrama NIC-10 / SKA en anexo
+- [x] Repo sin secretos (vigilar en cada PR); capturas sin Bearer completo
+- [~] Diagrama NIC-10 en repo (Invoke URL TBD Ninna)
 
 ---
 

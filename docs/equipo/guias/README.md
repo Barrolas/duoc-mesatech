@@ -6,8 +6,8 @@ Documentos pensados para quien **no ha hecho antes** esa parte del proyecto. Cad
 | --- | --- | --- |
 | **Ari** | [ari-identidad-azure.md](ari-identidad-azure.md) | A — Microsoft Entra ID |
 | **Ninna** | [ninna-gateway-marca-versiones.md](ninna-gateway-marca-versiones.md) | B, F, H — Gateway, v1/v2, identidad corporativa |
-| **Nico** | [nico-ec2-seguridad-presentacion.md](nico-ec2-seguridad-presentacion.md) | C, D, P — EC2, seguridad, presentación |
-| **Skarlet** | [skarlet-negocio-pruebas-informe.md](skarlet-negocio-pruebas-informe.md) | E, G — Negocio, UI, pruebas, informe |
+| **Nico** | [nico-ec2-seguridad-presentacion.md](nico-ec2-seguridad-presentacion.md) · [estado EV1](../estado/nico-ev1.md) | C, D, P — EC2, seguridad, presentación |
+| **Skarlet** | [skarlet-negocio-pruebas-informe.md](skarlet-negocio-pruebas-informe.md) · [estado EV1](../estado/skarlet-ev1.md) | E, G — Negocio, UI, pruebas, informe |
 
 Plan general y dependencias: [`../plan-trabajo.md`](../plan-trabajo.md).
 
