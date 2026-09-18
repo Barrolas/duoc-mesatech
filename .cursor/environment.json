@@ -1,0 +1,35 @@
+{
+  "name": "MesaTech Cloud EV1",
+  "user": "ubuntu",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "bff (:8080)",
+      "description": "BFF / OAuth2 Resource Server. /public/hola es abierto; /api|/v1|/v2 exigen JWT. Usa ENTRA_ISSUER_URI y ENTRA_AUDIENCE del entorno; si no existen, usa valores dev de marcador (el flujo autenticado real requiere los secretos de Entra del equipo).",
+      "command": "cd bff && ENTRA_ISSUER_URI=\"${ENTRA_ISSUER_URI:-https://login.microsoftonline.com/common/v2.0}\" ENTRA_AUDIENCE=\"${ENTRA_AUDIENCE:-api://mesatech-dev}\" mvn spring-boot:run"
+    },
+    {
+      "name": "ms-solicitudes (:8081)",
+      "description": "Microservicio de solicitudes (JPA -> mesatech_solicitudes). Todas las rutas exigen SCOPE_access_as_user.",
+      "command": "cd ms-solicitudes && ENTRA_ISSUER_URI=\"${ENTRA_ISSUER_URI:-https://login.microsoftonline.com/common/v2.0}\" ENTRA_AUDIENCE=\"${ENTRA_AUDIENCE:-api://mesatech-dev}\" mvn spring-boot:run"
+    },
+    {
+      "name": "ms-catalogo (:8082)",
+      "description": "Microservicio de catálogo (JPA -> mesatech_catalogo). Todas las rutas exigen SCOPE_access_as_user.",
+      "command": "cd ms-catalogo && ENTRA_ISSUER_URI=\"${ENTRA_ISSUER_URI:-https://login.microsoftonline.com/common/v2.0}\" ENTRA_AUDIENCE=\"${ENTRA_AUDIENCE:-api://mesatech-dev}\" mvn spring-boot:run"
+    },
+    {
+      "name": "frontend (:3000)",
+      "description": "SPA React + MSAL. Usa las variables REACT_APP_* del entorno; si no existen, usa GUIDs dev de marcador para que la app y la pantalla de login rendericen (el login real requiere el tenant de Entra del equipo).",
+      "command": "cd frontend && BROWSER=none REACT_APP_ENTRA_CLIENT_ID=\"${REACT_APP_ENTRA_CLIENT_ID:-11111111-1111-1111-1111-111111111111}\" REACT_APP_ENTRA_TENANT_ID=\"${REACT_APP_ENTRA_TENANT_ID:-22222222-2222-2222-2222-222222222222}\" REACT_APP_ENTRA_API_SCOPE=\"${REACT_APP_ENTRA_API_SCOPE:-api://11111111-1111-1111-1111-111111111111/access_as_user}\" REACT_APP_API_BASE_URL=\"${REACT_APP_API_BASE_URL:-http://localhost:8080}\" npm start"
+    }
+  ],
+  "ports": [
+    { "name": "frontend", "port": 3000 },
+    { "name": "bff", "port": 8080 },
+    { "name": "ms-solicitudes", "port": 8081 },
+    { "name": "ms-catalogo", "port": 8082 },
+    { "name": "postgres", "port": 5432 }
+  ]
+}
