@@ -224,7 +224,7 @@ Topología elegida: **una EC2 por capa** (DB, MS, BFF). Región **us-east-1** (L
 | BFF | `mesatech-ev1-bff` | **`54.90.110.67`** | `172.31.20.75` | **8080** (integración Gateway) |
 
 **Ninna (API Gateway):** integración HTTP hacia `http://54.90.110.67:8080`.  
-**Invoke URL (front):** `REACT_APP_API_BASE_URL` = URL del Gateway cuando esté creada (completar en NIC-10 cuando Ninna entregue el enlace).
+**Invoke URL (front):** `REACT_APP_API_BASE_URL` = `https://7gqw4633sg.execute-api.us-east-1.amazonaws.com`.
 
 ```mermaid
 flowchart LR
@@ -235,7 +235,7 @@ flowchart LR
         R[React + MSAL]
     end
     subgraph AWS["AWS us-east-1"]
-        GW[API Gateway<br/>Invoke URL TBD]
+        GW[API Gateway<br/>7gqw4633sg.execute-api]
         BFF[EC2 BFF<br/>54.90.110.67:8080]
         MS[EC2 MS<br/>172.31.24.74<br/>8081 / 8082]
         DB[EC2 DB<br/>172.31.25.66<br/>Postgres Docker]

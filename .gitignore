@@ -34,5 +34,10 @@ _draw_arquitectura.py
 # JARs generados localmente
 infra/out/
 
-# JARs generados localmente
-infra/out/
+# Borradores del informe (scripts, dumps, copias viejas)
+entregables/_inspect/
+entregables/_trabajo/
+entregables/_archivo/
+entregables/**/_archivo/
+entregables/_*.py
+~$*

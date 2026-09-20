@@ -1,16 +1,39 @@
-"""Genera diagrama de despliegue EV1 (3 EC2) para informe / NIC-10."""
-
+# -*- coding: utf-8 -*-
+"""Diagrama EV1: arquitectura implementada + despliegue (paleta MesaTech)."""
 from pathlib import Path
+import math
 
 from PIL import Image, ImageDraw, ImageFont
 
-W, H = 1600, 920
-img = Image.new("RGB", (W, H), "#f1f5f9")
+ROOT = Path(__file__).resolve().parents[2]
+OUTS = [
+    ROOT / "docs" / "assets" / "diagramas" / "arquitectura_mesatech_ev1_despliegue.png",
+    ROOT / "entregables" / "_inspect" / "arquitectura_v2.png",
+    ROOT / "entregables" / "presentacion" / "img" / "arquitectura_mesatech_ev1_despliegue.png",
+]
+
+W, H = 2200, 1260
+TEAL = "#0F4C5C"
+TEAL_D = "#0A3843"
+AQUA = "#2EC4B6"
+MINT = "#E8FAF6"
+SAND = "#F4F7F6"
+INK = "#12353C"
+MUTED = "#4A646C"
+WHITE = "#FFFFFF"
+LINE = "#B7D0CC"
+ORANGE = "#C2410C"
+
+img = Image.new("RGB", (W, H), SAND)
 d = ImageDraw.Draw(img)
 
 
 def font(size, bold=False):
-    names = ["arialbd.ttf", "arial.ttf"] if bold else ["arial.ttf", "segoeui.ttf"]
+    names = (
+        ["segoeuib.ttf", "arialbd.ttf", "calibrib.ttf"]
+        if bold
+        else ["segoeui.ttf", "arial.ttf", "calibri.ttf"]
+    )
     for name in names:
         try:
             return ImageFont.truetype(name, size)
@@ -19,162 +42,280 @@ def font(size, bold=False):
     return ImageFont.load_default()
 
 
-F_T = font(26, True)
-F_S = font(14)
-F_B = font(13, True)
-F_X = font(11)
-F_XS = font(10)
+FT = font(30, True)
+FS = font(15)
+FB = font(16, True)
+FX = font(14)
+FXX = font(12)
+FNUM = font(13, True)
 
 
-def box(xy, title, lines, fill, border, title_fill="#0f172a"):
-    x1, y1, x2, y2 = xy
-    d.rounded_rectangle(xy, radius=16, fill=fill, outline=border, width=2)
-    d.text((x1 + 14, y1 + 12), title, fill=title_fill, font=F_B)
-    y = y1 + 38
-    for line in lines:
-        d.text((x1 + 14, y), line, fill="#334155", font=F_X)
-        y += 18
+def rr(xy, fill, outline, width=2, radius=16):
+    d.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=width)
+
+
+def text(xy, s, fill, f, anchor="lt"):
+    d.text(xy, s, fill=fill, font=f, anchor=anchor)
+
+
+def wrap(s, f, max_w):
+    words = s.split()
+    lines, cur = [], ""
+    for w in words:
+        trial = (cur + " " + w).strip()
+        if d.textlength(trial, font=f) <= max_w:
+            cur = trial
+        else:
+            if cur:
+                lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines or [s]
+
+
+def lines_at(x, y, items, fill=MUTED, f=FX, gap=20, max_w=None):
+    yy = y
+    for s in items:
+        chunk = wrap(s, f, max_w) if max_w else [s]
+        for c in chunk:
+            text((x, yy), c, fill, f)
+            yy += gap
+    return yy
+
+
+def arrow(p1, p2, color=TEAL, width=3):
+    d.line([p1, p2], fill=color, width=width)
+    x1, y1 = p1
+    x2, y2 = p2
+    ang = math.atan2(y2 - y1, x2 - x1)
+    L = 12
+    a1 = (x2 - L * math.cos(ang - 0.42), y2 - L * math.sin(ang - 0.42))
+    a2 = (x2 - L * math.cos(ang + 0.42), y2 - L * math.sin(ang + 0.42))
+    d.polygon([p2, a1, a2], fill=color)
+
+
+def badge(cx, cy, n):
+    r = 14
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=AQUA, outline=TEAL_D, width=1)
+    text((cx, cy + 1), str(n), TEAL_D, FNUM, anchor="mm")
 
 
 # Header
-d.text(
-    (W // 2, 24),
-    "MesaTech EV1 — Despliegue AWS (us-east-1)",
-    fill="#0f172a",
-    font=F_T,
-    anchor="ma",
+text((48, 28), "MESATECH CLOUD  ·  Arquitectura implementada EV1", TEAL, FT)
+lines_at(
+    48,
+    68,
+    ["React + MSAL  →  Entra ID  →  API Gateway  →  BFF :8080  →  microservicios  →  PostgreSQL 16"],
+    MUTED,
+    FS,
 )
-d.text(
-    (W // 2, 54),
-    "3 EC2 · Entra ID · API Gateway · BFF + MS + PostgreSQL Docker",
-    fill="#475569",
-    font=F_S,
-    anchor="ma",
+text((W - 48, 32), "DSY1107  ·  us-east-1", AQUA, FB, anchor="rt")
+text((W - 48, 58), "Learner Lab  ·  3 instancias EC2", MUTED, FXX, anchor="rt")
+
+# Entra (above React)
+rr((280, 100, 700, 236), WHITE, "#E8A87C", 2)
+text((298, 112), "Microsoft Entra ID", ORANGE, FB)
+lines_at(
+    298,
+    142,
+    [
+        "SPA React + API api-cloud-native",
+        "Scope access_as_user  ·  token v2",
+        "Roles: cliente · operador · administrador",
+        "Issuer y audience: Gateway y BFF",
+    ],
+    MUTED,
+    FXX,
+    20,
+    max_w=380,
 )
 
-# Azure Entra
-box(
-    (40, 90, 320, 200),
-    "Microsoft Entra ID",
-    ["Login OAuth2 / OIDC", "JWT: issuer + audience", "Scope access_as_user"],
-    "#fff7ed",
-    "#ea580c",
-    "#9a3412",
+# Actors
+rr((48, 288, 250, 560), WHITE, LINE)
+text((66, 304), "Actores", TEAL, FB)
+lines_at(
+    66,
+    340,
+    [
+        "Cliente",
+        "crea y ve las suyas",
+        "Operador",
+        "cola y estados",
+        "Administrador",
+        "catálogo y visión global",
+    ],
+    INK,
+    FX,
+    30,
 )
 
 # React
-box(
-    (40, 230, 320, 340),
-    "React + MSAL (local / host)",
-    ["REACT_APP_API_BASE_URL = Gateway", "(no IP de microservicios)"],
-    "#eff6ff",
-    "#2563eb",
-    "#1e40af",
-)
-
-# Gateway placeholder
-box(
-    (360, 90, 720, 220),
-    "API Gateway HTTP API",
+rr((280, 288, 700, 560), WHITE, TEAL, 3)
+text((298, 304), "Frontend  ·  React + MSAL", TEAL, FB)
+lines_at(
+    298,
+    340,
     [
-        "Invoke URL: (Ninna — pendiente)",
-        "ej. https://xxxx.execute-api.us-east-1.amazonaws.com",
-        "JWT Authorizer + CORS",
+        "Login y logout con Entra ID",
+        "Muestra nombre, correo y rol",
+        "Axios solo hacia el Gateway",
+        "No llama a :8081 ni :8082",
+        "localhost:3000 en desarrollo",
+        "Prohibido: React → IP de EC2",
     ],
-    "#f5f3ff",
-    "#7c3aed",
-    "#5b21b6",
+    MUTED,
+    FX,
+    32,
+    max_w=380,
 )
 
-# AWS region frame
-d.rounded_rectangle((340, 250, 1560, 860), radius=20, outline="#f59e0b", width=3)
-d.text((360, 262), "AWS us-east-1 (Learner Lab)", fill="#b45309", font=F_B)
+# AWS
+rr((730, 100, 2152, 900), "#F7FBFA", TEAL, 3, radius=22)
+text((752, 118), "AWS  ·  us-east-1", TEAL, FB)
+text(
+    (980, 122),
+    "Entrada pública: HTTP API. MS y PostgreSQL no abiertos a Internet.",
+    MUTED,
+    FXX,
+)
 
-# EC2 BFF
-box(
-    (380, 300, 720, 480),
-    "EC2 mesatech-ev1-bff",
+# Gateway
+rr((752, 158, 1368, 470), WHITE, AQUA, 3)
+text((772, 176), "API Gateway  ·  HTTP API", TEAL, FB)
+lines_at(
+    772,
+    214,
     [
-        "bff.jar :8080 (Resource Server)",
-        "Public: 54.90.110.67",
-        "Private: 172.31.20.75",
-        "SG: SSH + 8080 (Mi IP / Gateway*)",
+        "mesatech-ev1",
+        "7gqw4633sg.execute-api.us-east-1.amazonaws.com",
+        "JWT Authorizer  ·  CORS + Authorization",
+        "Rutas /v1 y /v2  ·  /api/usuario",
+        "Integración HTTP → BFF :8080",
+        "Sin JWT → 401 (no llega al BFF)",
     ],
-    "#ecfdf5",
-    "#059669",
-    "#065f46",
+    MUTED,
+    FX,
+    28,
+    max_w=560,
 )
 
-# EC2 MS
-box(
-    (760, 300, 1100, 500),
-    "EC2 mesatech-ev1-ms",
+# BFF
+rr((1390, 158, 2130, 470), WHITE, TEAL, 2)
+text((1410, 176), "EC2 BFF  ·  mesatech-ev1-bff", TEAL, FB)
+lines_at(
+    1410,
+    214,
     [
-        "ms-solicitudes.jar :8081",
-        "ms-catalogo.jar :8082",
-        "Public: 54.227.0.33",
-        "Private: 172.31.24.74",
-        "SG: 8081-8082 solo desde BFF-SG",
+        "54.90.110.67  /  172.31.20.75  ·  :8080",
+        "Spring Security Resource Server",
+        "Revalida JWT  ·  403 según el rol",
+        "Sin JPA  ·  no toca la base",
+        "Proxy hacia :8081 y :8082",
     ],
-    "#f0fdf4",
-    "#16a34a",
-    "#14532d",
+    MUTED,
+    FX,
+    28,
+    max_w=680,
 )
 
-# EC2 DB
-box(
-    (1140, 300, 1520, 480),
-    "EC2 mesatech-ev1-db",
+# Notes
+rr((752, 500, 1368, 868), MINT, AQUA, 1)
+text((772, 520), "Regla de negocio y recorte EV1", TEAL, FB)
+lines_at(
+    772,
+    562,
     [
-        "Docker postgres:16",
-        "Public: 54.90.194.247 (SSH admin)",
-        "Private: 172.31.25.66 :5432",
-        "SG: 5432 solo desde MS-SG",
+        "RESUELTA solo desde EN_PROCESO. Si no, 409.",
+        "CERRADA solo desde RESUELTA.",
+        "React nunca apunta a IPs de microservicio.",
+        "Fuera de alcance: Lambda, ECS, Cognito, S3, ALB, RDS Aurora.",
+        "Persistencia: PostgreSQL 16 en Docker, sobre EC2.",
     ],
-    "#e0f2fe",
-    "#0284c7",
-    "#0c4a6e",
+    INK,
+    FX,
+    28,
+    max_w=560,
 )
 
-# Security note
-box(
-    (380, 540, 1520, 640),
-    "Seguridad (evidencia)",
+# MS
+rr((1390, 500, 1758, 868), WHITE, TEAL, 2)
+text((1410, 518), "EC2 microservicios", TEAL, FB)
+lines_at(
+    1410,
+    560,
     [
-        "NIC-07: curl BFF /v1/... sin token → 401 (54.90.110.67:8080)",
-        "NIC-08: curl MS :8081 desde Internet → timeout",
-        "React → solo Gateway · MS/DB no expuestos a 0.0.0.0/0",
+        "mesatech-ev1-ms",
+        "172.31.24.74",
+        "ms-solicitudes :8081",
+        "ms-catalogo :8082",
+        "SG: solo desde el BFF",
+        "Timeout desde Internet",
     ],
-    "#fef2f2",
-    "#dc2626",
-    "#991b1b",
+    MUTED,
+    FX,
+    28,
+    max_w=320,
 )
 
-# Arrows (simple)
-def arrow(p1, p2, color):
-    d.line([p1, p2], fill=color, width=3)
-    x2, y2 = p2
-    d.polygon([(x2, y2), (x2 - 10, y2 - 5), (x2 - 10, y2 + 5)], fill=color)
-
-
-arrow((320, 280), (360, 280), "#2563eb")  # React -> GW
-arrow((720, 150), (380, 390), "#7c3aed")  # GW -> BFF
-arrow((720, 400), (760, 400), "#059669")  # BFF -> MS
-arrow((1100, 390), (1140, 390), "#0284c7")  # MS -> DB
-d.text((180, 268), "Bearer", fill="#2563eb", font=F_XS)
-d.text((540, 130), "HTTP", fill="#7c3aed", font=F_XS)
-d.text((735, 382), "8081/8082", fill="#059669", font=F_XS)
-d.text((1118, 372), "5432", fill="#0284c7", font=F_XS)
-
-d.text(
-    (W // 2, 880),
-    "* Cuando Ninna integre Gateway, puede requerir abrir 8080 del BFF al tráfico del integrador (coordinar SG).",
-    fill="#64748b",
-    font=F_XS,
-    anchor="ma",
+# DB
+rr((1780, 500, 2130, 868), WHITE, "#3D7A8C", 2)
+text((1800, 518), "EC2 datos", TEAL, FB)
+lines_at(
+    1800,
+    560,
+    [
+        "mesatech-ev1-db",
+        "PostgreSQL 16 Docker",
+        "172.31.25.66 :5432",
+        "mesatech_solicitudes",
+        "mesatech_catalogo",
+        "Solo escriben los MS",
+    ],
+    MUTED,
+    FX,
+    28,
+    max_w=300,
 )
 
-out = Path(__file__).resolve().parents[2] / "docs" / "assets" / "diagramas" / "arquitectura_mesatech_ev1_despliegue.png"
-out.parent.mkdir(parents=True, exist_ok=True)
-img.save(out, "PNG")
-print("saved", out)
+# Arrows
+arrow((250, 424), (280, 424), TEAL)
+arrow((400, 236), (400, 288), AQUA)
+badge(400, 262, 1)
+arrow((580, 288), (580, 236), AQUA)
+badge(580, 262, 2)
+arrow((700, 414), (752, 414), TEAL)
+badge(726, 382, 3)
+arrow((1368, 314), (1390, 314), TEAL)
+badge(1379, 296, 4)
+arrow((1574, 470), (1574, 500), TEAL)
+badge(1596, 485, 5)
+arrow((1758, 684), (1780, 684), TEAL)
+badge(1769, 666, 6)
+
+text((752, 878), "7–10. JSON de vuelta: MS → BFF → Gateway → React", MUTED, FXX)
+
+# Legend
+rr((48, 924, 2152, 1224), WHITE, LINE, 1, radius=18)
+text((70, 944), "Leyenda del flujo (guía EP1 §10)", TEAL, FB)
+legend = [
+    "1  React redirige a Entra (loginRedirect).",
+    "2  Entra entrega ID Token y Access Token (scope access_as_user, claim roles).",
+    "3  React llama al Invoke URL con Authorization: Bearer. Sin token → 401 en el Gateway.",
+    "4  Authorizer OK: Gateway reenvía al BFF :8080. El BFF vuelve a validar el JWT y aplica 403 por rol.",
+    "5–6  El BFF llama al microservicio; el MS lee o escribe PostgreSQL. Ni el BFF ni React tocan la base.",
+    "7–10  La respuesta vuelve a la UI. El cliente ve lo suyo; el operador, la cola; el admin, el catálogo.",
+]
+lines_at(70, 984, legend, INK, FX, 26, max_w=2000)
+text(
+    (2152 - 28, 1196),
+    "Informe Formal v2  ·  coincidente con el recorrido de capítulos",
+    MUTED,
+    FXX,
+    anchor="rb",
+)
+
+for out in OUTS:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out, "PNG", optimize=True)
+    print("saved", out)
