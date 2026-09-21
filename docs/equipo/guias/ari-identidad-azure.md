@@ -8,6 +8,28 @@
 
 ---
 
+## Estado EV1 (Ari) — 2026-09-17
+
+Portal Entra (Parte A de [`../../guia/entra-spring-react.md`](../../guia/entra-spring-react.md) + roles de negocio) **hecho**. Falta **probar en local** con el monorepo, **confirmar el handoff** al equipo y **capturas** para el informe.
+
+| Ítem | Estado |
+| --- | --- |
+| SPA React (`SPA React App`) + redirect local | Hecho (confirmar URI `http://localhost:3000/` con barra final) |
+| API `api-cloud-native`, scope `access_as_user`, consentimiento admin, token v2 | Hecho |
+| App roles `cliente` / `operador` / `administrador` + 3 usuarios asignados | Hecho |
+| IDs en `.env` **local** (no Git) | Hecho |
+| `frontend/.env` con `REACT_APP_*` literales | **Pendiente** |
+| Login + `GET /api/usuario` + claim `roles` en jwt.ms | **Pendiente** |
+| Mensaje al equipo (issuer, audience, UPN de demo, claim `roles`) | **Pendiente de confirmar** |
+| Capturas ARI-01 … ARI-10 | **Pendiente** |
+| Redirect URI de producción (cuando exista URL del front) | Más adelante (Ninna/Skarlet) |
+
+**No hacer:** crear un Spring Boot nuevo (pasos 12–15 de la PPT) ni un React aparte (16–19). El Resource Server es `bff/`; el front es `frontend/`.
+
+Siguiente acción concreta: §9 de esta guía (probar local) → §10 (handoff) → §11 (capturas).
+
+---
+
 ## 0. Conceptos mínimos (léelos una vez)
 
 | Concepto | En palabras simples | Analogía |
@@ -49,13 +71,13 @@ flowchart LR
 ## 2. Mapa de tu trabajo (orden obligatorio)
 
 ```text
-Paso 1–2   Registrar SPA React (si no existe) + API api-cloud-native
-Paso 3     Exponer scope access_as_user en la API
-Paso 4     Dar permiso a la SPA + consentimiento de administrador
-Paso 5     Manifiesto: access token versión 2
-Paso 6     Roles cliente / operador / administrador + usuarios de prueba
-Paso 7     Probar login local con el equipo (Skarlet/Nico levantan backend)
-Paso 8     Entregar variables + capturas para informe
+Paso 1–2   Registrar SPA React (si no existe) + API api-cloud-native     HECHO
+Paso 3     Exponer scope access_as_user en la API                         HECHO
+Paso 4     Dar permiso a la SPA + consentimiento de administrador        HECHO
+Paso 5     Manifiesto: access token versión 2                             HECHO
+Paso 6     Roles cliente / operador / administrador + usuarios de prueba HECHO
+Paso 7     Probar login local con el equipo (Skarlet/Nico levantan backend)  PENDIENTE
+Paso 8     Entregar variables + capturas para informe                     PENDIENTE
 ```
 
 ---
@@ -337,17 +359,19 @@ En el informe: captura de jwt.ms; **no** insertar el string del token en Word.
 - [ ] Pies de figura redactados para Skarlet
 - [ ] 2–3 imágenes seleccionadas para **presentación** (Nico)
 
+Portal (ARI-01 … ARI-06) se puede capturar ya. Login / jwt.ms / logout (ARI-07 … ARI-10) requieren el paso 7 (front + BFF en local).
+
 ---
 
 ## 12. Checklist final Ari
 
-- [ ] SPA registrada con redirect `http://localhost:3000/`
-- [ ] API `api-cloud-native` registrada
-- [ ] Scope `access_as_user` expuesto y consentido
-- [ ] Token versión 2 en manifiesto
-- [ ] Tres roles/usuarios distinguibles
+- [x] SPA registrada con redirect `http://localhost:3000/`
+- [x] API `api-cloud-native` registrada
+- [x] Scope `access_as_user` expuesto y consentido
+- [x] Token versión 2 en manifiesto
+- [x] Tres roles/usuarios distinguibles
 - [ ] Login + `/api/usuario` OK en local
-- [ ] Variables enviadas por canal privado
+- [ ] Variables enviadas por canal privado (confirmar que Nico, Ninna y Skarlet las tienen)
 - [ ] Capturas guardadas para informe (Skarlet integra)
 
 ---

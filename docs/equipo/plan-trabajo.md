@@ -60,23 +60,23 @@ Nico (presentación)
 
 **Objetivo:** Entra ID listo para React, API Gateway Authorizer y Spring Resource Server.
 
+**Estado (2026-09-17):** portal + roles **listos**. Falta prueba local, handoff confirmado y capturas. Detalle: [`guias/ari-identidad-azure.md`](guias/ari-identidad-azure.md) § Estado EV1.
+
 ### Tareas
 
-1. Registrar **SPA React** (redirect URI `http://localhost:3000/` + URL de producción si aplica).
-2. Registrar **`api-cloud-native`** (API expuesta).
-3. **Exponer API:** URI `api://<API_CLIENT_ID>`, ámbito **`access_as_user`**.
-4. Consentimiento de administrador en SPA y API (permiso delegado al scope).
-5. Manifiesto: **`requestedAccessTokenVersion`: 2**.
-6. Definir **roles de negocio** (elegir una estrategia y documentarla):
-   - **Opción recomendada:** App roles en `api-cloud-native` (`cliente`, `operador`, `administrador`) y asignación a usuarios de prueba.
-   - Alternativa: grupos de Entra reflejados en claims (coordinar con Skarlet).
-7. Entregar al equipo (canal seguro, **no en git**):
+1. Registrar **SPA React** (redirect URI `http://localhost:3000/` + URL de producción si aplica). **Hecho** (URI de producción: cuando exista el hosting).
+2. Registrar **`api-cloud-native`** (API expuesta). **Hecho**
+3. **Exponer API:** URI `api://<API_CLIENT_ID>`, ámbito **`access_as_user`**. **Hecho**
+4. Consentimiento de administrador en SPA y API (permiso delegado al scope). **Hecho**
+5. Manifiesto: **`requestedAccessTokenVersion`: 2**. **Hecho**
+6. Definir **roles de negocio**. **Hecho** — App roles en `api-cloud-native` (`cliente`, `operador`, `administrador`) y 3 usuarios de prueba asignados.
+7. Entregar al equipo (canal seguro, **no en git**) — **pendiente de confirmar**:
    - `ENTRA_TENANT_ID`
    - `ENTRA_SPA_CLIENT_ID`
    - `ENTRA_API_CLIENT_ID` (= audience)
    - `ENTRA_ISSUER_URI` = `https://login.microsoftonline.com/<TENANT>/v2.0`
    - Scope para front: `api://<API_CLIENT_ID>/access_as_user`
-8. Evidencias para informe: capturas App Registrations, Exponer API, Permisos, Manifiesto v2, usuarios/roles.
+8. Evidencias para informe: capturas App Registrations, Exponer API, Permisos, Manifiesto v2, usuarios/roles — **pendiente** (ARI-01 … ARI-10).
 
 ### Entregables a otros
 
@@ -89,10 +89,13 @@ Nico (presentación)
 
 ### Checklist Ari (propia)
 
-- [ ] SPA + API registradas en **vuestro** tenant (no IDs del profesor).
-- [ ] Scope `access_as_user` concedido.
-- [ ] Token v2 en manifiesto.
-- [ ] Al menos 3 usuarios o roles distinguibles para demo cliente/operador/admin.
+- [x] SPA + API registradas en **vuestro** tenant (no IDs del profesor).
+- [x] Scope `access_as_user` concedido.
+- [x] Token v2 en manifiesto.
+- [x] Al menos 3 usuarios o roles distinguibles para demo cliente/operador/admin.
+- [ ] `frontend/.env` local + login + `GET /api/usuario` (claim `roles` en jwt.ms).
+- [ ] Handoff por chat (issuer, audience, usuarios demo) a Ninna, Nico y Skarlet.
+- [ ] Capturas ARI para informe (Skarlet) y 2–3 para PPT (Nico).
 
 ---
 
