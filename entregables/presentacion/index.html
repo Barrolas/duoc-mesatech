@@ -286,6 +286,40 @@
           </div>
         </section>
 
+        <section class="slide" data-section="Registro" data-who="Ari" data-time="35 s" data-say="El primer paso de identidad fue registrar la API. En Entra ID se creó una aplicación nueva, no la SPA: se llama api-cloud-native. En la captura de la izquierda está el formulario: un solo inquilino, y sin URI de redirección, porque esta app no es el login del navegador. A la derecha se creó el URI de id. de aplicación: api:// más el Id. de aplicación. Ese URI es el prefijo de los scopes. El consentimiento y los roles vienen en la lámina siguiente." data-hint="No leas los UUID. Redirect URI vacío a propósito: vive en la SPA. El URI se acepta el que propone Azure. Evidencia: Word de Ari, Parte A, Registro de Aplicación y Creación de URI de id de Apps. Si preguntan por el audience: es el Id. de aplicación de esta API, no el de React." data-notes="El primer paso de identidad fue registrar la API. En Entra ID se creó una aplicación nueva, no la SPA: se llama api-cloud-native. En la captura de la izquierda está el formulario: un solo inquilino, y sin URI de redirección, porque esta app no es el login del navegador. A la derecha se creó el URI de id. de aplicación: api:// más el Id. de aplicación. Ese URI es el prefijo de los scopes. El consentimiento y los roles vienen en la lámina siguiente.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">03 · Registro <small>Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Microsoft Entra ID</p>
+            <h2 class="anim d1">Registrar api-cloud-native. Crear el URI.</h2>
+            <p class="lede anim d2">La API no es la SPA. Un solo inquilino. El URI de id. de aplicación es el prefijo de los scopes.</p>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d3">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · Registrar una aplicación</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-registro.png">
+                  <img src="img/capturas/ari/ari-registro.png" alt="Formulario Registrar una aplicación con el nombre api-cloud-native" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+              </div>
+              <figcaption>Formulario de registro. Nombre api-cloud-native. Un solo inquilino. Sin URI de redirección.</figcaption>
+            </figure>
+            <figure class="shot anim d4">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · Exponer una API</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-uri.png">
+                  <img src="img/capturas/ari/ari-uri.png" alt="URI de id. de aplicación api:// más el Id. de aplicación de api-cloud-native" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+              </div>
+              <figcaption>URI de id. de aplicación: api:// más el Id. de aplicación. Prefijo de los scopes.</figcaption>
+            </figure>
+          </div>
+        </section>
+
         <section class="slide" data-section="Entra ID" data-who="Ari" data-time="40 s" data-say="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión." data-hint="Access Token llama APIs. ID Token describe a la persona. iss es Entra; aud es api-cloud-native. No leer IDs ni contraseñas. El Word de Ari tiene redirect y token v2; en la oral bastan estas dos capturas. Si te apuras, para en el consentimiento y después en los roles." data-notes="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión.">
           <div class="brand-bar">
             <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
