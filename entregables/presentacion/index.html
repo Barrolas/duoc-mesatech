@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F4C5C" />
+  <title>MesaTech Cloud · EV1 · DSY1107</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/deck.css?v=clip4" />
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h4l1 4-2.5 1.5a12 12 0 006 6L17 12l4 1v4a2 2 0 01-2 2A16 16 0 015 7a2 2 0 012-2z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4V7a2 2 0 012-2z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 6h8M12 8v8"/></symbol>
+    <symbol id="i-gateway" viewBox="0 0 24 24"><path d="M4 11h16M4 11l4-6h8l4 6M4 11v8h16v-8"/><path d="M10 19v-4h4v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="14" r="4"/><path d="M11 12l9-9M17 4l3 3"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 00.4-8 6 6 0 00-11.5-1.5A4 4 0 007 18z"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/><path d="M8 7h.01M8 17h.01"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5 9-5z"/><path d="M3 14l9 5 9-5"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v10c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 19c1.8-.4 5-1.8 5-5"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 18L18 6"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4M12 17h.01"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-notes" viewBox="0 0 24 24"><path d="M6 4h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M14 4v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></symbol>
+    <symbol id="i-hex" viewBox="0 0 24 24"><path d="M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z"/></symbol>
+    <symbol id="i-spa" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></symbol>
+    <symbol id="i-bff" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 12h8M12 8v8"/></symbol>
+  </svg>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="progress"><span></span></div>
+      <div class="slides">
+
+        <section class="slide cover cover-hero" data-section="Portada" data-who="Giannina" data-time="30 s" data-say="Buenos días. Somos MesaTech Cloud. MesaTech atiende soporte tecnológico: el cliente hoy escribe por correo, llama o manda un chat, y el operador no ve esas solicitudes en un solo lugar. Nosotros armamos un portal web. La persona entra con su cuenta, deja una solicitud y esa solicitud queda con un estado, un dueño y un historial. En estos minutos vamos a mostrar dos cosas. Cómo se configuró esa puerta: quién entra, por dónde entra y dónde corre. Y, con capturas, que funciona. No vamos a abrir la aplicación ahora." data-hint="Presenta el producto, no el curso. Habla despacio. Un segundo después de «MesaTech Cloud». Si piden ver la app, otro día. El front puede ir en localhost; la API pasa por el Gateway. Giannina abre. Nico cierra." data-notes="Buenos días. Somos MesaTech Cloud. MesaTech atiende soporte tecnológico: el cliente hoy escribe por correo, llama o manda un chat, y el operador no ve esas solicitudes en un solo lugar. Nosotros armamos un portal web. La persona entra con su cuenta, deja una solicitud y esa solicitud queda con un estado, un dueño y un historial. En estos minutos vamos a mostrar dos cosas. Cómo se configuró esa puerta: quién entra, por dónde entra y dónde corre. Y, con capturas, que funciona. No vamos a abrir la aplicación ahora.">
+          <div class="deco cover-visual" aria-hidden="true"><img src="img/corporativas/mesatech-logo-wallpaper-16x9.png" alt="" /></div>
+          <div class="deco cover-scrim" aria-hidden="true"></div>
+          <header class="cover-top anim">
+            <img class="cover-duoc" src="img/marca/duoc-uc-white.png" alt="Duoc UC" />
+            <p class="cover-course">Canal único de soporte</p>
+          </header>
+          <div class="cover-main">
+            <img class="cover-mark anim" src="img/marca/logo-white.png" alt="" />
+            <p class="kicker anim d1">Una solicitud. Un estado.</p>
+            <h1 class="anim d2">MesaTech<br />Cloud</h1>
+            <p class="cover-sub anim d3">Soporte tecnológico centralizado</p>
+          </div>
+          <footer class="cover-foot anim d4">
+            <p class="cover-team">Ari&nbsp;Araya · Nicolas&nbsp;Barra · Giannina&nbsp;Guerrero · Skarlett&nbsp;Tropan</p>
+            <p class="cover-docente"><span>Docente</span><strong>Paulo Andrés Berríos Díaz</strong></p>
+          </footer>
+        </section>
+
+        <section class="slide slide-agenda" data-section="Agenda" data-who="Nico" data-time="30 s" data-say="El orden es el del producto, no una lista para recitar. Primero el caso: por qué el soporte está partido y qué portal proponemos. Después el mapa: React no llama a los servidores; habla solo con el Gateway. Luego cómo se configuró, en tres capas: Entra ID, la API en AWS, y EC2 con la base. Al final, React funcionando: un login, tres perfiles, y las pruebas que ya se ven en las capturas. Cada bloque tiene dos o tres prints. Skarlett empieza con el problema." data-hint="No enumeres del uno al ocho. Di el camino: caso, mapa, configuración, React. Si preguntan un detalle, «lo vemos en la captura de esa capa». Nico toma acá y le pasa a Skarlett." data-notes="El orden es el del producto, no una lista para recitar. Primero el caso: por qué el soporte está partido y qué portal proponemos. Después el mapa: React no llama a los servidores; habla solo con el Gateway. Luego cómo se configuró, en tres capas: Entra ID, la API en AWS, y EC2 con la base. Al final, React funcionando: un login, tres perfiles, y las pruebas que ya se ven en las capturas. Cada bloque tiene dos o tres prints. Skarlett empieza con el problema.">
+          <div class="deco deco-agenda" aria-hidden="true"><img src="img/corporativas/mesatech-canal-unico.png" alt="" /></div>
+          <div class="deco deco-agenda-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">Agenda <small>Nico</small></div>
+          </div>
+          <div class="lead anim">
+            <p class="kicker">El recorrido</p>
+            <h2 class="anim d1">Del caso al dato que persiste.</h2>
+          </div>
+          <div class="agenda anim d2">
+            <article class="agenda-item"><em>01</em><div><strong>Problema y propuesta</strong><span>Un canal en vez de tres</span></div></article>
+            <article class="agenda-item"><em>02</em><div><strong>Arquitectura</strong><span>React solo consume el Gateway</span></div></article>
+            <article class="agenda-item"><em>03</em><div><strong>Identidad y JWT</strong><span>Entra ID y 401 en el BFF</span></div></article>
+            <article class="agenda-item"><em>04</em><div><strong>API Gateway</strong><span>Rutas, Authorizer y CORS</span></div></article>
+            <article class="agenda-item"><em>05</em><div><strong>EC2, Postgres y red</strong><span>Los MS no son públicos</span></div></article>
+            <article class="agenda-item"><em>06</em><div><strong>React, roles y reglas</strong><span>Cliente 403. Admin ve bandeja</span></div></article>
+            <article class="agenda-item"><em>07</em><div><strong>Pruebas</strong><span>Lo que ya se ve en las capturas</span></div></article>
+            <article class="agenda-item"><em>08</em><div><strong>Cierre</strong><span>Preguntas</span></div></article>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Problema" data-who="Skarlett" data-time="35 s" data-say="Hoy el soporte de MesaTech no tiene un solo registro. El cliente escribe por correo, llama por teléfono o manda un chat. El mismo incidente queda en tres hilos distintos. El operador no ve una cola: no sabe cuántas solicitudes hay abiertas ni en qué etapa está cada una. Tampoco hay un dueño claro ni una fecha de último cambio. El cliente, entonces, vuelve a preguntar: en qué quedó mi solicitud. El problema no es que falte un sistema más. El problema es que no hay un estado común que todos puedan consultar." data-hint="Trazabilidad: estado, dueño y fecha de un ticket sin reconstruir el hilo. MesaTech es una PYME de soporte. Skarlett habla el caso porque redactó el informe. Si te aceleras, para en «tres hilos» y mira las tres tarjetas." data-notes="Hoy el soporte de MesaTech no tiene un solo registro. El cliente escribe por correo, llama por teléfono o manda un chat. El mismo incidente queda en tres hilos distintos. El operador no ve una cola: no sabe cuántas solicitudes hay abiertas ni en qué etapa está cada una. Tampoco hay un dueño claro ni una fecha de último cambio. El cliente, entonces, vuelve a preguntar: en qué quedó mi solicitud. El problema no es que falte un sistema más. El problema es que no hay un estado común que todos puedan consultar.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">01 · Problema <small>Skarlett</small></div>
+          </div>
+          <div class="split">
+            <div>
+              <p class="kicker anim">El problema</p>
+              <h2 class="anim d1">El soporte está fragmentado.</h2>
+              <p class="lede anim d2">El operador no ve la cola. El cliente vuelve a llamar. No hay un estado único de la solicitud.</p>
+              <div class="facts">
+                <article class="fact anim d3"><span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span><div><h3>Canales dispersos</h3><p>Correo, teléfono y chat. El mismo incidente vive en tres hilos.</p></div></article>
+                <article class="fact anim d4"><span class="mark"><svg class="ico"><use href="#i-alert"></use></svg></span><div><h3>Sin estado ni dueño</h3><p>El operador no sabe cuántas solicitudes hay abiertas ni en qué etapa.</p></div></article>
+                <article class="fact anim d5"><span class="mark"><svg class="ico"><use href="#i-users"></use></svg></span><div><h3>El cliente persigue</h3><p>Vuelve a preguntar: «¿en qué quedó mi solicitud?»</p></div></article>
+              </div>
+            </div>
+            <div class="scene scene-split anim d2" aria-hidden="true">
+              <span class="scene-label">Hoy</span>
+              <div class="split-row">
+                <div class="ch">
+                  <span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span>
+                  <strong>Correo</strong>
+                  <small>Hilos sueltos</small>
+                </div>
+                <div class="ch">
+                  <span class="mark"><svg class="ico"><use href="#i-phone"></use></svg></span>
+                  <strong>Teléfono</strong>
+                  <small>Sin folio</small>
+                </div>
+                <div class="ch">
+                  <span class="mark"><svg class="ico"><use href="#i-chat"></use></svg></span>
+                  <strong>Mensajería</strong>
+                  <small>Otro hilo</small>
+                </div>
+              </div>
+              <svg class="links" viewBox="0 0 400 120" preserveAspectRatio="none">
+                <path d="M67 2 C67 58, 200 72, 200 118" fill="none" stroke="#2ec4b6" stroke-width="1.7" stroke-dasharray="5 7" opacity="0.55">
+                  <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.8s" repeatCount="indefinite" />
+                </path>
+                <path d="M200 2 C200 50, 200 80, 200 118" fill="none" stroke="#2ec4b6" stroke-width="1.7" stroke-dasharray="5 7" opacity="0.4">
+                  <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="2s" repeatCount="indefinite" />
+                </path>
+                <path d="M333 2 C333 58, 200 72, 200 118" fill="none" stroke="#2ec4b6" stroke-width="1.7" stroke-dasharray="5 7" opacity="0.55">
+                  <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.7s" repeatCount="indefinite" />
+                </path>
+              </svg>
+              <div class="ghost"><span class="ghost-ring"><svg class="ico"><use href="#i-ban"></use></svg></span>Sin registro común</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Propuesta" data-who="Skarlett" data-time="35 s" data-say="La propuesta es un portal autenticado con Entra ID. Tres perfiles: cliente, operador y administrador. El cliente crea y ve solo las suyas. El operador avanza la cola. El administrador mantiene el catálogo y también ve la bandeja. Cada solicitud nace con categoría —INCIDENTE, CONSULTA o SUGERENCIA— y con prioridad —BAJA, MEDIA o URGENTE—. Y tiene un flujo de estados: CREADA, ASIGNADA, EN_PROCESO, RESUELTA y CERRADA. También existe CANCELADA, para un caso que no se va a atender. A partir de acá no hablamos más del caso: mostramos cómo se configuró esa puerta y cómo se ve en React." data-hint="No recites los cinco estados dos veces. Una pasada basta. Si preguntan por CANCELADA: anula un caso que no se atiende; no es el cierre normal. La evidencia de configuración viene en las láminas siguientes." data-notes="La propuesta es un portal autenticado con Entra ID. Tres perfiles: cliente, operador y administrador. El cliente crea y ve solo las suyas. El operador avanza la cola. El administrador mantiene el catálogo y también ve la bandeja. Cada solicitud nace con categoría —INCIDENTE, CONSULTA o SUGERENCIA— y con prioridad —BAJA, MEDIA o URGENTE—. Y tiene un flujo de estados: CREADA, ASIGNADA, EN_PROCESO, RESUELTA y CERRADA. También existe CANCELADA, para un caso que no se va a atender. A partir de acá no hablamos más del caso: mostramos cómo se configuró esa puerta y cómo se ve en React.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">01 · Propuesta <small>Skarlett</small></div>
+          </div>
+          <div class="split">
+            <div>
+              <p class="kicker anim">La propuesta</p>
+              <h2 class="anim d1">Un canal autenticado.<br />Una sola puerta de API.</h2>
+              <div class="facts">
+                <article class="fact anim d2"><span class="mark"><svg class="ico"><use href="#i-shield"></use></svg></span><div><h3>Portal con Entra ID</h3><p>Cliente, operador y administrador. Categoría INCIDENTE, CONSULTA o SUGERENCIA. Prioridad BAJA, MEDIA o URGENTE.</p></div></article>
+                <article class="fact anim d3"><span class="mark"><svg class="ico"><use href="#i-flow"></use></svg></span><div><h3>Estados trazables</h3><p>CREADA → ASIGNADA → EN_PROCESO → RESUELTA → CERRADA. También CANCELADA.</p></div></article>
+                <article class="fact anim d4"><span class="mark"><svg class="ico"><use href="#i-gateway"></use></svg></span><div><h3>Solo API Gateway</h3><p>React no habla con EC2. El Access Token entra por el HTTP API.</p></div></article>
+              </div>
+            </div>
+            <div class="scene scene-unify anim d2" aria-hidden="true">
+              <span class="scene-label">Canal único</span>
+              <ol class="flow-track">
+                <li class="state-chip"><b>1</b>CREADA</li>
+                <li class="state-chip"><b>2</b>ASIGNADA</li>
+                <li class="state-chip is-now"><b>3</b>EN_PROCESO</li>
+                <li class="state-chip"><b>4</b>RESUELTA</li>
+                <li class="state-chip is-end"><b>5</b>CERRADA</li>
+              </ol>
+              <div class="unify-mid">
+                <span class="unify-spine" aria-hidden="true"></span>
+                <div class="hub">
+                  <span class="hub-disc"><img class="hex" src="img/marca/logo.png" alt="" /></span>
+                  <strong>Portal autenticado</strong>
+                  <em>Entra ID · una puerta</em>
+                </div>
+                <span class="unify-fork" aria-hidden="true"></span>
+              </div>
+              <div class="roles">
+                <span class="role-chip"><svg class="ico"><use href="#i-users"></use></svg>Cliente</span>
+                <span class="role-chip"><svg class="ico"><use href="#i-monitor"></use></svg>Operador</span>
+                <span class="role-chip"><svg class="ico"><use href="#i-shield"></use></svg>Administrador</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide slide-arch" data-section="Arquitectura" data-who="Nico" data-time="45 s" data-say="Este es el mapa de lo que configuramos. Lo recorro una vez, de la persona hasta la base. La persona abre React. El login no es nuestro: es Microsoft Entra ID. React obtiene un Access Token y lo manda solo al API Gateway. El Gateway es la única puerta pública. Desde ahí la petición llega al BFF, en el puerto 8080. El BFF no tiene base de datos: orquesta. Si el front pide solicitudes, llama al microservicio 8081. Si pide catálogo, llama al 8082. Postgres está en Docker, en otra EC2, y solo esos microservicios le escriben. Ahora vienen las capturas de cada capa. No vamos a dictar IPs." data-hint="BFF, Backend for Frontend: orquesta lo que necesita la UI y aplica la política. No persiste tickets. Separar catálogo y solicitudes es un límite de dominio. Tres EC2: datos, microservicios y BFF. NIC-01 muestra solo la EC2 de datos; no digas que se ven las tres. Señalá las cajas, no leas la lámina entera." data-notes="Este es el mapa de lo que configuramos. Lo recorro una vez, de la persona hasta la base. La persona abre React. El login no es nuestro: es Microsoft Entra ID. React obtiene un Access Token y lo manda solo al API Gateway. El Gateway es la única puerta pública. Desde ahí la petición llega al BFF, en el puerto 8080. El BFF no tiene base de datos: orquesta. Si el front pide solicitudes, llama al microservicio 8081. Si pide catálogo, llama al 8082. Postgres está en Docker, en otra EC2, y solo esos microservicios le escriben. Ahora vienen las capturas de cada capa. No vamos a dictar IPs.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">02 · Arquitectura <small>Nico</small></div>
+          </div>
+          <div class="lead anim">
+            <p class="kicker">Despliegue EV1 · us-east-1</p>
+            <h2 class="anim d1">React no llama a EC2. El Gateway es la única puerta.</h2>
+          </div>
+          <div class="topo anim d2">
+            <article class="t-box t-entra">
+              <header>
+                <span class="mark"><svg class="ico"><use href="#i-key"></use></svg></span>
+                <div><em>Azure</em><strong>Microsoft Entra ID</strong></div>
+              </header>
+              <ul>
+                <li>OAuth2 / OIDC · Access Token v2</li>
+                <li>SPA + api-cloud-native</li>
+                <li>iss + aud · access_as_user</li>
+                <li>Cliente · Operador · Administrador</li>
+              </ul>
+            </article>
+            <span class="t-vlink">login / JWT</span>
+            <article class="t-box t-spa">
+              <header>
+                <span class="mark"><svg class="ico"><use href="#i-spa"></use></svg></span>
+                <div><em>Navegador</em><strong>React + MSAL</strong></div>
+              </header>
+              <ul>
+                <li>SPA en :3000</li>
+                <li>Axios manda el Access Token</li>
+                <li>API_BASE_URL = Invoke URL</li>
+                <li>Sin IP de microservicios</li>
+              </ul>
+            </article>
+            <div class="topo-join" aria-hidden="true"><span>Bearer</span></div>
+            <div class="topo-aws">
+              <p class="topo-aws-tag">AWS · us-east-1 · 3 EC2</p>
+              <article class="t-box t-gw">
+                <header>
+                  <span class="mark"><svg class="ico"><use href="#i-cloud"></use></svg></span>
+                  <div>
+                    <em>Única puerta pública</em>
+                    <strong>API Gateway · mesatech-ev1</strong>
+                  </div>
+                </header>
+                <p>HTTP API · JWT Authorizer (iss + aud) · CORS localhost:3000</p>
+              </article>
+              <div class="topo-down">HTTP :8080</div>
+              <div class="topo-lane">
+                <article class="t-ec2">
+                  <header>
+                    <span class="mark"><svg class="ico"><use href="#i-bff"></use></svg></span>
+                    <div><em>EC2 · BFF</em><strong>mesatech-ev1-bff</strong></div>
+                  </header>
+                  <ul>
+                    <li>Resource Server :8080</li>
+                    <li>Sin JPA: no escribe Postgres</li>
+                    <li>SG: 8080 desde el Gateway</li>
+                  </ul>
+                  <div class="t-minis">
+                    <span><b>Orquesta</b>:8081 y :8082</span>
+                  </div>
+                </article>
+                <div class="t-port"><span>8081</span><span>8082</span></div>
+                <article class="t-ec2">
+                  <header>
+                    <span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span>
+                    <div><em>EC2 · MS</em><strong>mesatech-ev1-ms</strong></div>
+                  </header>
+                  <ul>
+                    <li>No públicos: SG solo del BFF</li>
+                  </ul>
+                  <div class="t-minis">
+                    <span><b>ms-solicitudes</b>:8081</span>
+                    <span><b>ms-catalogo</b>:8082</span>
+                  </div>
+                </article>
+                <div class="t-port"><span>5432</span></div>
+                <article class="t-ec2 t-ec2-db">
+                  <header>
+                    <span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span>
+                    <div><em>EC2 · datos</em><strong>mesatech-ev1-db</strong></div>
+                  </header>
+                  <ul>
+                    <li>PostgreSQL 16 en Docker</li>
+                    <li>5432 solo desde los MS</li>
+                  </ul>
+                  <div class="t-minis">
+                    <span>mesatech_solicitudes</span>
+                    <span>mesatech_catalogo</span>
+                  </div>
+                </article>
+              </div>
+              <div class="t-sec">
+                <strong>Evidencia</strong>
+                <span>BFF sin JWT → 401</span>
+                <span>:8081 desde Internet → timeout</span>
+                <span>MS/DB no son 0.0.0.0/0</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Entra ID" data-who="Ari" data-time="40 s" data-say="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión." data-hint="Access Token llama APIs. ID Token describe a la persona. iss es Entra; aud es api-cloud-native. No leer IDs ni contraseñas. El Word de Ari tiene redirect y token v2; en la oral bastan estas dos capturas. Si te apuras, para en el consentimiento y después en los roles." data-notes="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">03 · Entra ID <small>Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Microsoft Entra ID</p>
+            <h2 class="anim d1">Dos registros. Tres roles.</h2>
+            <p class="lede anim d2">La SPA pide un Access Token. api-cloud-native es el audience y publica Cliente, Operador y Administrador.</p>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d3">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · SPA React App</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-consent.png">
+                  <img src="img/capturas/ari/ari-consent.png" alt="Consentimiento de administrador y scope access_as_user en la SPA" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Scope access_as_user, con consentimiento de administrador. Es el permiso que pide la SPA.</figcaption>
+            </figure>
+            <figure class="shot anim d4">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · api-cloud-native</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-roles.png">
+                  <img src="img/capturas/ari/ari-roles.png" alt="Usuarios de prueba con roles Cliente, Operador y Administrador" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Tres usuarios de prueba. El Access Token lleva el rol que autoriza el BFF.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide slide-jwt" data-section="JWT" data-who="Nico" data-time="40 s" data-say="Ari dejó en el BFF el issuer y el audience que deben coincidir con Entra. Esta captura es mía. Hice curl al puerto 8080 sin encabezado Authorization, sin Bearer. La respuesta es 401. Eso significa: no sé quién eres. Hay dos puertas, y las dos se piden. El JWT Authorizer corta en el Gateway, en el borde. El BFF es Resource Server: vuelve a validar firma, emisor, audiencia y expiración. No se fía solo de que el Gateway haya dejado pasar. 401 es identidad ausente o inválida. 403 es otra cosa: te conozco y no puedes. Esa diferencia la vamos a ver en React." data-hint="JWT: token firmado, no una sesión. Bearer: Authorization: Bearer más el token. Token inválido o expirado también da 401. Esa prueba no está en Evidencias/Ninna; si preguntan, está en el informe. No leas el curl línea por línea: di el resultado." data-notes="Ari dejó en el BFF el issuer y el audience que deben coincidir con Entra. Esta captura es mía. Hice curl al puerto 8080 sin encabezado Authorization, sin Bearer. La respuesta es 401. Eso significa: no sé quién eres. Hay dos puertas, y las dos se piden. El JWT Authorizer corta en el Gateway, en el borde. El BFF es Resource Server: vuelve a validar firma, emisor, audiencia y expiración. No se fía solo de que el Gateway haya dejado pasar. 401 es identidad ausente o inválida. 403 es otra cosa: te conozco y no puedes. Esa diferencia la vamos a ver en React.">
+          <div class="deco deco-jwt" aria-hidden="true"><img src="img/corporativas/mesatech-gateway-identidad.png" alt="" /></div>
+          <div class="deco deco-jwt-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">03 · JWT <small>Nico · Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Resource Server</p>
+            <h2 class="anim d1">Sin token, el BFF responde 401.</h2>
+          </div>
+          <div class="gates anim d2">
+            <div class="gate">
+              <span class="mark"><svg class="ico"><use href="#i-cloud"></use></svg></span>
+              <strong>Gateway</strong>
+              <span>JWT Authorizer · iss + aud</span>
+              <span class="pill">Configuración en la lámina 04</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="gate">
+              <span class="mark"><svg class="ico"><use href="#i-bff"></use></svg></span>
+              <strong>BFF :8080</strong>
+              <span>Resource Server vuelve a validar</span>
+              <span class="pill danger">401 sin Bearer</span>
+            </div>
+          </div>
+          <figure class="shot hero-shot fill anim d3">
+            <div class="shot-card frame-terminal">
+              <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 · curl al BFF sin JWT</div>
+              <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-401.png">
+                <img src="img/capturas/nico/nic-401.png" alt="Respuesta 401 del BFF sin JSON Web Token" />
+                <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+              </button>
+            </div>
+            <figcaption>Curl a :8080 sin Authorization. El Resource Server responde 401. 401 no es 403.</figcaption>
+          </figure>
+        </section>
+
+        <section class="slide" data-section="Gateway" data-who="Giannina" data-time="40 s" data-say="Paso a AWS. El primer paso fue crear una sola HTTP API, con el nombre mesatech-ev1, en la región us-east-1: la misma de las EC2. En esta captura se ve la API creada. React no guarda la IP de ningún servidor. React usa la Invoke URL del Gateway. Esa URL es execute-api.amazonaws.com. En el front, la variable REACT_APP_API_BASE_URL apunta ahí. El Gateway reenvía al BFF, puerto 8080. Nunca a la IP de solicitudes ni a la de catálogo. Si el microservicio cambia de instancia, el front no se toca: sigue hablando con la misma puerta." data-hint="HTTP API no es REST API clásica. Si preguntan por qué no REST API: menos costo y JWT Authorizer nativo, suficiente para EV1. No dictes la Invoke URL completa. Un segundo mirando la captura, después la frase del BFF." data-notes="Paso a AWS. El primer paso fue crear una sola HTTP API, con el nombre mesatech-ev1, en la región us-east-1: la misma de las EC2. En esta captura se ve la API creada. React no guarda la IP de ningún servidor. React usa la Invoke URL del Gateway. Esa URL es execute-api.amazonaws.com. En el front, la variable REACT_APP_API_BASE_URL apunta ahí. El Gateway reenvía al BFF, puerto 8080. Nunca a la IP de solicitudes ni a la de catálogo. Si el microservicio cambia de instancia, el front no se toca: sigue hablando con la misma puerta.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">04 · Gateway <small>Giannina</small></div>
+          </div>
+          <div class="lead lead-row">
+            <div>
+              <p class="kicker anim">AWS API Gateway</p>
+              <h2 class="anim d1">Una HTTP API. No la IP de EC2.</h2>
+            </div>
+            <div class="pills anim d2">
+              <span class="pill">HTTP API mesatech-ev1</span>
+              <span class="pill">us-east-1</span>
+              <span class="pill">Invoke URL</span>
+            </div>
+          </div>
+          <figure class="shot fill anim d3">
+            <div class="shot-card frame-aws">
+              <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>API Gateway · consola AWS</div>
+              <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nina/nin-01.png">
+                <img src="img/capturas/nina/nin-01.png" alt="HTTP API creada en API Gateway" />
+                <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+              </button>
+
+
+            </div>
+            <figcaption>React usa la Invoke URL. El Gateway reenvía al BFF :8080. No usa la IP de EC2.</figcaption>
+          </figure>
+        </section>
+
+        <section class="slide" data-section="Rutas" data-who="Giannina" data-time="35 s" data-say="Segundo paso: las rutas. Solicitudes, catálogo y usuario salen por esa misma HTTP API. No hay un Gateway para cada microservicio. En la captura de la izquierda están las rutas. En la de la derecha, la integración: HTTP hacia el BFF, puerto 8080. El path no se reescribe. Si React pide /v1/solicitudes, el BFF recibe /v1/solicitudes. También existe /api/usuario: le dice a React quién está logueado y con qué rol. Conviven v1 y v2. React usa v1, que es un arreglo. v2 envuelve version, usuario y solicitudes, para no romper el front el día que el contrato crezca." data-hint="Path sin reescritura: el Gateway no traduce la URL. No hay print de v1/v2 en Evidencias; el contrato está en el informe. Señala izquierda rutas, derecha integración. No leas todos los paths." data-notes="Segundo paso: las rutas. Solicitudes, catálogo y usuario salen por esa misma HTTP API. No hay un Gateway para cada microservicio. En la captura de la izquierda están las rutas. En la de la derecha, la integración: HTTP hacia el BFF, puerto 8080. El path no se reescribe. Si React pide /v1/solicitudes, el BFF recibe /v1/solicitudes. También existe /api/usuario: le dice a React quién está logueado y con qué rol. Conviven v1 y v2. React usa v1, que es un arreglo. v2 envuelve version, usuario y solicitudes, para no romper el front el día que el contrato crezca.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">04 · Rutas <small>Giannina</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Rutas e integración</p>
+            <h2 class="anim d1">El mismo path que el BFF.</h2>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d2">
+              <div class="shot-card frame-tree">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Rutas de la HTTP API</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nina/nin-02.png">
+                  <img src="img/capturas/nina/nin-02.png" alt="Rutas de solicitudes y catálogo en API Gateway" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Solicitudes, catálogo y /api/usuario salen por la misma HTTP API.</figcaption>
+            </figure>
+            <figure class="shot anim d3">
+              <div class="shot-card frame-aws">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Integración HTTP · :8080</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nina/nin-03.png">
+                  <img src="img/capturas/nina/nin-03.png" alt="Integración HTTP del Gateway hacia el BFF" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Integración HTTP hacia el BFF :8080. El path no se reescribe.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Perímetro" data-who="Giannina" data-time="45 s" data-say="Tercer paso: el perímetro. Las rutas de negocio llevan JWT Authorizer. Sin Bearer, el Gateway responde 401 y la petición no llega al BFF. Eso se configura en la consola; acá se ve el resultado. Ahora la derecha: ya está funcionando. El navegador está en localhost, el React de desarrollo. La API está en AWS. El Network muestra dos llamadas. OPTIONS 204: el navegador pregunta si ese origen puede mandar Authorization; el Gateway dice que sí. GET 200: la llamada de negocio respondió bien. CORS no es un login. CORS es la regla del navegador. Nosotros la configuramos; esta captura es la prueba de que quedó bien." data-hint="Preflight OPTIONS: el navegador pregunta antes del GET. 204 permitido. 200 negocio ok. La consola CORS es NIN-05 en Evidencias; no hace falta abrirla. El Authorizer corta en el borde; el BFF vuelve a validar. Para dos segundos en el Network: 204 y 200 se tienen que ver." data-notes="Tercer paso: el perímetro. Las rutas de negocio llevan JWT Authorizer. Sin Bearer, el Gateway responde 401 y la petición no llega al BFF. Eso se configura en la consola; acá se ve el resultado. Ahora la derecha: ya está funcionando. El navegador está en localhost, el React de desarrollo. La API está en AWS. El Network muestra dos llamadas. OPTIONS 204: el navegador pregunta si ese origen puede mandar Authorization; el Gateway dice que sí. GET 200: la llamada de negocio respondió bien. CORS no es un login. CORS es la regla del navegador. Nosotros la configuramos; esta captura es la prueba de que quedó bien.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">04 · Perímetro <small>Giannina</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Authorizer y CORS</p>
+            <h2 class="anim d1">El navegador entra con Access Token.</h2>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d2">
+              <div class="shot-card frame-tree">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>JWT Authorizer en rutas de negocio</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nina/nin-04.png">
+                  <img src="img/capturas/nina/nin-04.png" alt="JWT Authorizer aplicado a las rutas de negocio" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Las rutas de solicitudes y catálogo llevan JWT Authorizer.</figcaption>
+            </figure>
+            <figure class="shot anim d3">
+              <div class="shot-card frame-browser shot-contain">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">Network · execute-api</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nina/nin-08.png">
+                  <img src="img/capturas/nina/nin-08.png" alt="Pestaña Network: preflight 204 y respuestas 200 hacia API Gateway" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Desde React: OPTIONS 204 y GET 200. CORS permite el origen; el Access Token viaja al Gateway.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Despliegue" data-who="Nico" data-time="35 s" data-say="En EC2 se levantaron tres capas, no una sola. El BFF está en 8080. Ahí llega el Gateway. El BFF es Resource Server y no tiene JPA: no escribe base. A la derecha, los microservicios: solicitudes en 8081 y catálogo en 8082. Ellos sí persisten. El Gateway apunta al 8080, no al 8081. Si alguien llama al 8081 desde Internet, no debería entrar: eso lo vemos en red. No recitamos IPs. La guía permite una sola instancia; separamos para aislar datos, microservicios y BFF." data-hint="JPA es acceso a base desde Java. NIC-01 no muestra las tres instancias: solo la de datos. NIC-05 sí muestra 8080, 8081 y 8082 escuchando. Señala BFF, después MS. No inventes un diagrama de las tres EC2 si no está en lámina." data-notes="En EC2 se levantaron tres capas, no una sola. El BFF está en 8080. Ahí llega el Gateway. El BFF es Resource Server y no tiene JPA: no escribe base. A la derecha, los microservicios: solicitudes en 8081 y catálogo en 8082. Ellos sí persisten. El Gateway apunta al 8080, no al 8081. Si alguien llama al 8081 desde Internet, no debería entrar: eso lo vemos en red. No recitamos IPs. La guía permite una sola instancia; separamos para aislar datos, microservicios y BFF.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">05 · Despliegue <small>Nico</small></div>
+          </div>
+          <div class="split split-deploy">
+            <div>
+              <p class="kicker anim">Despliegue</p>
+              <h2 class="anim d1">BFF y microservicios en EC2.</h2>
+              <p class="lede anim d2">El BFF no tiene base de datos. Orquesta :8081 y :8082. La base no es pública.</p>
+              <div class="stack anim d2">
+                <article class="stack-row">
+                  <span class="lane">Internet</span>
+                  <div><strong>BFF :8080</strong><p>Resource Server · sin JPA</p></div>
+                </article>
+                <article class="stack-row">
+                  <span class="lane">Privado</span>
+                  <div><strong>MS :8081 / :8082</strong><p>solicitudes y catálogo</p></div>
+                </article>
+                <article class="stack-row">
+                  <span class="lane">Datos</span>
+                  <div><strong>PostgreSQL 16</strong><p>5432 solo desde el SG de los MS</p></div>
+                </article>
+              </div>
+            </div>
+            <div class="deploy-shots">
+              <figure class="shot anim d3">
+                <div class="shot-card frame-terminal">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 · BFF :8080</div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-bff.png">
+                    <img src="img/capturas/nico/nic-bff.png" alt="BFF Spring Boot escuchando en el puerto 8080" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+
+
+                </div>
+                <figcaption>BFF en :8080. Ahí llega el Gateway. Sin JPA.</figcaption>
+              </figure>
+              <figure class="shot anim d4">
+                <div class="shot-card frame-terminal">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 · ms-solicitudes :8081</div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-ms.png">
+                    <img src="img/capturas/nico/nic-ms.png" alt="Microservicio de solicitudes iniciado en el puerto 8081" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+
+
+                </div>
+                <figcaption>ms-solicitudes en :8081. ms-catalogo en :8082. Persisten ellos, no el BFF.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Datos" data-who="Nico" data-time="35 s" data-say="La persistencia es PostgreSQL 16, en Docker, dentro de EC2. La guía lo permite; no usamos RDS. Hay dos bases: solicitudes y catálogo, porque son dos dominios. Cambiar una prioridad del catálogo no se mezcla con cambiar el estado de un ticket. El BFF no escribe en ninguna de las dos. A la derecha ya se ve el funcionamiento. Skarlett consultó de nuevo y los folios 0001 y 0002 siguen en CREADA. CREADA es el estado inicial: el ticket nació y todavía nadie lo tomó. Si se apagara el front, esos registros seguirían en Postgres." data-hint="Folio: identificador visible. Docker versus RDS: misma persistencia, más simple en Learner Lab. La captura de UI es de Skarlett; Nico habla la base. Un segundo en Docker, un segundo en los folios." data-notes="La persistencia es PostgreSQL 16, en Docker, dentro de EC2. La guía lo permite; no usamos RDS. Hay dos bases: solicitudes y catálogo, porque son dos dominios. Cambiar una prioridad del catálogo no se mezcla con cambiar el estado de un ticket. El BFF no escribe en ninguna de las dos. A la derecha ya se ve el funcionamiento. Skarlett consultó de nuevo y los folios 0001 y 0002 siguen en CREADA. CREADA es el estado inicial: el ticket nació y todavía nadie lo tomó. Si se apagara el front, esos registros seguirían en Postgres.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">05 · Datos <small>Nico</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Persistencia</p>
+            <h2 class="anim d1">PostgreSQL 16 en Docker. El BFF no escribe.</h2>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d2">
+              <div class="shot-card frame-terminal shot-contain">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 · docker ps</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-pg.png">
+                  <img src="img/capturas/nico/nic-pg.png" alt="PostgreSQL 16 corriendo en Docker dentro de EC2" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Docker en EC2, no RDS. Dos bases: solicitudes y catálogo. Solo los microservicios escriben.</figcaption>
+            </figure>
+            <figure class="shot anim d3">
+              <div class="shot-card frame-browser">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">localhost:3000 · mis solicitudes</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/skarlett/ska-persist.png">
+                  <img src="img/capturas/skarlett/ska-persist.png" alt="Solicitudes persistidas visibles en el portal" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Folios 0001 y 0002 siguen en CREADA después de una nueva consulta.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Red" data-who="Nico" data-time="35 s" data-say="Se cerró la red. Hay que separar dos pruebas, porque las dos se piden. Primera: desde Internet, el puerto 8081 da timeout. La petición ni entra a solicitudes. Segunda: el puerto 5432 de Postgres solo acepta tráfico del security group de los microservicios. El security group es el firewall de la instancia. 401 es la aplicación diciendo no sé quién eres. Timeout es la red diciendo este puerto no es público. No es lo mismo. El BFF recibe al Gateway en 8080; los microservicios y la base no están abiertos a Internet." data-hint="0.0.0.0/0 significaría abierto a Internet; MS y base no lo están. NIC-09 tiene SG de BFF, MS y DB. En lámina está el de la base. Si preguntan por el BFF: recibe al Gateway, no a cualquier cliente en 8081." data-notes="Se cerró la red. Hay que separar dos pruebas, porque las dos se piden. Primera: desde Internet, el puerto 8081 da timeout. La petición ni entra a solicitudes. Segunda: el puerto 5432 de Postgres solo acepta tráfico del security group de los microservicios. El security group es el firewall de la instancia. 401 es la aplicación diciendo no sé quién eres. Timeout es la red diciendo este puerto no es público. No es lo mismo. El BFF recibe al Gateway en 8080; los microservicios y la base no están abiertos a Internet.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">05 · Red <small>Nico</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Seguridad de red</p>
+            <h2 class="anim d1">Los microservicios no son públicos.</h2>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d2">
+              <div class="shot-card frame-terminal shot-contain">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Timeout :8081 desde Internet</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-timeout.png">
+                  <img src="img/capturas/nico/nic-timeout.png" alt="Timeout al consultar el microservicio desde Internet" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Desde Internet, :8081 da timeout. El flujo entra por el Gateway.</figcaption>
+            </figure>
+            <figure class="shot anim d3">
+              <div class="shot-card frame-aws">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Security group · base de datos</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-sg-db.png">
+                  <img src="img/capturas/nico/nic-sg-db.png" alt="Security group de la base de datos" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>5432 acepta tráfico solo desde el security group de los microservicios.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Aplicación" data-who="Skarlett" data-time="45 s" data-say="Así se ve funcionando. Ari deja el login de la izquierda: no es un usuario que hayamos inventado en React. MSAL abre Entra y la persona entra con la cuenta del tenant. Cuando vuelve, React ya tiene nombre, rol y el botón Cerrar sesión. A la derecha está el cliente. Solo ve Mis solicitudes. Puede crear y consultar las suyas. No ve la bandeja general ni el catálogo. Un mismo login, tres experiencias. El operador vería la cola y los estados. El administrador vería eso más el catálogo. El menú se arma con el rol que viene en el token, no con un dato que escriba el front." data-hint="SKA-UI02 es el formulario de alta, pero es demo local sin Entra: no la pongas. Acá se usa ska-cliente, ya autenticado. Si te aceleras, para en el login y después en «solo ve Mis solicitudes»." data-notes="Así se ve funcionando. Ari deja el login de la izquierda: no es un usuario que hayamos inventado en React. MSAL abre Entra y la persona entra con la cuenta del tenant. Cuando vuelve, React ya tiene nombre, rol y el botón Cerrar sesión. A la derecha está el cliente. Solo ve Mis solicitudes. Puede crear y consultar las suyas. No ve la bandeja general ni el catálogo. Un mismo login, tres experiencias. El operador vería la cola y los estados. El administrador vería eso más el catálogo. El menú se arma con el rol que viene en el token, no con un dato que escriba el front.">
+          <div class="deco deco-side" aria-hidden="true"><img src="img/corporativas/mesatech-tres-roles.png" alt="" /></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">06 · Aplicación <small>Skarlett</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Aplicación</p>
+            <h2 class="anim d1">Un login. Tres experiencias.</h2>
+            <p class="lede anim d2">Un mismo Entra ID. Cliente, operador y administrador ven pantallas distintas.</p>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d2">
+              <div class="shot-card frame-browser">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">login.microsoftonline.com</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-login.png">
+                  <img src="img/capturas/ari/ari-login.png" alt="Selector de cuenta de Microsoft Entra ID" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>MSAL abre Entra. Cuentas de prueba del tenant, no un login propio.</figcaption>
+            </figure>
+            <figure class="shot anim d3">
+              <div class="shot-card frame-browser">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">localhost:3000 · cliente</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/skarlett/ska-cliente.png">
+                  <img src="img/capturas/skarlett/ska-cliente.png" alt="Portal autenticado como Cliente MesaTech, solo Mis solicitudes" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Cliente MesaTech. Nombre, rol y Cerrar sesión. Solo puede crear y ver las suyas.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Reglas" data-who="Skarlett" data-time="45 s" data-say="Autenticado no es autorizado. Este cliente de la izquierda ya tiene un JWT válido: Entra lo conoce. Aun así pide GET /v1/solicitudes, la bandeja de todos. El BFF responde 403. Te conozco y no puedes. El cliente solo puede /v1/solicitudes/mias. A la derecha, el administrador sí ve bandeja y catálogo. El operador comparte la bandeja; no mantiene el catálogo. Hay una tercera regla, de negocio: 409. No se pasa a RESUELTA si el ticket no está EN_PROCESO. No se pasa a CERRADA si no está RESUELTA. 401 es sin identidad. 403 es rol. 409 es el flujo de estados." data-hint="SKA-UI04 y SKA-UI05 son demo local: no las mostremos. El 403 y el admin de esta lámina sí van con Entra. La UI también limita el selector. Si preguntan por 409 sin captura autenticada: documentado; no hay esa captura en la oral." data-notes="Autenticado no es autorizado. Este cliente de la izquierda ya tiene un JWT válido: Entra lo conoce. Aun así pide GET /v1/solicitudes, la bandeja de todos. El BFF responde 403. Te conozco y no puedes. El cliente solo puede /v1/solicitudes/mias. A la derecha, el administrador sí ve bandeja y catálogo. El operador comparte la bandeja; no mantiene el catálogo. Hay una tercera regla, de negocio: 409. No se pasa a RESUELTA si el ticket no está EN_PROCESO. No se pasa a CERRADA si no está RESUELTA. 401 es sin identidad. 403 es rol. 409 es el flujo de estados.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">06 · Reglas <small>Skarlett</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Autorización</p>
+            <h2 class="anim d1">El rol decide qué se puede ver.</h2>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d3">
+              <div class="shot-card frame-browser">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">POSTMAN · GET /v1/solicitudes</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/skarlett/ska-403.png">
+                  <img src="img/capturas/skarlett/ska-403.png" alt="Gateway responde 403 Forbidden al cliente en GET /v1/solicitudes" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Cliente autenticado. GET /v1/solicitudes (todas): 403. El rol no alcanza.</figcaption>
+            </figure>
+            <figure class="shot anim d4">
+              <div class="shot-card frame-browser">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">localhost:3000 · administrador</span></div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/skarlett/ska-admin.png">
+                  <img src="img/capturas/skarlett/ska-admin.png" alt="Administrador MesaTech con bandeja general y catálogo" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+
+
+              </div>
+              <figcaption>Administrador: bandeja general y catálogo. El operador comparte la bandeja; el cliente no.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide slide-checks" data-section="Pruebas" data-who="Equipo" data-time="35 s" data-say="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Ari: el token sale de Entra, con rol. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral." data-hint="Los nueve: sin sesión; 401 Gateway; 401 JWT inválido; 200; 403; CORS; 409; v1/v2; persistencia. No hay en Evidencias: 401 Gateway, JWT inválido y cuerpo v1/v2. 409 y bandeja operador son demo local. No recites los nueve: nombra los que sí se vieron." data-notes="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Ari: el token sale de Entra, con rol. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral.">
+          <div class="deco deco-checks" aria-hidden="true"><img src="img/corporativas/mesatech-nueve-chequeos.png" alt="" /></div>
+          <div class="deco deco-checks-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo-white.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">07 · Pruebas <small>Equipo</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Pruebas mínimas</p>
+            <h2 class="anim d1">Nueve chequeos. Una frase cada uno.</h2>
+          </div>
+          <div class="check-grid anim d2">
+            <article class="check-item tone-mute">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-ban"></use></svg></span>
+                <b>sin datos</b>
+              </div>
+              <span>Sin autenticación</span>
+            </article>
+            <article class="check-item tone-401">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-gateway"></use></svg></span>
+                <b>401</b>
+              </div>
+              <span>Gateway sin token</span>
+            </article>
+            <article class="check-item tone-401">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-clock"></use></svg></span>
+                <b>401</b>
+              </div>
+              <span>JWT inválido o expirado</span>
+            </article>
+            <article class="check-item tone-ok">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-shield"></use></svg></span>
+                <b>200</b>
+              </div>
+              <span>JWT válido vía Gateway</span>
+            </article>
+            <article class="check-item tone-403">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-users"></use></svg></span>
+                <b>403</b>
+              </div>
+              <span>Cliente a bandeja general</span>
+            </article>
+            <article class="check-item tone-ok">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-globe"></use></svg></span>
+                <b>204 + 200</b>
+              </div>
+              <span>CORS desde React</span>
+            </article>
+            <article class="check-item tone-409">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-alert"></use></svg></span>
+                <b>409</b>
+              </div>
+              <span>RESUELTA fuera de EN_PROCESO</span>
+            </article>
+            <article class="check-item tone-info">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span>
+                <b>contratos</b>
+              </div>
+              <span>v1 y v2 conviven</span>
+            </article>
+            <article class="check-item tone-ok">
+              <div class="check-head">
+                <span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span>
+                <b>datos vivos</b>
+              </div>
+              <span>Persistencia en Postgres</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="slide cover cover-close" data-section="Cierre" data-who="Nico" data-time="30 s" data-say="Cierro con tres cosas que quedan demostradas, no con un resumen largo. Identidad: Entra emite el JWT y, sin token, Gateway y BFF responden 401. Perímetro: React solo habla con el Gateway; los microservicios no son públicos. Dominio: 403 es rol, 409 es regla de estado, y Postgres persiste. Ari configuró Entra. Giannina, el Gateway. Yo, EC2 y la red. Skarlett, React y las reglas. Si quieren ver la aplicación corriendo, se coordina otro día. Preguntas." data-hint="No abrir la app ahora. El MVP no es un ITSM completo; cumple el flujo mínimo de la EP1. Después de «Preguntas», cállense y esperen. Si nadie pregunta, no rellenen." data-notes="Cierro con tres cosas que quedan demostradas, no con un resumen largo. Identidad: Entra emite el JWT y, sin token, Gateway y BFF responden 401. Perímetro: React solo habla con el Gateway; los microservicios no son públicos. Dominio: 403 es rol, 409 es regla de estado, y Postgres persiste. Ari configuró Entra. Giannina, el Gateway. Yo, EC2 y la red. Skarlett, React y las reglas. Si quieren ver la aplicación corriendo, se coordina otro día. Preguntas.">
+          <div class="deco cover-visual" aria-hidden="true"><img src="img/corporativas/mesatech-cierre-concepto.png" alt="" /></div>
+          <div class="deco cover-scrim" aria-hidden="true"></div>
+          <header class="cover-top anim">
+            <div class="close-id">
+              <img class="cover-duoc" src="img/marca/duoc-uc-white.png" alt="Duoc UC" />
+              <p class="cover-course">Desarrollo Cloud Native · DSY1107</p>
+            </div>
+          </header>
+          <div class="close-main">
+            <p class="kicker anim d1">Evaluación parcial n.° 1</p>
+            <h1 class="anim d2">Lo que queda demostrado.</h1>
+            <div class="close-points anim d3">
+              <article>
+                <em>01</em>
+                <div>
+                  <strong>Identidad</strong>
+                  <span>Entra ID emite el JWT. Sin token, Gateway y BFF responden 401.</span>
+                </div>
+              </article>
+              <article>
+                <em>02</em>
+                <div>
+                  <strong>Perímetro</strong>
+                  <span>React solo consume API Gateway. Los microservicios no son públicos.</span>
+                </div>
+              </article>
+              <article>
+                <em>03</em>
+                <div>
+                  <strong>Dominio</strong>
+                  <span>403 es rol. 409 es regla de estado. Postgres persiste.</span>
+                </div>
+              </article>
+            </div>
+            <p class="close-ask anim d4">Preguntas</p>
+          </div>
+          <footer class="close-foot anim d4">
+            <div class="close-team">
+              <article>
+                <em>Ari</em>
+                <span>Entra ID y JWT</span>
+              </article>
+              <article>
+                <em>Giannina</em>
+                <span>Gateway y CORS</span>
+              </article>
+              <article>
+                <em>Nicolas</em>
+                <span>EC2 y red</span>
+              </article>
+              <article>
+                <em>Skarlett</em>
+                <span>React y roles</span>
+              </article>
+            </div>
+            <p class="cover-docente"><span>Docente</span><strong>Paulo Andrés Berríos Díaz</strong></p>
+          </footer>
+        </section>
+      </div>
+
+      <aside class="speaker">
+        <strong>Guion</strong>
+        <div class="note-say">
+          <span data-note-time>Decir</span>
+          <p data-note-say></p>
+        </div>
+        <div class="note-hint">
+          <span>Si preguntan</span>
+          <p data-note-hint></p>
+        </div>
+      </aside>
+      <div class="chrome">
+        <div class="wordmark"><img src="img/marca/logo.png" alt="" /> <span class="sec-label" data-section-label>Portada</span></div>
+        <div class="dots" data-dots></div>
+        <div class="nav">
+          <button type="button" data-prev aria-label="Anterior"><svg class="ico"><use href="#i-prev"></use></svg></button>
+          <div class="counter" data-counter>01 / 18</div>
+          <button type="button" data-next aria-label="Siguiente"><svg class="ico"><use href="#i-next"></use></svg></button>
+          <button type="button" class="wide" data-notes-toggle aria-label="Notas"><svg class="ico"><use href="#i-notes"></use></svg></button>
+          <button type="button" data-full aria-label="Pantalla completa"><svg class="ico"><use href="#i-full"></use></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" data-lightbox hidden>
+    <button type="button" class="lightbox-close" data-lightbox-close aria-label="Cerrar">×</button>
+    <div>
+      <img alt="" />
+      <p></p>
+    </div>
+  </div>
+  <script src="js/deck.js?v=clip4"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+Pies de figura — avance Skarlet (demo local, sin Entra)
+
+Figura SKA-UI01 — Portal MesaTech Cloud con encabezado institucional, logo y navegación (vista previa local, EP1 §12 React).
+
+Figura SKA-UI02 — Formulario Registrar solicitud de soporte: título, descripción, categoría y prioridad.
+
+Figura SKA-UI03 — Listado Mis solicitudes con folio, estado CREADA y datos de ejemplo.
+
+Figura SKA-UI04 — Bandeja general de atención con solicitudes de más de un usuario.
+
+Figura SKA-UI05 — Regla de negocio EP1: el sistema rechaza pasar a RESUELTA si la solicitud no está EN_PROCESO.
+
+Figura SKA-UI06 — Administración de catálogo: categorías y prioridades.
+
+Pendiente (requiere Ari / login Entra):
+- SKA-UI07 Cerrar sesión
+- SKA-T01 a SKA-T09 con Gateway y token real
+- SKA-E01 a SKA-E12 flujo E2E
