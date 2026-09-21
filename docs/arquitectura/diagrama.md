@@ -134,7 +134,11 @@ Acceso directo a BFF o microservicio (sin Gateway, sin JWT) → **401**.
 | `GET` | `/v2/solicitudes/mias` | `ms-solicitudes` (contrato v2) |
 | `GET` | `/v1/catalogo` | `ms-catalogo` |
 | `POST` | `/v1/catalogo/categorias` | `ms-catalogo` |
+| `PUT` | `/v1/catalogo/categorias/{id}` | `ms-catalogo` |
+| `DELETE` | `/v1/catalogo/categorias/{id}` | `ms-catalogo` |
 | `POST` | `/v1/catalogo/prioridades` | `ms-catalogo` |
+| `PUT` | `/v1/catalogo/prioridades/{id}` | `ms-catalogo` |
+| `DELETE` | `/v1/catalogo/prioridades/{id}` | `ms-catalogo` |
 
 Regla de negocio: no se puede pasar a **RESUELTA** si el estado no es **EN_PROCESO**.
 

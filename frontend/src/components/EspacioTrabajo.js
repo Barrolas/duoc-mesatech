@@ -13,13 +13,26 @@ export default function EspacioTrabajo({
   ocupado,
   onCrear,
   onCambiarEstado,
+  onTransicionInvalida,
   onCrearCategoria,
+  onActualizarCategoria,
+  onEliminarCategoria,
   onCrearPrioridad,
+  onActualizarPrioridad,
+  onEliminarPrioridad,
 }) {
   return (
     <>
       {aviso && <div className="alert alert-info">{aviso}</div>}
-      {mensaje && <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>}
+      {mensaje && (
+        <div
+          className={`mt-feedback alert alert-${mensaje.tipo} fade show`}
+          role="status"
+          aria-live="polite"
+        >
+          {mensaje.texto}
+        </div>
+      )}
 
       {vista === "mias" && (
         <>
@@ -30,6 +43,7 @@ export default function EspacioTrabajo({
             vacio="No hay solicitudes asociadas a su cuenta."
             puedeCambiarEstado={permisos.cambiarEstado}
             onCambiarEstado={onCambiarEstado}
+            onTransicionInvalida={onTransicionInvalida}
           />
         </>
       )}
@@ -41,6 +55,7 @@ export default function EspacioTrabajo({
           vacio="No existen solicitudes registradas en la bandeja."
           puedeCambiarEstado={permisos.cambiarEstado}
           onCambiarEstado={onCambiarEstado}
+          onTransicionInvalida={onTransicionInvalida}
         />
       )}
 
@@ -48,7 +63,11 @@ export default function EspacioTrabajo({
         <PanelCatalogo
           catalogo={catalogo}
           onCrearCategoria={onCrearCategoria}
+          onActualizarCategoria={onActualizarCategoria}
+          onEliminarCategoria={onEliminarCategoria}
           onCrearPrioridad={onCrearPrioridad}
+          onActualizarPrioridad={onActualizarPrioridad}
+          onEliminarPrioridad={onEliminarPrioridad}
           ocupado={ocupado}
         />
       )}

@@ -31,6 +31,7 @@ Solo hace falta **nuevos commits** si cambias código o **esta documentación / 
 | **D — Roles 403** | BFF antes de proxy | **Hecho en Git** (`EntraRoles`) | Depende app roles en Entra (**Ari**) |
 | **Diagrama / arquitectura** | NIC-10, informe §12 | **Casi listo** | PNG + `diagrama.md`; falta **Invoke URL** Ninna en figura |
 | **Gateway rutas** | Contrato HTTP para Ninna | **Doc en repo** | [`rutas-api-gateway-bff.md`](../rutas-api-gateway-bff.md) |
+| **Catálogo CRUD** | PUT/DELETE catálogo + UI admin | **En repo (Nico)** | Falta: rutas Gateway + JARs EC2; ver plan § Catálogo CRUD |
 | **P — Presentación** | PPT + ensayo | **Pendiente** | Capturas NIC + kit marca Ninna |
 
 ---
@@ -74,7 +75,7 @@ Carpeta informe (fuera de Git): `capturas/nico/` según [`COMO-HACER-CAPTURAS.md
 | Integrante | Qué falta para cerrar EV1 cloud |
 | --- | --- |
 | **Ari** | App roles en Entra + usuarios de prueba (403 demostrable) |
-| **Ninna** | HTTP API, rutas § [`rutas-api-gateway-bff.md`](../rutas-api-gateway-bff.md), JWT Authorizer, CORS, Invoke URL → front |
+| **Ninna / Nico (contingencia)** | HTTP API, rutas § [`rutas-api-gateway-bff.md`](../rutas-api-gateway-bff.md), JWT Authorizer, CORS, Invoke URL → front — runbook [`ninna-ev1.md`](ninna-ev1.md) |
 | **Skarlet** | E2E React → Gateway; NIC-06; informe §11 |
 | **Nico** | NIC-06/11 capturas; PPT bloques EC2/seguridad; PR `dev` → `main` cuando el equipo apruebe |
 

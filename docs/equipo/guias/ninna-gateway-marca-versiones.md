@@ -4,6 +4,8 @@
 
 **Bloques del plan:** B (Gateway), F (versionamiento), H (identidad corporativa).
 
+**Estado EV1 / contingencia (Nico asume Ninna):** [`../estado/ninna-ev1.md`](../estado/ninna-ev1.md) — orden de trabajo, nombres de capturas, Word, BFF `54.90.110.67:8080`.
+
 ---
 
 ## 0. Conceptos mínimos
@@ -407,23 +409,25 @@ Prueba §11 #8 y §15 “v1 y v2 coexisten”.
 
 ### Checklist capturas Ninna
 
-- [ ] NIN-01 … NIN-11 (+ NIN-H1) nombradas y enviadas a Skarlet
+- [ ] NIN-01 … NIN-11 (+ NIN-H1) en carpeta `E:\DOWNLOADS\MesaTech-EV1-Ninna\` (ver [`../estado/ninna-ev1.md`](../estado/ninna-ev1.md))
+- [ ] Word generado: `MesaTech_EV1_Evidencia_Ninna_Gateway_Marca.docx`
 - [ ] Postman: tokens tachados
-- [ ] Borrador v1/v2 en Word
+- [ ] Borrador v1/v2 incluido en Word / informe
 - [ ] 2–3 figuras para presentación (Nico): Gateway + 401 + v1/v2
 
 ---
 
 ## Checklist final Ninna
 
-- [ ] HTTP API creada; Invoke URL anotada
-- [ ] Rutas integradas al BFF :8080
+- [ ] HTTP API creada; Invoke URL anotada → `REACT_APP_API_BASE_URL`
+- [ ] Rutas integradas al BFF `http://54.90.110.67:8080` (Nico EC2)
 - [ ] JWT Authorizer con issuer/audience de Ari
-- [ ] CORS probado desde React
-- [ ] Prueba 401 sin token documentada
-- [ ] Borrador v1 vs v2 + capturas
-- [ ] Kit marca en `docs/assets/marca/` (o enlace acordado)
-- [ ] Capturas Gateway para informe (tabla § Capturas completa)
+- [ ] CORS probado desde React (NIN-09)
+- [ ] Prueba 401 sin token (NIN-06) e inválido (NIN-07)
+- [ ] 200 con JWT (NIN-08); v1/v2 (NIN-10, NIN-11)
+- [ ] Kit marca: [`../../assets/marca/guia-marca.md`](../../assets/marca/guia-marca.md) + NIN-H1
+- [ ] Diagrama NIC-10 actualizado con Invoke URL
+- [ ] Repo: [`rutas-api-gateway-bff.md`](../rutas-api-gateway-bff.md) (listo); opcional rama `feature/ninna-gateway`
 
 ---
 

@@ -16,7 +16,11 @@ En **cloud**, la misma variable = **Invoke URL** del Gateway (sin barra final), 
 | PATCH | `/v1/solicitudes/{id}/estado` | **Operador** o **Administrador** → si no, **403** | `TablaSolicitudes` |
 | GET | `/v1/catalogo` | Cualquier autenticado (formulario) | `App.js` |
 | POST | `/v1/catalogo/categorias` | **Administrador** → si no, **403** | `PanelCatalogo` |
+| PUT | `/v1/catalogo/categorias/{id}` | **Administrador** → si no, **403** | `PanelCatalogo` |
+| DELETE | `/v1/catalogo/categorias/{id}` | **Administrador** → si no, **403** | `PanelCatalogo` |
 | POST | `/v1/catalogo/prioridades` | **Administrador** → si no, **403** | `PanelCatalogo` |
+| PUT | `/v1/catalogo/prioridades/{id}` | **Administrador** → si no, **403** | `PanelCatalogo` |
+| DELETE | `/v1/catalogo/prioridades/{id}` | **Administrador** → si no, **403** | `PanelCatalogo` |
 | GET | `/public/hola` | Público (pruebas) | No usado en React |
 
 Versionamiento: el BFF expone también `GET /v2/solicitudes/mias` (EP1); el front MVP usa **v1**.
@@ -28,7 +32,22 @@ Por cada fila anterior (excepto `/public/**` si se prueba directo al BFF):
 1. Ruta HTTP API con el **mismo path** (ej. `GET /v1/solicitudes/mias`).
 2. Integración **HTTP** hacia el BFF (`http://<bff-privado-o-público-según-SG>:8080`).
 3. **JWT Authorizer** con issuer/audience de Entra (Ari documenta IDs fuera de Git).
-4. **CORS**: origen del React (`http://localhost:3000` + hosting del front), headers `Authorization`, `Content-Type`, métodos `GET, POST, PATCH, DELETE, OPTIONS`.
+4. **CORS**: origen del React (`http://localhost:3000` + hosting del front), headers `Authorization`, `Content-Type`, métodos `GET, POST, PUT, PATCH, DELETE, OPTIONS`.
+
+### Rutas catálogo CRUD (Nico — crear en HTTP API si faltan)
+
+Integración HTTP al BFF `:8080`, mismo JWT Authorizer que el resto de negocio:
+
+| Método | Path |
+| --- | --- |
+| PUT | `/v1/catalogo/categorias/{id}` |
+| DELETE | `/v1/catalogo/categorias/{id}` |
+| PUT | `/v1/catalogo/prioridades/{id}` |
+| DELETE | `/v1/catalogo/prioridades/{id}` |
+
+Path parameter `{id}` numérico (ID JPA). Sin estas rutas, editar/eliminar desde React devuelve **404** en Gateway aunque BFF/MS estén actualizados.
+
+CloudShell — script bash: **no** uses la variable `PATH` para el path de la ruta (pisa `$PATH` del sistema y `aws` deja de existir). Usa `ROUTE_PATH` (ver comentario en [`guias/ninna-gateway-marca-versiones.md`](guias/ninna-gateway-marca-versiones.md) si se documenta el snippet).
 
 No hace falta duplicar reglas de rol en Gateway: el **BFF** devuelve **403** según claim `roles`.
 

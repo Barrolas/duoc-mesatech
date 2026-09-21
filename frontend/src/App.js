@@ -5,7 +5,7 @@ import {
   useMsal,
 } from "@azure/msal-react";
 import { loginRequest } from "./authConfig";
-import { ApiError, apiGet, apiPatch, apiPost } from "./api/http";
+import { ApiError, apiDelete, apiGet, apiPatch, apiPost, apiPut } from "./api/http";
 import { etiquetaRol, navDesdePermisos, permisosDesdeRoles } from "./roles";
 import Layout from "./components/Layout";
 import EspacioTrabajo from "./components/EspacioTrabajo";
@@ -25,6 +25,10 @@ function App() {
 
   const avisar = (texto, tipo = "danger") => {
     setMensaje({ texto, tipo });
+    if (tipo === "success") {
+      window.clearTimeout(window.__mtFeedbackTimer);
+      window.__mtFeedbackTimer = window.setTimeout(() => setMensaje(null), 4500);
+    }
   };
 
   const cargar = useCallback(async () => {
@@ -142,10 +146,11 @@ function App() {
                 "La solicitud fue registrada."
               )
             }
-            onCambiarEstado={(id, estado) =>
+            onTransicionInvalida={(texto) => avisar(texto, "danger")}
+            onCambiarEstado={(id, estado, mensajeOk) =>
               ejecutar(
                 () => apiPatch(instance, cuenta, `/v1/solicitudes/${id}/estado`, { estado }),
-                `El estado se actualizó a ${estado.replaceAll("_", " ")}.`
+                mensajeOk || `El estado se actualizó a ${estado.replaceAll("_", " ")}.`
               )
             }
             onCrearCategoria={(body) =>
@@ -158,6 +163,30 @@ function App() {
               ejecutar(
                 () => apiPost(instance, cuenta, "/v1/catalogo/prioridades", body),
                 "La prioridad fue registrada."
+              )
+            }
+            onActualizarCategoria={(id, body) =>
+              ejecutar(
+                () => apiPut(instance, cuenta, `/v1/catalogo/categorias/${id}`, body),
+                "La categoría fue actualizada."
+              )
+            }
+            onEliminarCategoria={(id) =>
+              ejecutar(
+                () => apiDelete(instance, cuenta, `/v1/catalogo/categorias/${id}`),
+                "La categoría fue eliminada."
+              )
+            }
+            onActualizarPrioridad={(id, body) =>
+              ejecutar(
+                () => apiPut(instance, cuenta, `/v1/catalogo/prioridades/${id}`, body),
+                "La prioridad fue actualizada."
+              )
+            }
+            onEliminarPrioridad={(id) =>
+              ejecutar(
+                () => apiDelete(instance, cuenta, `/v1/catalogo/prioridades/${id}`),
+                "La prioridad fue eliminada."
               )
             }
           />

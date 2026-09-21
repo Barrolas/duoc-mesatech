@@ -254,6 +254,26 @@ body {
 .badge-cerrada { background: #e5e7eb; color: #374151; }
 .badge-cancelada { background: var(--mt-error-bg); color: var(--mt-error); }
 
+.mt-feedback {
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.92rem;
+  border-left: 4px solid var(--mt-accent);
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.08);
+}
+
+.mt-feedback.alert-success {
+  border-left-color: var(--mt-ok);
+  background: var(--mt-ok-bg);
+  color: #115e59;
+}
+
+.mt-feedback.alert-danger {
+  border-left-color: var(--mt-error);
+  background: var(--mt-error-bg);
+  color: var(--mt-error);
+}
+
 .alert {
   border: 0;
   border-radius: 10px;

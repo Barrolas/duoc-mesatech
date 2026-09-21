@@ -153,11 +153,15 @@ Nico (presentación)
 
 ### Checklist Ninna
 
-- [ ] HTTP API + Authorizer Entra operativo.
-- [ ] CORS probado desde navegador.
-- [ ] Front configurado para Gateway (no IP cruda del BFF en entrega final).
-- [ ] Texto v1 vs v2 en borrador para informe.
-- [ ] Kit de identidad corporativa entregado y referenciado en el repo o enlace del equipo.
+*(Contingencia: Nico — seguir [`estado/ninna-ev1.md`](estado/ninna-ev1.md) + carpeta `E:\DOWNLOADS\MesaTech-EV1-Ninna\`.)*
+
+- [ ] HTTP API + Authorizer Entra operativo (capturas NIN-01–NIN-07).
+- [ ] CORS probado desde navegador (NIN-05, NIN-09).
+- [ ] Front configurado para Gateway — Invoke URL en `frontend/.env` (entrega final).
+- [ ] Texto v1 vs v2 en Word / informe (NIN-10, NIN-11).
+- [ ] Kit marca: [`assets/marca/guia-marca.md`](../assets/marca/guia-marca.md) + NIN-H1.
+- [x] Doc rutas Gateway en repo ([`rutas-api-gateway-bff.md`](rutas-api-gateway-bff.md)).
+- [x] URL BFF EC2 para integración: `http://54.90.110.67:8080` (Nico).
 
 ---
 
@@ -221,8 +225,19 @@ Nico (presentación)
 3. Ensayo: cada integrante domina su bloque; Nico modera la presentación.
 4. Entregar archivo de presentación junto al informe (Teams/Aula según indique el profesor).
 
+### Nico — Catálogo CRUD completo (EP1 §APIs + UI admin)
+
+**Responsable:** **Nicolás (Nico)** — código BFF/`ms-catalogo`/React + rutas Gateway + redeploy EC2.
+
+1. **Backend:** `PUT`/`DELETE` en `/v1/catalogo/categorias/{id}` y `/v1/catalogo/prioridades/{id}`; BFF proxy + **403** si no es administrador (misma regla que POST).
+2. **Frontend:** pestaña Catálogo — editar y eliminar categorías/prioridades (`PanelCatalogo`).
+3. **Gateway:** cuatro rutas nuevas (tabla en [`rutas-api-gateway-bff.md`](rutas-api-gateway-bff.md)).
+4. **Evidencia:** captura **`NIN-CRUD.png`** (UI catálogo + Network POST/PUT/DELETE **200/204**).
+5. Tras merge: `build-jars.ps1`, subir JARs a EC2 MS+BFF, reiniciar procesos.
+
 ### Checklist Nico
 
+- [ ] Catálogo CRUD (PUT/DELETE) en repo + Gateway + EC2 (**Nico**).
 - [x] Tres servicios Java + Postgres arriba en EC2 (3 instancias; ver [`estado/nico-ev1.md`](estado/nico-ev1.md)).
 - [x] MS no accesibles desde Internet.
 - [x] BFF valida JWT con issuer/audience del tenant del equipo (EC2 + local).

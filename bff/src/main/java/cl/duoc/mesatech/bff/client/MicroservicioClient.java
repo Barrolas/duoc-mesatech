@@ -61,4 +61,21 @@ public class MicroservicioClient {
                 .retrieve()
                 .toEntity(Object.class);
     }
+
+    public ResponseEntity<Object> putCatalogo(String path, String authorization, Object body) {
+        return catalogo.put()
+                .uri(path)
+                .header("Authorization", authorization)
+                .body(body)
+                .retrieve()
+                .toEntity(Object.class);
+    }
+
+    public ResponseEntity<Void> deleteCatalogo(String path, String authorization) {
+        return catalogo.delete()
+                .uri(path)
+                .header("Authorization", authorization)
+                .retrieve()
+                .toBodilessEntity();
+    }
 }

@@ -18,6 +18,9 @@ function mensajeDesdeError(err) {
   if (status === 401) {
     return "Sesión no válida. Inicie sesión de nuevo.";
   }
+  if (status === 409 && data?.message) {
+    return data.message;
+  }
 
   if (typeof data === "string" && data.trim()) {
     return data;
@@ -66,4 +69,14 @@ export async function apiPost(instance, account, path, body) {
 export async function apiPatch(instance, account, path, body) {
   const headers = await conToken(instance, account);
   return ejecutar(Axios.patch(`${apiBaseUrl}${path}`, body, { headers }));
+}
+
+export async function apiPut(instance, account, path, body) {
+  const headers = await conToken(instance, account);
+  return ejecutar(Axios.put(`${apiBaseUrl}${path}`, body, { headers }));
+}
+
+export async function apiDelete(instance, account, path) {
+  const headers = await conToken(instance, account);
+  return ejecutar(Axios.delete(`${apiBaseUrl}${path}`, { headers }));
 }

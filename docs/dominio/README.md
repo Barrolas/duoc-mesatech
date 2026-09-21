@@ -76,7 +76,11 @@ Todas las rutas de negocio pasan por **API Gateway** en AWS. El BFF reenvía a m
 | `GET` | `/v2/solicitudes/mias` | Misma data que v1 en envoltorio `{ version, usuario, solicitudes }`. |
 | `GET` | `/v1/catalogo` | Consulta catálogo. |
 | `POST` | `/v1/catalogo/categorias` | Alta categoría (admin). |
+| `PUT` | `/v1/catalogo/categorias/{id}` | Editar categoría (admin). |
+| `DELETE` | `/v1/catalogo/categorias/{id}` | Eliminar categoría (admin). |
 | `POST` | `/v1/catalogo/prioridades` | Alta prioridad (admin). |
+| `PUT` | `/v1/catalogo/prioridades/{id}` | Editar prioridad (admin). |
+| `DELETE` | `/v1/catalogo/prioridades/{id}` | Eliminar prioridad (admin). |
 
 Implementación: `bff/.../controller/*`, dominio en `ms-solicitudes/` y `ms-catalogo/`.
 

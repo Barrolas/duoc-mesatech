@@ -22,10 +22,20 @@ public class SecurityConfig {
     @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private String corsAllowedOrigins;
 
+    private boolean corsHabilitado() {
+        return Arrays.stream(corsAllowedOrigins.split(","))
+                .map(String::trim)
+                .anyMatch(s -> !s.isEmpty());
+    }
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        if (corsHabilitado()) {
+            http.cors(Customizer.withDefaults());
+        } else {
+            http.cors(cors -> cors.disable());
+        }
         http
-            .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
