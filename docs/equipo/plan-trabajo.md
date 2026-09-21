@@ -218,7 +218,7 @@ Nico (presentación)
    - Portada MesaTech Cloud (marca Ninna).
    - Contexto del caso (1 slide).
    - Arquitectura resumida (diagrama del equipo, URLs reales).
-   - Microsoft Entra ID — **resumen** (Ari aporta 2–3 capturas clave, no todas).
+   - Microsoft Entra ID — **resumen** (Ari aporta registro de `api-cloud-native`, URI de id. de aplicación, consentimiento y roles).
    - API Gateway — **resumen** (Ninna).
    - EC2 + PostgreSQL + seguridad 401 (Nico).
    - React: login, roles, flujo de negocio — **prints** (Skarlet).

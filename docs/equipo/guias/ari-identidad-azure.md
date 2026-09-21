@@ -357,7 +357,7 @@ En el informe: captura de jwt.ms; **no** insertar el string del token en Word.
 - [ ] ARI-01 … ARI-10 guardadas con nombres estándar
 - [ ] Ninguna captura con secretos ni Bearer completo
 - [ ] Pies de figura redactados para Skarlet
-- [ ] 2–3 imágenes seleccionadas para **presentación** (Nico)
+- [x] Imágenes en la presentación HTML: registro de `api-cloud-native`, URI de id. de aplicación, consentimiento, roles y login (`entregables/presentacion/img/capturas/ari/`)
 
 Portal (ARI-01 … ARI-06) se puede capturar ya. Login / jwt.ms / logout (ARI-07 … ARI-10) requieren el paso 7 (front + BFF en local).
 
