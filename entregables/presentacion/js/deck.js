@@ -282,11 +282,11 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeLightbox();
     return;
   }
-  if (["ArrowRight", "PageDown", " ", "Enter"].includes(event.key)) {
+  if (["ArrowRight", "ArrowDown", "PageDown", " ", "Enter"].includes(event.key)) {
     event.preventDefault();
     go(index + 1);
   }
-  if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) {
+  if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].includes(event.key)) {
     event.preventDefault();
     go(index - 1);
   }

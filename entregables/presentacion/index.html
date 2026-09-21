@@ -80,7 +80,7 @@
           <div class="agenda anim d2">
             <article class="agenda-item"><em>01</em><div><strong>Problema y propuesta</strong><span>Un canal en vez de tres</span></div></article>
             <article class="agenda-item"><em>02</em><div><strong>Arquitectura</strong><span>React solo consume el Gateway</span></div></article>
-            <article class="agenda-item"><em>03</em><div><strong>Identidad y JWT</strong><span>Entra ID y 401 en el BFF</span></div></article>
+            <article class="agenda-item"><em>03</em><div><strong>Identidad y JWT</strong><span>Registro API, roles, 401 y claims</span></div></article>
             <article class="agenda-item"><em>04</em><div><strong>API Gateway</strong><span>Rutas, Authorizer y CORS</span></div></article>
             <article class="agenda-item"><em>05</em><div><strong>EC2, Postgres y red</strong><span>Los MS no son públicos</span></div></article>
             <article class="agenda-item"><em>06</em><div><strong>React, roles y reglas</strong><span>Cliente 403. Admin ve bandeja</span></div></article>
@@ -286,10 +286,44 @@
           </div>
         </section>
 
+        <section class="slide" data-section="Registro" data-who="Ari" data-time="35 s" data-say="El primer paso de identidad fue registrar la API. En Entra ID se creó una aplicación nueva, no la SPA: se llama api-cloud-native. En la captura de la izquierda está el formulario: un solo inquilino, y sin URI de redirección, porque esta app no es el login del navegador. A la derecha se creó el URI de id. de aplicación: api:// más el Id. de aplicación. Ese URI es el prefijo de los scopes. El consentimiento y los roles vienen en la lámina siguiente." data-hint="No leas los UUID. Redirect URI vacío a propósito: vive en la SPA. El URI se acepta el que propone Azure. Evidencia: Word de Ari, Parte A, Registro de Aplicación y Creación de URI de id de Apps. Si preguntan por el audience: es el Id. de aplicación de esta API, no el de React." data-notes="El primer paso de identidad fue registrar la API. En Entra ID se creó una aplicación nueva, no la SPA: se llama api-cloud-native. En la captura de la izquierda está el formulario: un solo inquilino, y sin URI de redirección, porque esta app no es el login del navegador. A la derecha se creó el URI de id. de aplicación: api:// más el Id. de aplicación. Ese URI es el prefijo de los scopes. El consentimiento y los roles vienen en la lámina siguiente.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">03 · Registro <small>Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">Microsoft Entra ID</p>
+            <h2 class="anim d1">Registrar api-cloud-native. Crear el URI.</h2>
+            <p class="lede anim d2">La API no es la SPA. Un solo inquilino. El URI de id. de aplicación es el prefijo de los scopes.</p>
+          </div>
+          <div class="shot-pair">
+            <figure class="shot anim d3">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · Registrar una aplicación</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-registro.png">
+                  <img src="img/capturas/ari/ari-registro.png" alt="Formulario Registrar una aplicación con el nombre api-cloud-native" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+              </div>
+              <figcaption>Formulario de registro. Nombre api-cloud-native. Un solo inquilino. Sin URI de redirección.</figcaption>
+            </figure>
+            <figure class="shot anim d4">
+              <div class="shot-card frame-azure">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Azure · Exponer una API</div>
+                <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ari/ari-uri.png">
+                  <img src="img/capturas/ari/ari-uri.png" alt="URI de id. de aplicación api:// más el Id. de aplicación de api-cloud-native" />
+                  <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                </button>
+              </div>
+              <figcaption>URI de id. de aplicación: api:// más el Id. de aplicación. Prefijo de los scopes.</figcaption>
+            </figure>
+          </div>
+        </section>
+
         <section class="slide" data-section="Entra ID" data-who="Ari" data-time="40 s" data-say="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión." data-hint="Access Token llama APIs. ID Token describe a la persona. iss es Entra; aud es api-cloud-native. No leer IDs ni contraseñas. El Word de Ari tiene redirect y token v2; en la oral bastan estas dos capturas. Si te apuras, para en el consentimiento y después en los roles." data-notes="La identidad se configuró en dos registros. Primero la SPA, que es el React. Después la API, que se llama api-cloud-native, con el scope access_as_user. Ese scope es el permiso que pide React para hablar a nombre de la persona. En esta captura de la izquierda está el consentimiento de administrador: el tenant autoriza ese permiso una vez, no cada usuario. A la derecha hay tres usuarios de prueba, cada uno con un rol: cliente, operador o administrador. Ese rol viaja dentro del Access Token. El BFF lo lee y decide qué puede hacer esa persona. El ID Token no se manda al Gateway: solo describe a quién inició sesión.">
           <div class="brand-bar">
             <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
-            <div class="meta">03 · Entra ID <small>Ari</small></div>
+            <div class="meta">04 · Entra ID <small>Ari</small></div>
           </div>
           <div class="lead">
             <p class="kicker">Microsoft Entra ID</p>
@@ -329,7 +363,7 @@
           <div class="deco deco-jwt-scrim" aria-hidden="true"></div>
           <div class="brand-bar">
             <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
-            <div class="meta">03 · JWT <small>Nico · Ari</small></div>
+            <div class="meta">05 · JWT <small>Nico · Ari</small></div>
           </div>
           <div class="lead">
             <p class="kicker">Resource Server</p>
@@ -359,6 +393,28 @@
               </button>
             </div>
             <figcaption>Curl a :8080 sin Authorization. El Resource Server responde 401. 401 no es 403.</figcaption>
+          </figure>
+        </section>
+
+        <section class="slide slide-jwt" data-section="Claims" data-who="Ari · Nico" data-time="35 s" data-say="Con sesión válida pasa lo contrario. React llama GET /api/usuario a través del BFF. No inventamos el rol en el front: el BFF valida el Access Token y devuelve lo que Entra firmó. En esta captura se ve la respuesta: nombre, correo, oid, scopes y sobre todo roles, por ejemplo cliente. Ese claim es el que después usa el BFF para permitir Mis solicitudes o rechazar la bandeja con 403. La EP1 pide mostrar al menos un claim relevante; acá está el rol de negocio en JSON. No mostramos el Bearer en pantalla." data-hint="ARI-08 / NIC-CLAIM. Si preguntan por jwt.ms: opcional en el informe; en oral basta esta Response de Network. roles vacío significa falta asignación en Entra, no un bug del BFF. No leas el JSON línea por línea: señala roles y scopes." data-notes="Con sesión válida pasa lo contrario. React llama GET /api/usuario a través del BFF. No inventamos el rol en el front: el BFF valida el Access Token y devuelve lo que Entra firmó. En esta captura se ve la respuesta: nombre, correo, oid, scopes y sobre todo roles, por ejemplo cliente. Ese claim es el que después usa el BFF para permitir Mis solicitudes o rechazar la bandeja con 403. La EP1 pide mostrar al menos un claim relevante; acá está el rol de negocio en JSON. No mostramos el Bearer en pantalla.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">06 · Claims <small>Ari · Nico</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker">JWT y claims</p>
+            <h2 class="anim d1">El rol viaja en el token y el BFF lo expone.</h2>
+            <p class="lede anim d2">GET /api/usuario — respuesta 200 en DevTools (sin mostrar Authorization).</p>
+          </div>
+          <figure class="shot hero-shot fill anim d3">
+            <div class="shot-card frame-browser">
+              <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">localhost:3000 · Network · /api/usuario</span></div>
+              <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/nico/nic-claim.png">
+                <img src="img/capturas/nico/nic-claim.png" alt="Respuesta JSON de GET /api/usuario con claims roles y scopes" />
+                <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+              </button>
+            </div>
+            <figcaption>NIC-CLAIM — claims relevantes del Access Token vía BFF (nombre, scopes, roles).</figcaption>
           </figure>
         </section>
 
@@ -670,7 +726,7 @@
           </div>
         </section>
 
-        <section class="slide slide-checks" data-section="Pruebas" data-who="Equipo" data-time="35 s" data-say="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Ari: el token sale de Entra, con rol. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral." data-hint="Los nueve: sin sesión; 401 Gateway; 401 JWT inválido; 200; 403; CORS; 409; v1/v2; persistencia. No hay en Evidencias: 401 Gateway, JWT inválido y cuerpo v1/v2. 409 y bandeja operador son demo local. No recites los nueve: nombra los que sí se vieron." data-notes="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Ari: el token sale de Entra, con rol. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral.">
+        <section class="slide slide-checks" data-section="Pruebas" data-who="Equipo" data-time="35 s" data-say="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Ari: registro de api-cloud-native, consentimiento y roles, y la lámina NIC-CLAIM con GET /api/usuario. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral." data-hint="Los nueve: sin sesión; 401 Gateway; 401 JWT inválido; 200; 403; CORS; 409; v1/v2; persistencia. No hay en Evidencias: 401 Gateway, JWT inválido y cuerpo v1/v2. 409 y bandeja operador son demo local. No recites los nueve: nombra los que sí se vieron." data-notes="La guía pide nueve chequeos. En esta oral ya se vieron con print, no de memoria. Nico: 401 del BFF sin token, y timeout a 8081. Giannina: GET 200 y CORS, OPTIONS 204, en el Network. Skarlett: 403 del cliente a la bandeja, y los folios que siguen en CREADA. Ari: el token sale de Entra, con rol. Lo que no tiene captura en esta presentación está escrito en el informe. Si preguntan por un chequeo que no está en lámina, la frase es: está documentado; no trajimos esa captura autenticada a la oral.">
           <div class="deco deco-checks" aria-hidden="true"><img src="img/corporativas/mesatech-nueve-chequeos.png" alt="" /></div>
           <div class="deco deco-checks-scrim" aria-hidden="true"></div>
           <div class="brand-bar">
@@ -825,7 +881,7 @@
         <div class="dots" data-dots></div>
         <div class="nav">
           <button type="button" data-prev aria-label="Anterior"><svg class="ico"><use href="#i-prev"></use></svg></button>
-          <div class="counter" data-counter>01 / 18</div>
+          <div class="counter" data-counter>01 / 20</div>
           <button type="button" data-next aria-label="Siguiente"><svg class="ico"><use href="#i-next"></use></svg></button>
           <button type="button" class="wide" data-notes-toggle aria-label="Notas"><svg class="ico"><use href="#i-notes"></use></svg></button>
           <button type="button" data-full aria-label="Pantalla completa"><svg class="ico"><use href="#i-full"></use></svg></button>
