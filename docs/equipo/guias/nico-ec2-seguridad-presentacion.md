@@ -244,21 +244,24 @@ Con **Skarlet**, actualiza [`../../arquitectura/diagrama.md`](../../arquitectura
 
 ### Paso P.1 — Estructura de diapositivas (12–15 slides)
 
+La exposición oral usa [`entregables/presentacion/index.html`](../../../entregables/presentacion/index.html) (**18 láminas**). El guion está en cada slide (tecla **N**) y en [`entregables/MesaTech_EV1_Guion_10min.pdf`](../../../entregables/MesaTech_EV1_Guion_10min.pdf). Esta tabla es el esquema temático; la lámina extra de Ari (registro de `api-cloud-native` + URI) va entre arquitectura y consentimiento/roles.
+
 | # | Slide | Contenido | Quién aporta material |
 | --- | --- | --- | --- |
 | 1 | Portada | Logo/colores Ninna | Ninna |
 | 2 | Problema MesaTech | Caso negocio 1 frase | Skarlet |
 | 3 | Arquitectura | Diagrama con URLs reales | Nico + Skarlet |
-| 4 | Entra ID | Login, apps, scope (resumen) | Ari (2–3 imgs) |
-| 5 | JWT | Qué valida Gateway y BFF | Ari o Nico |
-| 6 | API Gateway | Rutas, Authorizer, CORS | Ninna |
-| 7 | EC2 + Postgres | Docker, 3 JARs | Nico |
-| 8 | Seguridad 401 | SG + prueba directa | Nico |
-| 9 | React login | Captura | Skarlet |
-| 10 | Roles / 403 | Cliente vs operador vs admin | Skarlet |
-| 11 | v1 vs v2 | Capturas lado a lado | Ninna |
-| 12 | Pruebas EP1 | Tabla resumen 9 pruebas | Skarlet |
-| 13 | División trabajo + cierre | Nombres del equipo | Nico |
+| 4 | Entra ID — registro | App `api-cloud-native` + URI de id. de aplicación | Ari |
+| 5 | Entra ID — roles | Consentimiento, scope y tres roles | Ari (capturas) |
+| 6 | JWT | Qué valida Gateway y BFF | Ari o Nico |
+| 7 | API Gateway | Rutas, Authorizer, CORS | Ninna |
+| 8 | EC2 + Postgres | Docker, 3 JARs | Nico |
+| 9 | Seguridad 401 | SG + prueba directa | Nico |
+| 10 | React login | Captura | Skarlet |
+| 11 | Roles / 403 | Cliente vs operador vs admin | Skarlet |
+| 12 | v1 vs v2 | Capturas lado a lado | Ninna |
+| 13 | Pruebas EP1 | Tabla resumen 9 pruebas | Skarlet |
+| 14 | División trabajo + cierre | Nombres del equipo | Nico |
 
 ---
 
