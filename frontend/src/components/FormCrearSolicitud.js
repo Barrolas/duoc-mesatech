@@ -1,12 +1,18 @@
 import { useState } from "react";
 
-export default function FormCrearSolicitud({ catalogo, onCrear, ocupado }) {
+export default function FormCrearSolicitud({
+  catalogo,
+  categoriasDisponibles,
+  onActualizarCategorias,
+  onCrear,
+  ocupado,
+}) {
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [categoria, setCategoria] = useState("");
   const [prioridad, setPrioridad] = useState("");
 
-  const categorias = catalogo?.categorias || [];
+  const categorias = categoriasDisponibles ?? catalogo?.categorias ?? [];
   const prioridades = catalogo?.prioridades || [];
 
   const enviar = async (evento) => {
@@ -69,6 +75,23 @@ export default function FormCrearSolicitud({ catalogo, onCrear, ocupado }) {
                 </option>
               ))}
             </select>
+            <p className="form-text">
+              Solo aparecen las categorías que solicitudes ya recibió. Si acaba de crear una
+              en el catálogo, espere unos segundos y actualice.
+            </p>
+            {categorias.length === 0 && (
+              <div className="mt-empty mb-2">Aún no hay categorías disponibles para nuevas solicitudes.</div>
+            )}
+            {onActualizarCategorias && (
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={onActualizarCategorias}
+                disabled={ocupado}
+              >
+                Actualizar categorías
+              </button>
+            )}
           </div>
           <div className="col-md-6 mb-3">
             <label className="form-label" htmlFor="prioridad">Prioridad</label>

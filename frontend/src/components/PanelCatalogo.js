@@ -33,6 +33,10 @@ export default function PanelCatalogo({
           <div className="mt-card-body">
             <p className="mt-kicker">Administración</p>
             <h2>Categorías</h2>
+            <p className="text-muted">
+              Al registrar una categoría, solicitudes la copia por mensajería. Puede tardar
+              unos segundos en quedar disponible para crear una solicitud.
+            </p>
             {categorias.length === 0 ? (
               <div className="mt-empty">No hay categorías definidas.</div>
             ) : (

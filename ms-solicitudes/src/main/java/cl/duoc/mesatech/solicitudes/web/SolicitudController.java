@@ -1,8 +1,10 @@
 package cl.duoc.mesatech.solicitudes.web;
 
+import cl.duoc.mesatech.solicitudes.domain.CategoriaLocal;
 import cl.duoc.mesatech.solicitudes.domain.EstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.Solicitud;
 import cl.duoc.mesatech.solicitudes.domain.TransicionesEstado;
+import cl.duoc.mesatech.solicitudes.repo.CategoriaLocalRepository;
 import cl.duoc.mesatech.solicitudes.repo.SolicitudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,9 +25,18 @@ import java.util.Map;
 public class SolicitudController {
 
     private final SolicitudRepository repository;
+    private final CategoriaLocalRepository categoriasLocales;
 
-    public SolicitudController(SolicitudRepository repository) {
+    public SolicitudController(SolicitudRepository repository, CategoriaLocalRepository categoriasLocales) {
         this.repository = repository;
+        this.categoriasLocales = categoriasLocales;
+    }
+
+    @GetMapping("/v1/solicitudes/categorias")
+    public List<Map<String, Object>> categoriasDisponibles() {
+        return categoriasLocales.findAllByOrderByNombreAsc().stream()
+                .map(this::categoriaDisponible)
+                .toList();
     }
 
     @PostMapping("/v1/solicitudes")
@@ -36,7 +47,15 @@ public class SolicitudController {
         if (body.getDescripcion() == null || body.getDescripcion().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La descripción es obligatoria");
         }
+        String categoria = body.getCategoria() == null ? null : body.getCategoria().trim();
+        if (categoria != null && !categoria.isEmpty() && !categoriasLocales.existsByNombreIgnoreCase(categoria)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "La categoría aún no está disponible en solicitudes. Espere a que se consuma el evento y actualice el listado."
+            );
+        }
         body.setId(null);
+        body.setCategoria(categoria == null || categoria.isEmpty() ? null : categoria);
         body.setUsuarioSolicitante(jwt.getClaimAsString("preferred_username"));
         body.setEstado(EstadoSolicitud.CREADA);
         return repository.save(body);
@@ -87,5 +106,12 @@ public class SolicitudController {
         respuesta.put("usuario", jwt.getClaimAsString("preferred_username"));
         respuesta.put("solicitudes", mias(jwt));
         return respuesta;
+    }
+
+    private Map<String, Object> categoriaDisponible(CategoriaLocal copia) {
+        Map<String, Object> item = new LinkedHashMap<>();
+        item.put("id", copia.getId());
+        item.put("nombre", copia.getNombre());
+        return item;
     }
 }

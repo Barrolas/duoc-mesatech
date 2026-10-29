@@ -84,6 +84,8 @@ export default function VistaPrevia() {
         vista={vista}
         permisos={permisos}
         catalogo={catalogo}
+        categoriasDisponibles={catalogo.categorias}
+        onActualizarCategorias={() => avisar("Listado de categorías actualizado.", "success")}
         mias={mias}
         todas={solicitudes}
         ocupado={ocupado}
@@ -114,7 +116,7 @@ export default function VistaPrevia() {
               ...actual,
               categorias: [...actual.categorias, { id: Date.now(), nombre: body.nombre }],
             }));
-          }, "La categoría fue registrada.")
+          }, "La categoría quedó en el catálogo. En solicitudes aparecerá cuando se consuma el evento.")
         }
         onCrearPrioridad={(body) =>
           ejecutar(async () => {
