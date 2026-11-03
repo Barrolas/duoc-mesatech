@@ -24,7 +24,19 @@ mvn -DskipTests package
 
 El artefacto queda en `ms-solicitudes/target/ms-solicitudes-0.0.1-SNAPSHOT.jar`.
 
-## 2. Subir y arrancar
+## 2. Preparar la EC2 B
+
+Solo la primera vez. La EC2 B es una Ubuntu nueva: no trae Java ni la carpeta del JAR. El cliente `psql` sirve para la consulta del paso 4.
+
+```text
+ssh -i mesatech-ep2.pem ubuntu@<IP_PUBLICA_EC2_B>
+sudo apt-get update
+sudo apt-get install -y openjdk-17-jre-headless postgresql-client
+java -version
+mkdir -p ~/apps
+```
+
+## 3. Subir y arrancar
 
 La plantilla de variables es `mesatech.env.example`. En la EC2 el archivo real es `/home/ubuntu/mesatech.env`. El unit `infra/scripts/systemd/mesatech-ms-solicitudes.service` ya lo carga.
 
@@ -45,7 +57,7 @@ journalctl -u mesatech-ms-solicitudes -n 50 --no-pager
 
 `RABBITMQ_DECLARE=false` es obligatorio en esta EC2: Ari ya creó el vhost, el exchange, la cola y el binding. El usuario `solicitudes_consumidor` no debe configurar el broker.
 
-## 3. Comprobar la copia local
+## 4. Comprobar la copia local
 
 ```text
 psql "host=mesatech-ep2-solicitudes.cg33a3yt7ns0.us-east-1.rds.amazonaws.com port=5432 dbname=mesatech_solicitudes user=mesatech_admin sslmode=require" -c "SELECT categoria_id, nombre, event_id, fecha_evento, recibida_en FROM categorias_locales ORDER BY recibida_en;"
@@ -53,7 +65,7 @@ psql "host=mesatech-ep2-solicitudes.cg33a3yt7ns0.us-east-1.rds.amazonaws.com por
 
 Esa consulta se hace desde la EC2 B (la RDS no es pública). El log de un consumo correcto trae el `categoria_id`, el nombre y el `event_id`, y aparece solo después del `basicAck`.
 
-## 4. Lo que todavía bloquea el arranque
+## 5. Lo que todavía bloquea el arranque
 
 - Contraseñas de RDS y de `solicitudes_consumidor` (Ari, fuera de git).
 - Clave `mesatech-ep2.pem` y lab de AWS Academy encendido.
