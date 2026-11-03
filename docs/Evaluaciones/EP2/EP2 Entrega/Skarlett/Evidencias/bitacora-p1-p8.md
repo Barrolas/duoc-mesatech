@@ -33,9 +33,9 @@ Categoría <categoriaId> (<nombre>) persistida desde el evento <eventId>
 
 **Esperado.** IDs de EC2 distintos, endpoints RDS distintos, y el proceso de `ms-solicitudes` en la EC2 B usando solo la RDS de solicitudes.
 
-**Obtenido.** Pendiente. Falta la captura de `systemctl status mesatech-ms-solicitudes` en la EC2 B y un `SELECT` a `categorias_locales` en esa RDS.
+**Obtenido.** 2026-11-03 01:18 UTC. En la EC2 B (`i-0b99595991c09d866`, `172.31.23.125`) `mesatech-ms-solicitudes` queda `active (running)`. El log muestra la conexión a la RDS de solicitudes (HikariPool), la creación de `categorias_locales` y la conexión a RabbitMQ en `172.31.18.133:5672` como `solicitudes_consumidor`. En la RDS `mesatech_solicitudes` existen `categorias_locales` y `solicitudes`. `categorias_locales` está vacía: todavía no hay publicador. Desde las 02:12 UTC corre con el perfil por defecto y valida JWT contra Entra: sin token responde 401, y un token mal firmado responde 401 `invalid_token`.
 
-**Evidencia.** Pendiente: `P1-ec2-b-proceso.png`, `P1-rds-solicitudes.png`.
+**Evidencia.** `P1-ec2-b-proceso.png`, `P1-rds-solicitudes.png`. Se obtienen con `bash capturas-p1.sh <IP_PUBLICA_EC2_B>`.
 
 ---
 
