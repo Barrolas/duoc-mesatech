@@ -39,6 +39,28 @@ Categoría <categoriaId> (<nombre>) persistida desde el evento <eventId>
 
 ---
 
+## Red — acceso al puerto 8081 de la EC2 B
+
+No es una de las pruebas P1–P8. Respalda C4: el puerto de `ms-solicitudes` solo queda abierto para la EC2 donde debe correr el BFF.
+
+**Preparación.** Ari agregó al security group de la EC2 B (`sg-0571f2e504fd01ab3`) una regla de entrada TCP 8081 con origen `sg-054c453030ed5f8e8` (EC2 A · Catálogo).
+
+**Esperado.** Desde la EC2 A conecta y la API pide token. Desde la EC2 C y desde internet, el puerto no responde.
+
+**Obtenido.** 2026-11-03 02:49 UTC.
+
+| Origen | Resultado |
+| --- | --- |
+| EC2 A · Catálogo `172.31.17.69` | Conecta. `GET /v1/solicitudes/mias` sin token responde 401 |
+| EC2 C · RabbitMQ `172.31.18.133` | Timeout: el SG no lo autoriza |
+| Internet, IP pública de la EC2 B | Sin respuesta |
+
+La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, el BFF debe usar `MS_SOLICITUDES_URL=http://172.31.23.125:8081`.
+
+**Evidencia.** `RED-8081-acceso.png`.
+
+---
+
 ## P2 — Flujo completo
 
 **Preparación.** Consumidor arriba en la EC2 B. Nicolás con el publicador arriba en la EC2 A. Administrador autenticado en React.
