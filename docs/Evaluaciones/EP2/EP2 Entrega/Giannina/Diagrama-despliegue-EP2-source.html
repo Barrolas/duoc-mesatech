@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>MESATECH CLOUD · Despliegue EP2</title>
+<style>
+  :root{
+    --teal:#0f4c5c; --teal2:#0a3843; --aqua:#2ec4b6; --aqua2:#1fa89c; --mint:#e8faf6;
+    --ink:#12353c; --bg:#f7fbfa; --orange:#c45c26; --orangeBg:#fff8f2;
+    --line:rgba(15,76,92,.18); --soft:#f3fbf9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);
+    font-family:Inter,"Segoe UI",system-ui,sans-serif;color:var(--ink)}
+  .page{position:relative;width:1920px;height:1080px;padding:8px 22px 4px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+  .wires{position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;z-index:5;overflow:visible}
+  .titlebar{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:4px;border-bottom:2px solid var(--aqua);flex:0 0 auto;z-index:2}
+  .titlebar h1{font-size:28px;font-weight:700;color:var(--teal);letter-spacing:.01em}
+  .titlebar .sub{font-size:13px;font-weight:500;margin-top:1px}
+  .titlebar .right{text-align:right;font-size:13px;font-weight:500}
+  .layers{display:grid;grid-template-columns:520px 1fr 240px;gap:88px;flex:0 0 auto;z-index:2}
+  .layers .Lpair{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .L{font-size:14px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center}
+  .main{display:grid;grid-template-columns:520px 1fr 240px;gap:88px;flex:1 1 auto;min-height:0;z-index:2;align-items:start}
+  .side{display:flex;flex-direction:column;gap:10px;align-self:stretch;min-height:0;min-width:0}
+  .side-top{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:12px 48px;align-items:stretch;flex:0 0 auto}
+  .side .node{min-height:0}
+  .mono{font-family:ui-monospace,Consolas,"Courier New",monospace;font-weight:700;font-size:inherit;letter-spacing:.02em;font-variant-ligatures:none}
+  .vpc{border:2.2px solid var(--aqua);border-radius:14px;background:#fff;display:flex;flex-direction:column;min-width:0;height:auto;align-self:start;overflow:visible;box-shadow:0 2px 6px rgba(15,76,92,.08)}
+  .vpc-h{background:var(--mint);padding:7px 14px;font-size:14px;font-weight:700;color:var(--teal);border-bottom:1px solid rgba(46,196,182,.35);border-radius:12px 12px 0 0}
+  .vpc-body{display:flex;flex-direction:column;gap:48px;padding:10px 16px 12px}
+  .vpc-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:72px;align-items:stretch;max-width:74%}
+  .vpc-mid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.55fr) minmax(0,1fr);gap:64px;align-items:stretch}
+  .vpc-bot{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,.28fr) minmax(0,1.65fr);gap:28px;align-items:stretch}
+  .vpc-bot .node .bd{padding:14px 16px 16px;gap:8px;min-height:88px}
+  .vpc-bot .bot-spacer{visibility:hidden;pointer-events:none}
+  .node{background:#fff;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;box-shadow:0 1px 3px rgba(15,76,92,.07);position:relative;z-index:3}
+  .node.warn{background:var(--orangeBg);border-color:rgba(196,92,38,.38)}
+  .node.soft{background:var(--soft)}
+  .node .hd{padding:10px 14px;font-size:22px;font-weight:700;color:#fff;line-height:1.2;overflow-wrap:normal;word-break:keep-all}
+  .node .hd.t{background:var(--teal)}
+  .node .hd.a{background:var(--aqua2)}
+  .node .hd.o{background:var(--orange)}
+  .node .hd.d{background:var(--teal2)}
+  .node .hd.r{background:#0d4a46}
+  .node .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+  .node .bd p{font-size:18px;font-weight:500;line-height:1.3;color:var(--ink);overflow-wrap:normal;word-break:keep-all}
+  .node .bd p.em{font-weight:600;color:var(--aqua2);font-size:16px}
+  /* RabbitMQ stacked mini — break only at <wbr> after dots */
+  .mini{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .mini .box{background:var(--mint);border:1.4px solid #1a7a6d;border-radius:7px;padding:8px 12px;min-width:0}
+  .mini .box strong{display:block;font-size:16px;font-weight:700;color:#1a7a6d;margin-bottom:2px}
+  .mini .box span{display:block;font-size:16px;font-weight:600;color:var(--teal2);line-height:1.3;
+    overflow-wrap:normal;word-break:keep-all;white-space:normal}
+  .mini .flow{text-align:center;font-size:16px;font-weight:700;color:#1a7a6d;line-height:1.2;
+    overflow-wrap:normal;word-break:keep-all}
+  .sg{background:var(--soft);border:1.3px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0;align-self:stretch;box-shadow:0 1px 3px rgba(15,76,92,.07);min-height:100%}
+  .sg .hd{background:var(--teal2);color:#fff;font-size:22px;font-weight:700;padding:10px 14px}
+  .sg .bd{padding:12px 16px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .sg .bd p{font-size:16px;font-weight:500;line-height:1.35;overflow-wrap:normal;word-break:keep-all;padding-right:2px}
+  .sg .bd p.em{color:var(--aqua2);font-weight:600;font-size:16px}
+  .sg .bd hr{border:none;border-top:1px solid rgba(15,76,92,.15);margin:2px 0}
+  .inv{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:6px 12px 6px;flex:0 0 auto;z-index:2;box-shadow:0 1px 3px rgba(15,76,92,.06)}
+  .inv h2{font-size:14px;font-weight:700;color:var(--teal);margin-bottom:3px}
+  .inv table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .inv th,.inv td{font-size:11px;text-align:left;padding:1px 6px 1px 0;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+  .inv th{font-weight:700;color:var(--teal);border-bottom:1px solid rgba(15,76,92,.12)}
+  .inv td{font-weight:500;font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;color:var(--teal2)}
+  .inv td.n{font-family:Inter,"Segoe UI",system-ui,sans-serif;font-size:12px;color:var(--ink)}
+  .legend{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px 8px;flex:1 1 auto;z-index:2;display:flex;flex-direction:column;gap:6px;min-height:0;box-shadow:0 1px 3px rgba(15,76,92,.06);overflow:hidden}
+  .leg-sec{display:flex;flex-direction:column;gap:6px;min-height:0}
+  .leg-sec > h3{font-size:18px;font-weight:700;color:var(--teal);line-height:1.2;flex:0 0 auto}
+  .leg-sec.keys-sec{flex:0 0 auto}
+  .leg-sec.flow-sec{flex:1 1 auto;min-height:0}
+  .leg-sec.notes-sec{flex:0 0 auto;margin-top:0;padding-top:6px;border-top:1px solid rgba(15,76,92,.14)}
+  .keys-col{display:flex;flex-direction:column;gap:5px}
+  .keys-col .k{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;line-height:1.25;color:var(--ink);overflow-wrap:normal;word-break:keep-all}
+  .sw{width:34px;height:0;border-top:2.6px solid var(--teal);display:inline-block;flex:0 0 auto}
+  .sw.auth{border-top-style:dashed;border-color:var(--orange);border-top-width:2.6px}
+  .sw.amqp{border-top:3.2px dotted #1a7a6d}
+  .sw.bn{width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:none;line-height:1}
+  .stepper{position:relative;display:flex;flex-direction:column;justify-content:space-between;flex:1 1 auto;min-height:0;padding-left:2px;gap:0}
+  .stepper::before{content:"";position:absolute;left:12px;top:14px;bottom:14px;width:2px;background:rgba(15,76,92,.18);border-radius:1px;z-index:0}
+  .step{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;position:relative;z-index:1;padding:2px 0}
+  .step .sb{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex:0 0 auto;line-height:1;box-shadow:0 0 0 3px #fff}
+  .step .sb.auth{background:var(--orange)}
+  .step .sb.http{background:var(--teal)}
+  .step .sb.amqp{background:#1a7a6d}
+  .step p{font-size:15px;font-weight:500;line-height:1.28;color:var(--ink);overflow-wrap:normal;word-break:keep-all;margin:1px 0 0}
+  .notes-sec ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .notes-sec li{font-size:12.5px;font-weight:500;line-height:1.28;color:rgba(18,53,60,.72);overflow-wrap:normal;word-break:keep-all;padding-left:12px;position:relative}
+  .notes-sec li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:rgba(15,76,92,.35)}
+  .foot{display:flex;justify-content:space-between;font-size:11px;font-weight:500;color:var(--teal);opacity:.85;flex:0 0 auto;z-index:2}
+  .badge{position:absolute;z-index:8;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;pointer-events:none;transform:translate(-50%,-50%)}
+  .badge.http{background:var(--teal)}
+  .badge.auth{background:var(--orange)}
+  .badge.amqp{background:#1a7a6d}
+  .chip{position:absolute;z-index:8;transform:translate(-50%,-50%);background:#fff;border:1.3px solid var(--teal);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap;pointer-events:none;line-height:1.2}
+  .chip.auth{border-color:var(--orange);color:var(--orange)}
+  .chip.amqp{border-color:#1a7a6d;color:#1a7a6d}
+  #qa{display:none}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <svg class="wires" id="wires" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="mHttp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#0f4c5c"/></marker>
+      <marker id="mAuth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#c45c26"/></marker>
+      <marker id="mAmqp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#1a7a6d"/></marker>
+    </defs>
+  </svg>
+
+  <header class="titlebar">
+    <div>
+      <h1>MESATECH CLOUD · Despliegue EP2</h1>
+      <div class="sub">DSY1107 · Cloud Native · us-east-1 · Learner Lab · 3 EC2 + 2 RDS + RabbitMQ</div>
+    </div>
+    <div class="right">Despliegue real · us-east-1<br/>Ari · 2026-10-30 · sin secretos</div>
+  </header>
+
+  <div class="layers" id="layers">
+    <div class="Lpair">
+      <div class="L" id="hdr-cliente">Cliente</div>
+      <div class="L" id="hdr-identidad">Identidad</div>
+    </div>
+    <div class="L" id="hdr-borde">Borde · Aplicación y mensajería · Datos</div>
+    <div class="L" id="hdr-perimetro">Perímetro</div>
+  </div>
+
+  <div class="main">
+    <div class="side" id="side">
+      <div class="side-top" id="side-top">
+        <div class="node" id="n-user">
+          <div class="hd t">Usuario</div>
+          <div class="bd">
+            <p>Cliente · Operador</p>
+            <p>Administrador</p>
+          </div>
+        </div>
+        <div class="node warn" id="n-entra">
+          <div class="hd o">Entra ID</div>
+          <div class="bd">
+            <p>SPA + API · Token v2</p>
+            <p>access_as_user · roles</p>
+            <p class="em">Heredado de EP1</p>
+          </div>
+        </div>
+        <div class="node" id="n-react">
+          <div class="hd a">React + MSAL</div>
+          <div class="bd">
+            <p>SPA · Axios · solo Gateway</p>
+            <p class="em">Dev :3000 · sin IPs EC2</p>
+          </div>
+        </div>
+      </div>
+      <section class="legend" id="legend">
+        <div class="leg-sec keys-sec">
+          <h3>Leyenda</h3>
+          <div class="keys-col">
+            <div class="k"><span class="sw"></span><span>HTTP / SQL</span></div>
+            <div class="k"><span class="sw auth"></span><span>Autenticación Entra (1·2)</span></div>
+            <div class="k"><span class="sw amqp"></span><span>Mensaje AMQP</span></div>
+            <div class="k"><span class="sw bn">n</span><span>Paso del recorrido</span></div>
+          </div>
+        </div>
+        <div class="leg-sec flow-sec">
+          <h3>Recorrido del dato</h3>
+          <div class="stepper" id="stepper">
+            <div class="step"><span class="sb auth">1</span><p>React inicia login en Entra ID.</p></div>
+            <div class="step"><span class="sb auth">2</span><p>Entra entrega el Access Token a la SPA.</p></div>
+            <div class="step"><span class="sb http">3</span><p>React llama al Gateway (:443) con Bearer.</p></div>
+            <div class="step"><span class="sb http">4</span><p>El Authorizer JWT reenvía al BFF (:8080).</p></div>
+            <div class="step"><span class="sb http">5</span><p>BFF orquesta a Catálogo (:8082) o Solicitudes (:8081).</p></div>
+            <div class="step"><span class="sb http">6</span><p>Catálogo escribe en RDS Catálogo (:5432, solo SG A).</p></div>
+            <div class="step"><span class="sb amqp">7</span><p>Publicador envía categoria.creada a catalogo.exchange.</p></div>
+            <div class="step"><span class="sb amqp">8</span><p>Solicitudes consume la cola y guarda la copia local.</p></div>
+          </div>
+        </div>
+        <div class="leg-sec notes-sec">
+          <h3>Notas</h3>
+          <ul>
+            <li>BFF en EC2 A o B: por confirmar.</li>
+            <li>Puertos JAR 8080/8081/8082: convención EP1 hasta el despliegue.</li>
+            <li>IPs públicas omitidas: cambian al reiniciar instancias.</li>
+            <li>Sin secretos. Fuente: Inventario_AWS_EP2.md (Ari).</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="vpc" id="vpc">
+      <div class="vpc-h">AWS VPC · us-east-1 · EC2 us-east-1b · RDS us-east-1d</div>
+      <div class="vpc-body">
+        <div class="vpc-top">
+          <div class="node" id="n-gw">
+            <div class="hd t">API Gateway</div>
+            <div class="bd">
+              <p>HTTP API · JWT</p>
+              <p>/v1 · /v2 · /api</p>
+              <p class="em">Única puerta pública</p>
+            </div>
+          </div>
+          <div class="node warn" id="n-bff">
+            <div class="hd o">BFF · :8080</div>
+            <div class="bd">
+              <p>Resource Server · sin JPA</p>
+              <p class="em">EC2 A o B · por confirmar</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpc-mid">
+          <div class="node" id="n-eca">
+            <div class="hd t">EC2 A · Catálogo</div>
+            <div class="bd">
+              <p>ms-catalogo + publicador</p>
+              <p>Persiste la categoría</p>
+              <p class="em">JAR :8082 · por confirmar</p>
+            </div>
+          </div>
+          <div class="node" id="n-rmq">
+            <div class="hd r">EC2 C · RabbitMQ</div>
+            <div class="bd">
+              <p>Docker 4.2-mgmt · vhost mesatech</p>
+              <div class="mini">
+                <div class="box"><strong>exchange</strong><span>catalogo.<wbr>exchange</span></div>
+                <div class="flow">↓ routing key · categoria.<wbr>creada</div>
+                <div class="box"><strong>cola</strong><span>solicitudes.<wbr>catalogo.<wbr>queue</span></div>
+              </div>
+              <p class="em">direct · durable · sin guest</p>
+            </div>
+          </div>
+          <div class="node" id="n-ecb">
+            <div class="hd t">EC2 B · Solicitudes</div>
+            <div class="bd">
+              <p>ms-solicitudes + consumidor</p>
+              <p>Copia local (<span class="mono">categoriaId</span>)</p>
+              <p class="em">JAR :8081 · por confirmar</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpc-bot">
+          <div class="node soft" id="n-rdsc">
+            <div class="hd d">RDS Catálogo</div>
+            <div class="bd">
+              <p>PostgreSQL · privado</p>
+              <p>mesatech_catalogo</p>
+              <p class="em">solo SG A · :5432</p>
+            </div>
+          </div>
+          <div class="bot-spacer" aria-hidden="true"></div>
+          <div class="node soft" id="n-rdss">
+            <div class="hd d">RDS Solicitudes</div>
+            <div class="bd">
+              <p>PostgreSQL · privado</p>
+              <p>mesatech_solicitudes</p>
+              <p class="em">solo SG B · :5432</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sg" id="n-sg">
+      <div class="hd">Perímetro SG</div>
+      <div class="bd">
+        <p>5672 ← solo SG A + SG B</p>
+        <p>15672 ← IP admin /32</p>
+        <p>22 ← IP admin /32</p>
+        <p>5432 Cat ← solo SG A</p>
+        <p>5432 Sol ← solo SG B</p>
+        <hr/>
+        <p>RDS sin acceso público</p>
+        <p>React → solo Gateway</p>
+        <p>MS no expuestos a Internet</p>
+        <hr/>
+        <p class="em">IPs públicas omitidas</p>
+        <p class="em">Fuente: inventario Ari</p>
+        <p class="em">Sin contraseñas ni secretos</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="inv" id="inv">
+    <h2>Inventario (IDs · sin IPs ni secretos)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:7%">Rol</th>
+          <th style="width:16%">Nombre</th>
+          <th style="width:15%">ID</th>
+          <th style="width:11%">Red privada</th>
+          <th style="width:15%">Security group</th>
+          <th style="width:36%">Detalle / endpoint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">EC2 A</td>
+          <td class="n">mesatech-ep2-catalogo</td>
+          <td>i-0a7c485a5fd3c064c</td>
+          <td>IP privada</td>
+          <td>sg-054c453030ed5f8e8</td>
+          <td>t3.medium · OpenJDK 17</td>
+        </tr>
+        <tr>
+          <td class="n">EC2 B</td>
+          <td class="n">mesatech-ep2-solicitudes</td>
+          <td>i-0b99595991c09d866</td>
+          <td>IP privada</td>
+          <td>sg-0571f2e504fd01ab3</td>
+          <td>t3.medium · OpenJDK 17</td>
+        </tr>
+        <tr>
+          <td class="n">EC2 C</td>
+          <td class="n">mesatech-ep2-rabbitmq</td>
+          <td>i-05fc13c5d3273e566</td>
+          <td>IP privada</td>
+          <td>sg-0194df0045c5f001c</td>
+          <td>AMQP rabbitmq-ec2c:5672</td>
+        </tr>
+        <tr>
+          <td class="n">RDS Cat</td>
+          <td class="n">mesatech-ep2-catalogo</td>
+          <td>db.t3.micro</td>
+          <td>—</td>
+          <td>sg-0c718b6d89f69f687</td>
+          <td>mesatech-ep2-catalogo.cg33a3yt7ns0.us-east-1.rds.amazonaws.com</td>
+        </tr>
+        <tr>
+          <td class="n">RDS Sol</td>
+          <td class="n">mesatech-ep2-solicitudes</td>
+          <td>db.t3.micro</td>
+          <td>—</td>
+          <td>sg-01ecd39653046dcb7</td>
+          <td>mesatech-ep2-solicitudes.cg33a3yt7ns0.us-east-1.rds.amazonaws.com</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <footer class="foot">
+    <span>Equipo: Ari Araya · Nicolás Barra · Giannina Guerrero · Skarlett Tropan</span>
+    <span>Documento de despliegue EP2 · coincidente con inventario vigente</span>
+  </footer>
+</div>
+<pre id="qa"></pre>
+
+<script>
+(function(){
+  const page = document.getElementById('page');
+  const svg = document.getElementById('wires');
+  const NS = 'http://www.w3.org/2000/svg';
+  const pairs = [];
+
+  function rootRect(){ return page.getBoundingClientRect(); }
+  function box(el){
+    const r = el.getBoundingClientRect();
+    const p = rootRect();
+    return { x:r.left-p.left, y:r.top-p.top, w:r.width, h:r.height, r:r.right-p.left, b:r.bottom-p.top, cx:r.left-p.left+r.width/2, cy:r.top-p.top+r.height/2 };
+  }
+  function clearDrawn(){
+    [...svg.querySelectorAll('path')].forEach(n=>n.remove());
+    [...page.querySelectorAll('.badge,.chip')].forEach(n=>n.remove());
+    pairs.length = 0;
+  }
+  function path(d, cls, marker){
+    const e = document.createElementNS(NS,'path');
+    e.setAttribute('d', d);
+    e.setAttribute('fill','none');
+    if(cls==='http'){ e.setAttribute('stroke','#0f4c5c'); e.setAttribute('stroke-width','2.4'); }
+    if(cls==='auth'){ e.setAttribute('stroke','#c45c26'); e.setAttribute('stroke-width','2.4'); e.setAttribute('stroke-dasharray','7 5'); }
+    if(cls==='amqp'){ e.setAttribute('stroke','#1a7a6d'); e.setAttribute('stroke-width','2.8'); e.setAttribute('stroke-dasharray','1.5 6'); }
+    if(marker) e.setAttribute('marker-end','url(#'+marker+')');
+    svg.appendChild(e);
+    return e;
+  }
+  function badge(x,y,n,cls){
+    const el = document.createElement('div');
+    el.className = 'badge '+cls;
+    el.textContent = n;
+    el.style.left = x+'px'; el.style.top = y+'px';
+    page.appendChild(el);
+    return el;
+  }
+  function chip(x,y,text,cls){
+    const el = document.createElement('div');
+    el.className = 'chip '+(cls||'');
+    el.textContent = text;
+    el.style.left = x+'px'; el.style.top = y+'px';
+    page.appendChild(el);
+    return el;
+  }
+  function placePair(bx,by,n,cls, cx,cy, text, ccls){
+    const b = badge(bx,by,n,cls);
+    const c = chip(cx,cy,text,ccls);
+    pairs.push([b,c]);
+    return {b,c};
+  }
+
+  function alignSide(){
+    /* Place Entra on same row as React: row1 = Usuario | (empty), row2 = React | Entra; legend stays below */
+    const top = document.getElementById('side-top');
+    const user = document.getElementById('n-user');
+    const react = document.getElementById('n-react');
+    const entra = document.getElementById('n-entra');
+    top.innerHTML = '';
+    top.appendChild(user);
+    const ph = document.createElement('div');
+    ph.setAttribute('aria-hidden','true');
+    top.appendChild(ph);
+    top.appendChild(react);
+    top.appendChild(entra);
+  }
+
+  function draw(){
+    clearDrawn();
+    const react=box(document.getElementById('n-react'));
+    const entra=box(document.getElementById('n-entra'));
+    const gw=box(document.getElementById('n-gw'));
+    const bff=box(document.getElementById('n-bff'));
+    const eca=box(document.getElementById('n-eca'));
+    const ecb=box(document.getElementById('n-ecb'));
+    const rmq=box(document.getElementById('n-rmq'));
+    const rdsc=box(document.getElementById('n-rdsc'));
+    const rdss=box(document.getElementById('n-rdss'));
+    const user=box(document.getElementById('n-user'));
+    const vpc=box(document.getElementById('vpc'));
+
+    path(`M${user.cx} ${user.b} V${react.y}`,'http','mHttp');
+
+    // 1–2: horizontal auth between React and Entra (same row)
+    const gAuth = react.r + (entra.x - react.r)*0.5;
+    const y1 = react.y + react.h*0.32;
+    path(`M${react.r} ${y1} H${entra.x}`,'auth','mAuth');
+    badge(gAuth, y1, '1', 'auth');
+
+    const y2 = react.y + react.h*0.68;
+    path(`M${entra.x} ${y2} H${react.r}`,'auth','mAuth');
+    badge(gAuth, y2, '2', 'auth');
+
+    // 3: React → GW via gutter Entra↔VPC, routed through the clear band ABOVE Entra (below layers)
+    const gEV = entra.r + (vpc.x - entra.r)*0.5;
+    const layersB = box(document.getElementById('layers')).b;
+    const yAbove = Math.min(react.y, entra.y) - 26;
+    path(`M${react.r} ${react.y + 12} V${yAbove} H${gEV} V${gw.cy} H${gw.x}`,'http','mHttp');
+    const b3 = badge(gEV, yAbove, '3', 'http');
+    const c3 = chip(gEV, yAbove - 24, 'HTTP:443'); // stacked in entra↔vpc gutter; paired
+    pairs.push([b3, c3]);
+
+    // 4: GW → BFF
+    const gGB = gw.r + (bff.x - gw.r)*0.5;
+    path(`M${gw.r} ${gw.cy} H${bff.x}`,'http','mHttp');
+    placePair(gGB, gw.cy, '4', 'http', gGB, gw.cy - 26, ':8080');
+
+    // 5: BFF → A / B — labels strictly in vertical gutter midY
+    const midY = bff.b + (eca.y - bff.b)*0.5;
+    const dropA = bff.x + bff.w*0.22;
+    const dropB = bff.x + bff.w*0.78;
+    path(`M${dropA} ${bff.b} V${midY} H${eca.cx} V${eca.y}`,'http','mHttp');
+    // badge on drop (under BFF, not over Rabbit); chip on horizontal run toward A
+    placePair(dropA, midY, '5', 'http', dropA + (eca.cx - dropA)*0.55, midY + 1, 'HTTP :8082');
+    path(`M${dropB} ${bff.b} V${midY} H${ecb.cx} V${ecb.y}`,'http','mHttp');
+    placePair(dropB, midY, '5', 'http', dropB - (dropB - ecb.cx)*0.55, midY + 1, 'HTTP :8081');
+
+    // 6 A → RDS
+    const gAR = eca.b + (rdsc.y - eca.b)*0.5;
+    path(`M${eca.cx} ${eca.b} V${rdsc.y}`,'http','mHttp');
+    placePair(eca.cx - 40, gAR, '6', 'http', eca.cx + 44, gAR, ':5432');
+
+    // 7–8 AMQP axis A → Rabbit → B + axis label on the line
+    const gARm = eca.r + (rmq.x - eca.r)*0.5;
+    path(`M${eca.r} ${eca.cy} H${rmq.x}`,'amqp','mAmqp');
+    placePair(gARm, eca.cy, '7', 'amqp', gARm, eca.cy - 26, ':5672', 'amqp');
+
+    const gRB = rmq.r + (ecb.x - rmq.r)*0.5;
+    path(`M${rmq.r} ${ecb.cy} H${ecb.x}`,'amqp','mAmqp');
+    placePair(gRB, ecb.cy, '8', 'amqp', gRB, ecb.cy - 26, '→ B', 'amqp');
+
+    // Axis label on AMQP line — mid vertical gutter under Rabbit (clear of nodes)
+    const axisY = Math.max(eca.b, rmq.b, ecb.b) + (rdsc.y - Math.max(eca.b, rmq.b, ecb.b)) * 0.5;
+    chip(rmq.cx, axisY, 'AMQP · eje A → cola → B', 'amqp');
+
+    // B → RDS
+    const gBR = ecb.b + (rdss.y - ecb.b)*0.5;
+    path(`M${ecb.cx} ${ecb.b} V${rdss.y}`,'http','mHttp');
+    chip(ecb.cx + 44, gBR, ':5432');
+  }
+
+  function intersects(a,b){ return !(a.r<=b.x || b.r<=a.x || a.b<=b.y || b.b<=a.y); }
+  function isPaired(elA, elB){
+    return pairs.some(([b,c]) => (b===elA && c===elB) || (b===elB && c===elA));
+  }
+
+  /** Mid-token break detector via Range client rects per word segment */
+  function checkMidTokenBreaks(issues){
+    const targets = page.querySelectorAll('.node .bd p, .node .hd, .mini .box span, .mini .flow, .sg .bd p, .legend .step p, .legend .keys-col .k span:not(.sw), .legend .notes-sec li, .leg-sec > h3');
+    targets.forEach(el=>{
+      const text = el.textContent || '';
+      // Split on whitespace and keep token list; for each token without wbr opportunity check single-line height
+      // Use TreeWalker / ranges over text nodes
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      let tn;
+      while((tn = walker.nextNode())){
+        const raw = tn.nodeValue || '';
+        // tokens separated by spaces; dotted ids are one token unless <wbr> split them into separate text nodes
+        const parts = raw.split(/(\s+)/);
+        let offset = 0;
+        for(const part of parts){
+          if(!part || /^\s+$/.test(part)){ offset += part.length; continue; }
+          if(part.length < 2){ offset += part.length; continue; }
+          const range = document.createRange();
+          try {
+            range.setStart(tn, offset);
+            range.setEnd(tn, offset + part.length);
+          } catch(e){ offset += part.length; continue; }
+          const rects = [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0);
+          if(rects.length > 1){
+            // Same word drawn on multiple lines → mid-token break (wbr creates separate text nodes, so OK)
+            issues.push({type:'mid-token-break', text:part.slice(0,60), lines:rects.length, where:(el.closest('[id]')||el).id||el.className});
+          }
+          offset += part.length;
+        }
+      }
+    });
+  }
+
+  function qa(){
+    const issues = [];
+    page.querySelectorAll('.node .bd p, .node .hd, .mini .box span, .mini .box strong, .mini .flow, .sg .bd p').forEach(el=>{
+      if(el.scrollWidth > el.clientWidth + 1)
+        issues.push({type:'overflow-x', text:(el.textContent||'').trim().slice(0,70)});
+      if(el.scrollHeight > el.clientHeight + 1)
+        issues.push({type:'overflow-y', text:(el.textContent||'').trim().slice(0,70)});
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if(fs + 0.01 < 16)
+        issues.push({type:'font-too-small', text:(el.textContent||'').trim().slice(0,40), fs});
+    });
+    // titles specifically >= 22
+    page.querySelectorAll('.node .hd, .sg .hd').forEach(el=>{
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if(fs + 0.01 < 22)
+        issues.push({type:'title-too-small', text:(el.textContent||'').trim().slice(0,40), fs});
+    });
+    // detail >= 18 (p not .em); .em >= 16 already covered
+    page.querySelectorAll('.node .bd p:not(.em)').forEach(el=>{
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if(fs + 0.01 < 18)
+        issues.push({type:'detail-too-small', text:(el.textContent||'').trim().slice(0,40), fs});
+    });
+    page.querySelectorAll('.legend .step p').forEach(el=>{
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if(fs + 0.01 < 15)
+        issues.push({type:'legend-step-font', text:(el.textContent||'').trim().slice(0,40), fs});
+      if(el.scrollWidth > el.clientWidth + 1)
+        issues.push({type:'legend-overflow-x', text:(el.textContent||'').trim().slice(0,70)});
+      if(el.scrollHeight > el.clientHeight + 1)
+        issues.push({type:'legend-overflow-y', text:(el.textContent||'').trim().slice(0,70)});
+    });
+    page.querySelectorAll('.leg-sec > h3').forEach(el=>{
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if(fs + 0.01 < 17.5)
+        issues.push({type:'legend-title-font', text:(el.textContent||'').trim().slice(0,40), fs});
+    });
+    const leg=document.getElementById('legend');
+    if(leg){
+      if(leg.scrollHeight > leg.clientHeight + 1)
+        issues.push({type:'legend-panel-overflow', sh:leg.scrollHeight, ch:leg.clientHeight});
+    }
+
+    checkMidTokenBreaks(issues);
+
+    const labels = [...page.querySelectorAll('.badge, .chip')].map(el=>{
+      const b = box(el); b.el=el; b.text=el.textContent; return b;
+    });
+    for(let i=0;i<labels.length;i++){
+      for(let j=i+1;j<labels.length;j++){
+        if(isPaired(labels[i].el, labels[j].el)) continue;
+        // auth badge+nearby auth chip exemption by proximity
+        const near = Math.hypot(labels[i].cx-labels[j].cx, labels[i].cy-labels[j].cy) < 50;
+        const bothAuth = labels[i].el.classList.contains('auth') && labels[j].el.classList.contains('auth');
+        if(near && bothAuth) continue;
+        if(intersects(labels[i], labels[j]))
+          issues.push({type:'label-overlap', a:labels[i].text, b:labels[j].text});
+      }
+    }
+
+    const nodes = [...page.querySelectorAll('.node, .sg')].map(el=>{const b=box(el); b.id=el.id||el.className; return b;});
+    labels.forEach(lb=>{
+      nodes.forEach(nd=>{
+        const pad = 0.5;
+        const expanded = {x:nd.x-pad, y:nd.y-pad, r:nd.r+pad, b:nd.b+pad};
+        if(intersects(lb, expanded))
+          issues.push({type:'label-on-node', label:lb.text, node:nd.id});
+      });
+    });
+
+    // No labels intersecting column headers (expanded hitbox)
+    const headers = [...page.querySelectorAll('.layers .L')].map(el=>{
+      const b=box(el); b.id=el.id||el.textContent.trim();
+      b.x-=6; b.y-=8; b.r+=6; b.b+=10; // pad so near-miss under header fails
+      return b;
+    });
+    labels.forEach(lb=>{
+      headers.forEach(hd=>{
+        if(intersects(lb, hd))
+          issues.push({type:'label-on-header', label:lb.text, header:hd.id});
+      });
+    });
+
+    // Canvas must fit 1920×1080 — nothing clipped
+    const sh = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, page.scrollHeight);
+    if(sh > 1080 + 0.5)
+      issues.push({type:'viewport-overflow', scrollHeight:sh, limit:1080});
+    const pageBox = page.getBoundingClientRect();
+    if(pageBox.height > 1080 + 0.5)
+      issues.push({type:'page-too-tall', height:pageBox.height, limit:1080});
+    const foot = document.querySelector('.foot');
+    if(foot){
+      const fb = foot.getBoundingClientRect();
+      const pb = page.getBoundingClientRect();
+      if(fb.bottom - pb.top > 1080 + 0.5)
+        issues.push({type:'footer-clipped', bottom:fb.bottom-pb.top});
+      if(fb.bottom > pb.bottom + 0.5)
+        issues.push({type:'footer-outside-page', delta:fb.bottom-pb.bottom});
+    }
+    const inv = document.getElementById('inv');
+    if(inv){
+      const ib = inv.getBoundingClientRect();
+      const pb = page.getBoundingClientRect();
+      if(ib.bottom - pb.top > 1080 + 0.5)
+        issues.push({type:'inv-clipped', bottom:ib.bottom-pb.top});
+    }
+    // categoriaId must render with capital I (mono)
+    const idEl = page.querySelector('#n-ecb .mono');
+    if(!idEl || idEl.textContent !== 'categoriaId')
+      issues.push({type:'categoriaId-text', got:idEl?idEl.textContent:null});
+
+    const out = {count:issues.length, issues};
+    document.getElementById('qa').textContent = JSON.stringify(out,null,2);
+    window.__QA__ = out;
+    window.__PAIRS__ = pairs.length;
+    return out;
+  }
+
+  function run(){
+    alignSide();
+    const vpcEl = document.getElementById('vpc');
+    const sgEl = document.getElementById('n-sg');
+    const sideEl = document.getElementById('side');
+    const vh = vpcEl.getBoundingClientRect().height;
+    sgEl.style.minHeight = vh + 'px';
+    sideEl.style.minHeight = vh + 'px';
+    draw();
+    requestAnimationFrame(()=>{ qa(); window.__READY__ = true; });
+  }
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  else window.addEventListener('load', run);
+  setTimeout(run, 80);
+})();
+</script>
+</body>
+</html>
