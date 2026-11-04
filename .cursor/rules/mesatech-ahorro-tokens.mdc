@@ -1,0 +1,45 @@
+---
+description: Modo ahorro — menos tokens en Agent (no abrir de más, no browser de más)
+alwaysApply: true
+---
+
+# Modo ahorro MesaTech
+
+Objetivo: una tarea, pocos archivos, pocas vueltas. No explorar el repo “por si acaso”.
+
+## Pedido
+
+- Hacer **solo** lo pedido. Un archivo o un slide, no “toda la presentación / todo el informe”.
+- Si el tema cambia (presentación → informe → código), **no** arrastrar el otro entregable.
+- Preferir el archivo que la usuaria nombró o `@`. No abrir carpetas enteras.
+
+## No abrir salvo que lo pidan
+
+- `entregables/_inspect/`, `entregables/Evidencias/`, `entregables/marca/`
+- `docs/assets/marca/` (wallpapers, PNG de marca)
+- `.docx` / `.pptx` / PDF enteros: extraer **texto** (script o dump `.txt`). No leer las 50+ imágenes embebidas.
+- `frontend/node_modules/`, `**/target/`, logs, `git status` enorme de binarios
+
+Presentación: `entregables/presentacion/css/deck.css`, `js/deck.js` y **la slide citada** en `index.html`. No todas las slides.
+
+Informe: el `.txt` de extracto o los párrafos pedidos. No reescribir el Word completo si pidieron un ajuste.
+
+## Browser e imágenes
+
+- Browser **solo** si cambió layout/UI visible y hay que ver **esa** pantalla.
+- Máximo **1–2** viewports o slides. Una captura por estado. Luego parar.
+- No loop captura → ajuste → captura. Si falla 2 veces, explicar y preguntar.
+- No leer PNG/JPG del repo ni screenshots de evidencia si no las adjuntó la usuaria.
+
+## Herramientas
+
+- Grep/Read al archivo puntual. No subagentes Explore/Browser/Task en paralelo para un arreglo local.
+- No relanzar instalación, `npm install`, ni stack completo para un cambio de CSS/Word.
+
+## Ejemplo
+
+```text
+Pedido: “el título de la slide 10 se corta en horizontal”
+✅ Abrir slide 10 + CSS del título + 1 captura de #10
+❌ Releer index.html completo, todas las capturas, informe y marca
+```

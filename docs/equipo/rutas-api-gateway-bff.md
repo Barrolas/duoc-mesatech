@@ -11,6 +11,7 @@ En **cloud**, la misma variable = **Invoke URL** del Gateway (sin barra final), 
 | --- | --- | --- | --- |
 | GET | `/api/usuario` | Token válido + scope | `App.js` |
 | GET | `/v1/solicitudes/mias` | Cualquier autenticado | `App.js` |
+| GET | `/v1/solicitudes/categorias` | Cualquier autenticado | `App.js` · copia local EP2 (exponer en HTTP API igual que `/v1/solicitudes/mias`) |
 | POST | `/v1/solicitudes` | Cualquier autenticado | `FormCrearSolicitud` → `App.js` |
 | GET | `/v1/solicitudes` | **Operador** o **Administrador** → si no, **403** | `App.js` (bandeja general) |
 | PATCH | `/v1/solicitudes/{id}/estado` | **Operador** o **Administrador** → si no, **403** | `TablaSolicitudes` |

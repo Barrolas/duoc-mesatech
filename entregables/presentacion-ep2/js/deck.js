@@ -199,7 +199,7 @@ function show() {
     slide.setAttribute("aria-hidden", active ? "false" : "true");
     dots[i].classList.toggle("is-on", active);
     if (active) {
-      slide.querySelectorAll(".anim").forEach((el) => {
+      slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-note, .sg-bar, .arch-steps, .arch > figcaption").forEach((el) => {
         el.style.animation = "none";
         void el.offsetWidth;
         el.style.animation = "";
