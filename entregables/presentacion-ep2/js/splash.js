@@ -14,7 +14,7 @@
   function replayActive() {
     const slide = document.querySelector(".slide.is-active");
     if (!slide) return;
-    slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-note, .sg-bar, .arch-steps, .arch > figcaption").forEach((el) => {
+    slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-under > *, .arch-note, .sg-bar, .arch-flow, .proof-packet, .proof-hop.is-fall .mark, .route-packet, .route-card").forEach((el) => {
       el.style.animation = "none";
       void el.offsetWidth;
       el.style.animation = "";

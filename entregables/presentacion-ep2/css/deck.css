@@ -2533,7 +2533,29 @@ h3 { font-size: calc(16 * var(--u)); font-weight: 700; }
   color: #fff;
   font-size: 22px;
   cursor: pointer;
+  z-index: 2;
 }
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--teal);
+  color: #fff;
+  cursor: pointer;
+}
+
+.lightbox-nav[hidden] { display: none; }
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+.lightbox-nav .ico { font-size: 22px; }
 
 @media (max-width: 720px) {
   .stage { border-radius: calc(14 * var(--u)); }
