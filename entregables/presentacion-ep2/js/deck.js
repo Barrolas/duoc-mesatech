@@ -39,10 +39,43 @@ function lightboxOpen() {
   return lightbox.classList.contains("is-on");
 }
 
+const lightboxPrev = lightbox.querySelector("[data-lightbox-prev]");
+const lightboxNext = lightbox.querySelector("[data-lightbox-next]");
+let gallery = [];
+let galleryAt = 0;
+
 function closeLightbox() {
   lightbox.classList.remove("is-on");
   lightbox.hidden = true;
   lightboxImg.removeAttribute("src");
+  gallery = [];
+}
+
+function renderShot() {
+  const shot = gallery[galleryAt];
+  if (!shot) return;
+  lightboxImg.src = shot.src;
+  lightboxImg.alt = shot.alt || "";
+  const page = gallery.length > 1 ? ` · ${galleryAt + 1} de ${gallery.length}` : "";
+  lightboxCap.textContent = `${shot.cap || ""}${page}`;
+  const many = gallery.length > 1;
+  lightboxPrev.hidden = !many;
+  lightboxNext.hidden = !many;
+  lightbox.hidden = false;
+  lightbox.classList.add("is-on");
+}
+
+function openGallery(shots) {
+  gallery = shots.filter((shot) => shot && shot.src);
+  if (!gallery.length) return;
+  galleryAt = 0;
+  renderShot();
+}
+
+function stepGallery(delta) {
+  if (gallery.length < 2) return;
+  galleryAt = (galleryAt + delta + gallery.length) % gallery.length;
+  renderShot();
 }
 
 function shotChrome(shot) {
@@ -199,7 +232,7 @@ function show() {
     slide.setAttribute("aria-hidden", active ? "false" : "true");
     dots[i].classList.toggle("is-on", active);
     if (active) {
-      slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-note, .sg-bar, .arch-steps, .arch > figcaption").forEach((el) => {
+        slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-under > *, .arch-note, .sg-bar, .arch-flow, .proof-packet, .proof-hop.is-fall .mark, .route-packet, .route-card").forEach((el) => {
         el.style.animation = "none";
         void el.offsetWidth;
         el.style.animation = "";
@@ -263,12 +296,29 @@ document.querySelectorAll("[data-zoom]").forEach((btn) => {
     event.stopPropagation();
     const img = btn.querySelector("img");
     const cap = btn.closest("figure")?.querySelector("figcaption");
-    lightboxImg.src = btn.dataset.zoom;
-    lightboxImg.alt = img?.alt || "";
-    lightboxCap.textContent = cap?.textContent || "";
-    lightbox.hidden = false;
-    lightbox.classList.add("is-on");
+    openGallery([{
+      src: btn.dataset.zoom,
+      alt: img?.alt || "",
+      cap: cap?.textContent || "",
+    }]);
   });
+});
+
+document.querySelectorAll("[data-shots]").forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openGallery(JSON.parse(btn.dataset.shots));
+  });
+});
+
+lightboxPrev.addEventListener("click", (event) => {
+  event.stopPropagation();
+  stepGallery(-1);
+});
+lightboxNext.addEventListener("click", (event) => {
+  event.stopPropagation();
+  stepGallery(1);
 });
 
 lightbox.addEventListener("click", (event) => {
@@ -280,6 +330,14 @@ lightbox.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (lightboxOpen()) {
     if (event.key === "Escape") closeLightbox();
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      stepGallery(1);
+    }
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      stepGallery(-1);
+    }
     return;
   }
   if (["ArrowRight", "ArrowDown", "PageDown", " ", "Enter"].includes(event.key)) {
