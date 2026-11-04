@@ -10,9 +10,8 @@ Publicador en `ms-catalogo`, RDS Catálogo, despliegue en EC2 A.
 ## Despliegue rápido
 
 ```powershell
-.\infra\scripts\build-jars.ps1
-scp -i <pem> infra\out\ms-catalogo.jar ubuntu@3.87.142.122:~/apps/
-scp -i <pem> infra\ec2\ms-catalogo.env ubuntu@3.87.142.122:~/apps/ms-catalogo.env
+.\infra\scripts\deploy-ms-catalogo-ep2.ps1 -PemPath "C:\ruta\mesatech-ep2.pem"
+# Manual: build-jars.ps1 + scp JAR y ms-catalogo.env a ubuntu@3.87.142.122:~/apps/
 ```
 
 En EC2 A:

@@ -13,6 +13,7 @@ import EspacioTrabajo from "./components/EspacioTrabajo";
 function App() {
   const { instance, accounts } = useMsal();
   const [sesionApi, setSesionApi] = useState(null);
+  const [perfilCargado, setPerfilCargado] = useState(false);
   const [catalogo, setCatalogo] = useState({ categorias: [], prioridades: [] });
   const [mias, setMias] = useState([]);
   const [todas, setTodas] = useState([]);
@@ -33,8 +34,11 @@ function App() {
 
   const cargar = useCallback(async () => {
     if (!cuenta) {
+      setPerfilCargado(false);
+      setSesionApi(null);
       return;
     }
+    setPerfilCargado(false);
     try {
       const usuario = await apiGet(instance, cuenta, "/api/usuario");
       setSesionApi(usuario);
@@ -63,7 +67,10 @@ function App() {
         setTodas([]);
       }
     } catch (err) {
+      setSesionApi(null);
       avisar(err.message || "No fue posible conectar con el servicio. Verifique la sesión y el backend.");
+    } finally {
+      setPerfilCargado(true);
     }
   }, [cuenta, instance]);
 
@@ -120,7 +127,7 @@ function App() {
         <Layout
           usuario={{
             nombre: cuenta?.name || cuenta?.username,
-            rol: etiquetaRol(sesionApi?.roles),
+            rol: perfilCargado ? etiquetaRol(sesionApi?.roles) : "Cargando perfil…",
           }}
           onCerrarSesion={cerrarSesion}
           nav={navDesdePermisos(permisos)}
@@ -129,7 +136,7 @@ function App() {
         >
           <EspacioTrabajo
             aviso={
-              permisos.sinRolEnToken
+              perfilCargado && permisos.sinRolEnToken
                 ? "El token no incluye app roles de Entra (Cliente, Operador o Administrador). Solicite la asignación al equipo de identidad."
                 : null
             }
