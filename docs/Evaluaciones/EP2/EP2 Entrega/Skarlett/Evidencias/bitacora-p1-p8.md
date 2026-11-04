@@ -165,6 +165,7 @@ Antes de reiniciar se respaldó el log de `ms-catalogo` en la EC2 A como `~/apps
 - Transiciones: desde CREADA solo se ofrecen ASIGNADA y CANCELADA. Desde ASIGNADA, EN PROCESO, CANCELADA o volver a CREADA: RESUELTA no aparece. Desde EN_PROCESO aparece RESUELTA, y se pasa a RESUELTA. El backend también lo exige: `TransicionesEstado` rechaza con 409 "Una solicitud no puede pasar a RESUELTA si no está EN_PROCESO".
 - Rechazo sin token: `GET /v1/solicitudes/mias` y `GET /v2/solicitudes/mias` sin `Authorization` responden 401, tanto en el BFF como en el API Gateway.
 
-Pendiente: el 403 con un usuario sin permisos (iniciar sesión como `cliente@` e intentar la bandeja general o el catálogo de admin) y la respuesta 200 de `GET /v2/solicitudes/mias` con token. React solo llama a v1.
+- Permisos insuficientes: con `cliente@estqbanquito2.onmicrosoft.com` (rol `cliente`) React solo muestra "Mis solicitudes", sin Bandeja general ni Catálogo, y no ve la solicitud del administrador. A las 03:49 UTC se llamó al BFF desde la consola del navegador con la sesión del cliente, sin pasar por la interfaz. `GET /v1/solicitudes` (bandeja general) responde 403, y `POST /v1/catalogo/categorias` también responde 403, así que la categoría no se crea.
+- v1 y v2: con el mismo token, `GET /v1/solicitudes/mias` responde 200 con una lista, y `GET /v2/solicitudes/mias` responde 200 con el formato v2 `{"version":"v2","usuario":…,"solicitudes":[]}`.
 
-**Evidencia.** `P8-react-form-categoria-recibida.jpg`, `P8-react-solicitud-creada.jpg`, `P8-react-resuelta.jpg`, `P8-aws-401-y-rds.png`.
+**Evidencia.** `P8-react-form-categoria-recibida.jpg`, `P8-react-solicitud-creada.jpg`, `P8-react-resuelta.jpg`, `P8-aws-401-y-rds.png`, `P8-cliente-menu.jpg`, `P8-cliente-403-y-v2.jpg`.
