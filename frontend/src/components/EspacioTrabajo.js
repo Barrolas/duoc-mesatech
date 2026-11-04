@@ -8,6 +8,8 @@ export default function EspacioTrabajo({
   vista,
   permisos,
   catalogo,
+  categoriasDisponibles,
+  onActualizarCategorias,
   mias,
   todas,
   ocupado,
@@ -36,7 +38,13 @@ export default function EspacioTrabajo({
 
       {vista === "mias" && (
         <>
-          <FormCrearSolicitud catalogo={catalogo} onCrear={onCrear} ocupado={ocupado} />
+          <FormCrearSolicitud
+            catalogo={catalogo}
+            categoriasDisponibles={categoriasDisponibles}
+            onActualizarCategorias={onActualizarCategorias}
+            onCrear={onCrear}
+            ocupado={ocupado}
+          />
           <TablaSolicitudes
             titulo="Mis solicitudes"
             solicitudes={mias}

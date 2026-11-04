@@ -36,6 +36,11 @@ public class SolicitudesGatewayController {
         return client.getSolicitudes("/v1/solicitudes/mias", authorization);
     }
 
+    @GetMapping("/v1/solicitudes/categorias")
+    public ResponseEntity<Object> categorias(@RequestHeader("Authorization") String authorization) {
+        return client.getSolicitudes("/v1/solicitudes/categorias", authorization);
+    }
+
     @GetMapping("/v1/solicitudes")
     public ResponseEntity<Object> todas(
             @AuthenticationPrincipal Jwt jwt,
