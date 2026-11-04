@@ -115,9 +115,11 @@ La hora del encabezado de `P3-aws-cola-ready.png` es la del PC, adelantado unos 
 
 **Esperado.** Siguen el vhost `mesatech`, el exchange `catalogo.exchange`, la cola y el mensaje. Al iniciar el consumidor, la fila aparece en RDS Solicitudes.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 04:08–04:11 UTC. Con `mesatech-ms-solicitudes` detenido en la EC2 B, el administrador crea `Broker-P5-AWS` desde React. `ms-catalogo` publica a las 04:08:33 el evento `2d116f92-cf33-4837-a13f-27b1e9d818bb` con `categoriaId=4`. Antes: el contenedor `e137a80ec073` (creado el 2026-10-29) tiene hostname `mesatech-rabbitmq` y volumen `rabbitmq_rabbitmq_data` en `/var/lib/rabbitmq`, y la cola durable tiene 1 Ready y 0 consumidores. En la EC2 C se ejecuta `docker compose down` (sin `-v`) y `docker compose up -d`. Después: el contenedor es otro (`25cd1d9431c9`, creado a las 04:10:27), con el mismo hostname y volumen. Siguen el vhost `mesatech`, `catalogo.exchange` (direct, durable), el binding `categoria.creada` y el mensaje (1 Ready). Al iniciar el consumidor, persiste la categoría 4 a las 04:11:45 y la cola queda con 0 Ready, 0 Unacked y 1 consumidor.
 
-**Evidencia.** Pendiente: `P5-mensaje-antes.png`, `P5-compose-ps.png`, `P5-despues-consumo.png`.
+`systemctl is-active` muestra `failed` mientras el consumidor está detenido: Java sale con código 143 ante el SIGTERM de `systemctl stop`. Es una detención manual, no una caída.
+
+**Evidencia.** `P5-aws-antes.png`, `P5-aws-broker-recreado.png`, `P5-aws-despues-consumo.png`.
 
 ---
 
@@ -145,9 +147,11 @@ Antes de reiniciar se respaldó el log de `ms-catalogo` en la EC2 A como `~/apps
 
 **Esperado.** Respuesta controlada del publicador. La consulta a RDS Catálogo muestra si el registro quedó guardado igual. Al levantar el broker se explica la inconsistencia, sin recuperación automática.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 04:13–04:15 UTC. Se ejecuta `docker compose stop` de RabbitMQ en la EC2 C. El administrador crea `Sin-broker-P7-AWS` desde React. `ms-catalogo` hace el `insert` en la RDS de Catálogo y a las 04:13:41 intenta conectarse a `172.31.18.133:5672`. Sin el confirm del broker, responde 503 y React muestra "Service Unavailable". Al recargar, el catálogo (que se lee de la RDS de Catálogo) lista `Sin-broker-P7-AWS`: el registro quedó guardado igual. En la RDS de Solicitudes no hay fila para esa categoría.
 
-**Evidencia.** Pendiente: `P7-error-publicador.png`, `P7-rds-catalogo.png`, `P7-sin-copia.png`.
+Con `docker compose start`, el broker vuelve y el consumidor se reconecta solo (0 Ready y 1 consumidor). Aun así, `Sin-broker-P7-AWS` sigue sin copia: hay 4 categorías en `categorias_locales` y 5 en Catálogo. Es la inconsistencia esperada. `ms-catalogo` guarda antes de publicar, sin transacción común ni outbox. El evento nunca llegó a la cola, así que no hay nada que reintentar ni consumir cuando el broker vuelve. Para corregirlo haría falta un patrón outbox o una republicación manual del evento.
+
+**Evidencia.** `P7-react-503.jpg`, `P7-react-catalogo-guardada.jpg`, `P7-aws-broker-detenido.png`, `P7-aws-broker-de-vuelta.png`.
 
 ---
 
