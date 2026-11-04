@@ -129,9 +129,11 @@ La hora del encabezado de `P3-aws-cola-ready.png` es la del PC, adelantado unos 
 
 **Esperado.** Las consultas posteriores muestran los mismos registros. No se pierden datos de ninguna RDS.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:40 UTC. Antes del reinicio, `ms-catalogo` corre en la EC2 A con PID 1152 y `ms-solicitudes` en la EC2 B con PID 1576, y `categorias_locales` tiene las categorías 1 y 2. Se reinicia `ms-catalogo` con `start-ms-catalogo.sh` (PID 1993, arriba 03:40:43) y `ms-solicitudes` con `systemctl restart` (PID 2173, arriba 03:40:58). Después, `categorias_locales` muestra las mismas dos filas, con los mismos `event_id` y `recibida_en`. React, a través del `ms-catalogo` reiniciado, sigue listando `Redes-EP2-AWS` y `Soporte-EP2-AWS` desde la RDS de Catálogo. No se perdieron datos.
 
-**Evidencia.** Pendiente: `P6-consulta-catalogo.png`, `P6-consulta-solicitudes.png`.
+Antes de reiniciar se respaldó el log de `ms-catalogo` en la EC2 A como `~/apps/ms-catalogo.log.respaldo-p2-p4`, porque el script de arranque lo vacía y ahí están las líneas de publicación de P2 y P3.
+
+**Evidencia.** `P6-aws-antes.png`, `P6-aws-despues.png`, `P6-react-catalogo.jpg`.
 
 ---
 
