@@ -345,8 +345,8 @@ code {
   border-left: calc(4 * var(--u)) solid transparent;
   border-right: calc(4 * var(--u)) solid transparent;
 }
-.bus-drop:first-of-type { grid-column: 1; }
-.bus-drop:last-of-type { grid-column: 5; }
+.bus-drop.is-left { grid-column: 1; }
+.bus-drop.is-right { grid-column: 5; }
 .bus-label {
   grid-column: 3;
   grid-row: 1;
@@ -381,9 +381,7 @@ code {
 }
 .varr,
 .bus-drop { margin-bottom: calc(-2 * var(--u)); }
-.g-a80 span,
-.g-aa span,
-.g-ab span { background: #f3faf8; padding: 0 calc(3 * var(--u)); }
+.g-a80 span { background: #fff; padding: 0 calc(3 * var(--u)); }
 .sg-bar {
   flex-shrink: 0;
   display: flex;
@@ -428,12 +426,10 @@ code {
   gap: calc(1 * var(--u));
   min-width: 0;
   padding: calc(6 * var(--u)) calc(8 * var(--u));
-  background:
-    linear-gradient(180deg, rgba(46, 196, 182, 0.09), rgba(46, 196, 182, 0) 46%),
-    #fff;
-  border: 1px solid rgba(15, 76, 92, 0.1);
+  background: var(--sand);
+  border: 1px solid var(--line);
   border-radius: calc(12 * var(--u));
-  box-shadow: 0 calc(8 * var(--u)) calc(16 * var(--u)) rgba(15, 76, 92, 0.04);
+  box-shadow: none;
 }
 .arch-card h3 {
   align-self: stretch;
@@ -520,29 +516,25 @@ code {
   color: rgba(18, 53, 60, 0.5);
 }
 .arch-card.is-ep1 {
-  background:
-    linear-gradient(180deg, rgba(46, 196, 182, 0.16), rgba(46, 196, 182, 0.03) 58%),
-    #fff;
-  border-color: rgba(46, 196, 182, 0.38);
-  box-shadow: inset 0 calc(2 * var(--u)) 0 var(--aqua);
+  background: #fff;
+  border-color: rgba(46, 196, 182, 0.45);
+  box-shadow: 0 0 0 calc(3 * var(--u)) rgba(46, 196, 182, 0.08);
 }
 .arch-card.is-ep1 .arch-ico {
   background: rgba(46, 196, 182, 0.18);
   color: var(--teal);
 }
 .arch-card.is-rds {
-  background: linear-gradient(180deg, #f7fefc, #e4f6f2);
-  border: 1px solid rgba(46, 196, 182, 0.42);
+  background: var(--mint);
+  border: 1px solid rgba(46, 196, 182, 0.4);
   box-shadow: none;
 }
 .arch-card.is-rds .arch-port { background: #fff; }
 .arch-card.is-broker {
-  background:
-    radial-gradient(120% 90% at 0% 0%, rgba(46, 196, 182, 0.32), transparent 48%),
-    linear-gradient(165deg, #157086, var(--teal-deep));
-  border-color: transparent;
+  background: var(--teal);
+  border-color: var(--teal);
   color: #fff;
-  box-shadow: 0 calc(10 * var(--u)) calc(22 * var(--u)) rgba(10, 56, 67, 0.16);
+  box-shadow: none;
 }
 .arch-card.is-broker h3,
 .arch-card.is-broker p { color: #fff; }
@@ -575,11 +567,10 @@ code {
   flex-direction: column;
   gap: calc(4 * var(--u));
   padding: calc(7 * var(--u)) calc(8 * var(--u)) calc(7 * var(--u));
-  border: 1px solid rgba(46, 196, 182, 0.32);
-  border-radius: calc(14 * var(--u));
-  background:
-    radial-gradient(70% 42% at 100% 0%, rgba(46, 196, 182, 0.16), transparent 52%),
-    linear-gradient(180deg, rgba(46, 196, 182, 0.07), rgba(247, 251, 250, 0.92));
+  border: 1px solid rgba(46, 196, 182, 0.45);
+  border-radius: calc(16 * var(--u));
+  background: #fff;
+  box-shadow: 0 0 0 calc(3 * var(--u)) rgba(46, 196, 182, 0.08);
 }
 .arch-aws-head {
   display: flex;
@@ -725,7 +716,7 @@ code {
 }
 
 @keyframes archIn {
-  from { opacity: 0; transform: translateY(calc(6 * var(--u))); }
+  from { opacity: 0; transform: translateY(calc(12 * var(--u))); }
   to { opacity: 1; transform: none; }
 }
 @keyframes archDraw {
@@ -742,7 +733,7 @@ code {
 .slide.is-active .sg-bar,
 .slide.is-active .arch-steps,
 .slide.is-active .arch > figcaption {
-  animation: archIn 0.46s var(--ease) both;
+  animation: archIn 0.62s var(--ease) both;
 }
 .slide.is-active .arch-chain > *:nth-child(1) { animation-delay: 0.04s; }
 .slide.is-active .arch-chain > *:nth-child(2) { animation-delay: 0.12s; }
@@ -793,6 +784,7 @@ code {
     opacity: 1 !important;
     transform: none !important;
   }
+  .arr.is-amqp::before { animation: none; }
 }
 
 /* —— 04 · Compose —— */
