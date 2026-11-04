@@ -50,6 +50,8 @@ Master user (ambos): `mesatech_admin` — password solo fuera del repo.
 | Routing key | `categoria.creada` |
 | Cola | `solicitudes.catalogo.queue` (durable, classic) |
 
+Comprobado el 04-11-2026 en la EC2 C: `rabbitmq-diagnostics status` informa RabbitMQ 4.2.9, alarmas vacías y listeners en 5672 (AMQP) y 15672 (management). `catalogo_publicador` y `solicitudes_consumidor` acceden solo al vhost `mesatech` y no tienen tag administrator. El log del contenedor muestra la conexión de `solicitudes_consumidor` desde `172.31.23.125`.
+
 ---
 
 ## 4. Matriz de security groups (resumen)

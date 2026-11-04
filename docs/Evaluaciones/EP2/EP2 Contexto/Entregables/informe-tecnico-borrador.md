@@ -2,8 +2,7 @@
 
 **Asignatura:** DSY1107 · Desarrollo Cloud Native I  
 **Equipo:** Ari · Nicolás · Giannina · Skarlett  
-**Estado:** borrador. Faltan el diagrama definitivo, las capturas de P1–P8 y el publicador desplegado.  
-**Código del consumidor:** rama `feature/skarlett-consumidor`
+**Estado:** borrador de redacción. El publicador, el consumidor, el diagrama, el `compose.yaml` y las pruebas P1–P8 ya están en el repositorio. Falta alinear este texto con el Word o PDF final.
 
 Este borrador cubre la parte que ya se puede redactar. Las capturas se pegan en `EP2 Entrega/<Nombre>/Evidencias/` y se referencian aquí antes de pasar el informe a Word o PDF.
 
@@ -28,7 +27,7 @@ Fuente de IDs: `EP2 Entrega/Ari/Inventario_AWS_EP2.md` (2026-10-30).
 
 React llega al negocio solo por API Gateway y el BFF. El BFF no lee RDS ni publica ni consume.
 
-Diagrama con flechas de mensajes y de datos: pendiente de Giannina.
+Diagrama con flechas de mensajes y de datos: `EP2 Entrega/Giannina/Diagrama-despliegue-EP2.pdf`.
 
 ## 3. Red
 
@@ -64,6 +63,8 @@ Al crear una categoría válida, Catálogo publica un JSON persistente:
 | Usuario publicador | `catalogo_publicador` |
 | Usuario consumidor | `solicitudes_consumidor` |
 
+El 04-11-2026, en la EC2 C, `rabbitmq-diagnostics status` mostró RabbitMQ 4.2.9 sin alarmas, con listeners en 5672 y 15672. Los usuarios de aplicación acceden solo al vhost `mesatech` y no tienen tag administrator. El detalle está en `EP2 Entrega/Ari/Evidencias/resumen-avance.md`.
+
 `categoriaId` se guarda tal cual en `categorias_locales.categoria_id`. No se reemplaza por un id nuevo. `fechaEvento` va en ISO-8601.
 
 La confirmación del publicador (el broker aceptó el mensaje, o lo devolvió porque no había ruta) no prueba que Solicitudes ya escribió en su RDS. El consumidor hace `basicAck` solo después de `save`. Si la base falla, el mensaje vuelve a la cola. Si el JSON no trae los campos del contrato, se descarta sin reencolar. Volver a entregar el mismo `categoriaId` actualiza la misma fila. Eso no es una garantía de exactamente una vez: la pauta no la pide.
@@ -84,13 +85,9 @@ En la EC2 B, `RABBITMQ_DECLARE=false`: los recursos del broker los creó Ari. El
 
 ## 6. Pruebas
 
-La bitácora está en `EP2 Entrega/Skarlett/Evidencias/bitacora-p1-p8.md`. P1 a P8 están preparadas y sin resultado de ejecución. P2, P3 y P4 esperan el publicador de Nicolás y el JAR en la EC2 B.
+La bitácora está en `EP2 Entrega/Skarlett/Evidencias/bitacora-p1-p8.md`. P1 a P8 tienen resultado de ejecución en AWS (3 y 4 de noviembre de 2026), con capturas en esa carpeta. En P2 y P8, React y el BFF corrieron en el PC y llegaron a las EC2 por túnel SSH.
 
 ## 7. Qué falta para cerrar el informe
 
-1. JAR de solicitudes en la EC2 B, conectado a su RDS.
-2. Publicador de Nicolás desplegado en la EC2 A.
-3. Capturas de P1–P8 pegadas en esta sección.
-4. Diagrama real de Giannina.
-5. `compose.yaml` de RabbitMQ en el repo, sin secretos (Ari).
-6. Exportar este borrador a Word o PDF.
+1. Desplegar el BFF en la EC2 A o B y dejar de depender del túnel SSH para el flujo de la presentación.
+2. Pasar este borrador al Word o PDF de esta misma carpeta, con las figuras de P1–P8.
