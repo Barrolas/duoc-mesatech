@@ -69,9 +69,7 @@ Despliegue EC2 B (consumidor): plantilla en rama Skarlett `docs/Evaluaciones/EP2
 | Postgres app | `POSTGRES_USER`, `POSTGRES_PASSWORD` |
 | Solicitudes (EP2, rama consumidor) | `SOLICITUDES_DATASOURCE_URL`, `RABBITMQ_HOST`, `RABBITMQ_PORT`, `RABBITMQ_USER`, `RABBITMQ_PASSWORD`, `RABBITMQ_VHOST`, `RABBITMQ_DECLARE` |
 | Nombres de mensajería | Fijos en props del consumidor: exchange `catalogo.exchange`, cola `solicitudes.catalogo.queue`, key `categoria.creada` |
-| Catálogo / publicador | Datasource URL aún hardcodeada en `dev`; vars Rabbit del publicador **pendientes de implementación** |
-
-En `origin/dev` la URL de `ms-solicitudes` sigue fija a localhost. En `origin/feature/skarlett-consumidor` usa `${SOLICITUDES_DATASOURCE_URL:...}`. Tras el merge, preferir la plantilla EP2.
+| Catálogo / publicador | `CATALOGO_DATASOURCE_URL` y variables Rabbit del publicador (`RABBITMQ_*`, vhost `mesatech`); plantilla AWS en `infra/ec2/ms-catalogo.env` |
 
 ---
 
@@ -90,7 +88,7 @@ En `origin/dev` la URL de `ms-solicitudes` sigue fija a localhost. En `origin/fe
 
 1. **RDS** Catálogo y Solicitudes disponibles (SG solo desde EC2 A/B).
 2. **EC2 C** RabbitMQ: en `~/rabbitmq/`, `docker compose up -d` (imagen management, volumen persistente).
-3. **EC2 A** Catálogo (JAR :8082) — publicador aún pendiente en código.
+3. **EC2 A** Catálogo (JAR :8082), publicador de `categoria.creada` hacia `catalogo.exchange` con publisher confirms.
 4. **EC2 B** Solicitudes (JAR :8081) con `RABBITMQ_DECLARE=false` y usuario `solicitudes_consumidor` ([`despliegue-ec2-b.md`](docs/Evaluaciones/EP2/EP2%20Entrega/Skarlett/despliegue-ec2-b.md) en rama Skarlett).
 5. **BFF** (:8080) apuntando a IPs privadas de A/B.
 6. **Frontend** con `REACT_APP_API_BASE_URL` = Invoke URL del API Gateway.
@@ -111,9 +109,9 @@ Local: detener los tres `mvn` / el front; `cd infra && docker compose down`.
 
 | Fallo | Qué ocurre (según código / acuerdo) |
 | --- | --- |
-| **Broker caído (P7)** | Publicador: respuesta HTTP controlada y estado del registro en RDS Catálogo — **pendiente** (no hay publicador AMQP en `ms-catalogo`). Consumidor: no recibe; al volver el broker reintenta conexiones (`missing-queues-fatal=false`). |
+| **Broker caído (P7)** | Publicador: respuesta HTTP 503 controlada; la categoría queda guardada en RDS Catálogo sin evento (inconsistencia aceptada, sin outbox). Consumidor: no recibe; al volver el broker reintenta conexiones (`missing-queues-fatal=false`). |
 | **RDS Solicitudes caída** | Listener hace `basicNack(..., requeue=true)`; el mensaje vuelve a la cola. |
-| **Consumidor detenido** | Mensajes publicados quedan Ready en la cola durable (si el publicador envió persistente — garantía del publicador pendiente). Al reiniciar el consumidor se procesan y se hace `basicAck` tras persistir en `categorias_locales`. |
+| **Consumidor detenido** | Mensajes publicados quedan Ready en la cola durable (el publicador envía mensajes persistentes). Al reiniciar el consumidor se procesan y se hace `basicAck` tras persistir en `categorias_locales`. |
 | **Evento inválido** | `basicNack` sin reencolar. |
 | **Reinicio del contenedor RabbitMQ** | Conservar volumen y hostname; vhost/exchange/cola/mensaje deben sobrevivir (prueba P5). |
 
@@ -138,8 +136,8 @@ No afirmar exactly-once ni outbox: el consumidor hace upsert por `categoriaId`.
 | --- | --- | --- |
 | `frontend/` | 3000 | React, MSAL, Axios → Gateway o BFF local |
 | `bff/` | 8080 | Resource Server, sin JPA, proxy a MS |
-| `ms-solicitudes/` | 8081 | Solicitudes + consumidor EP2 (rama Skarlett) |
-| `ms-catalogo/` | 8082 | Categorías/prioridades; publicador EP2 pendiente |
+| `ms-solicitudes/` | 8081 | Solicitudes + consumidor EP2 (integrado en dev) |
+| `ms-catalogo/` | 8082 | Categorías/prioridades; publicador EP2 (`categoria.creada`) |
 | `infra/` | 5432 / EC2 | Postgres Docker EP1; scripts y topología EC2 |
 | `docs/Evaluaciones/EP2/` | — | Distribución, inventario Ari, entregas por integrante |
 
