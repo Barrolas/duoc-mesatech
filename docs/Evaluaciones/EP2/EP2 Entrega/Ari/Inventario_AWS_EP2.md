@@ -3,9 +3,10 @@
 **Responsable:** Ari  
 **Cuenta / lab:** AWS Academy Learner Lab  
 **Región:** us-east-1  
-**Fecha:** 2026-10-30  
+**Fecha:** 2026-10-30 · **IPv4 públicas actualizadas:** 2026-11-03 (Learner Lab reinicia instancias)
 
 > Completar sin contraseñas. Las claves van solo por canal privado del equipo.
+> Tras reinicio de lab, confirmar **IPv4 privadas** en consola EC2 (AMQP/RDS usan privadas).
 
 ---
 
@@ -13,9 +14,9 @@
 
 | Rol | Nombre | Instance ID | Tipo | AZ | IPv4 privada | IPv4 pública | Key pair | SG (id) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| EC2 C · RabbitMQ | mesatech-ep2-rabbitmq | i-05fc13c5d3273e566 | t3.medium | us-east-1b | 172.31.18.133 | 54.90.144.4 | mesatech-ep2 | sg-0194df0045c5f001c |
-| EC2 A · Catálogo | mesatech-ep2-catalogo | i-0a7c485a5fd3c064c | t3.medium | us-east-1b | 172.31.17.69 | 98.89.1.84 | mesatech-ep2 | sg-054c453030ed5f8e8 |
-| EC2 B · Solicitudes | mesatech-ep2-solicitudes | i-0b99595991c09d866 | t3.medium | us-east-1b | 172.31.23.125 | 18.207.144.251 | mesatech-ep2 | sg-0571f2e504fd01ab3 |
+| EC2 C · RabbitMQ | mesatech-ep2-rabbitmq | i-05fc13c5d3273e566 | t3.medium | us-east-1b | 172.31.18.133 | **13.222.127.172** | mesatech-ep2 | sg-0194df0045c5f001c |
+| EC2 A · Catálogo | mesatech-ep2-catalogo | i-0a7c485a5fd3c064c | t3.medium | us-east-1b | 172.31.17.69 | **3.87.142.122** | mesatech-ep2 | sg-054c453030ed5f8e8 |
+| EC2 B · Solicitudes | mesatech-ep2-solicitudes | i-0b99595991c09d866 | t3.medium | us-east-1b | 172.31.23.125 | **13.220.116.190** | mesatech-ep2 | sg-0571f2e504fd01ab3 |
 
 **SO broker:** Ubuntu 24.04 LTS  
 **Docker / Compose (EC2 C):** Docker 29.9.2 · Compose v5.6.1  
@@ -39,7 +40,7 @@ Master user (ambos): `mesatech_admin` — password solo fuera del repo.
 
 | Recurso | Valor |
 | --- | --- |
-| Management UI | `http://54.90.144.4:15672` |
+| Management UI | `http://13.222.127.172:15672` |
 | AMQP (desde A/B) | `172.31.18.133:5672` |
 | Virtual host | `mesatech` |
 | Admin UI user | `mesatech_admin` |

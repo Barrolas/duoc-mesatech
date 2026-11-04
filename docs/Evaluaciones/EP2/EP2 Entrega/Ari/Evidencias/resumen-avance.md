@@ -24,7 +24,7 @@ Los números (instance ID, IP, endpoint, security group) están en el inventario
 | A7 — Inventario | Hecho | `Inventario_AWS_EP2.md`. |
 | A8 — Entra ID (P8) | Sin evidencia | El documento no muestra comprobación de Entra. |
 
-IPv4 pública vigente de RabbitMQ: `54.90.144.4`. La nota suelta del Word que dice `54.196.111.36` es de la primera captura y ya no aplica.
+IPv4 pública vigente de RabbitMQ (2026-11-03): `13.222.127.172`. Catálogo `3.87.142.122`, Solicitudes `13.220.116.190`. Verificar privadas en consola tras reinicio de Learner Lab.
 
 ---
 
