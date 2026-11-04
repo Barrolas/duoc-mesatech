@@ -58,7 +58,7 @@ No hay campos extra en el record. La entidad local añade `recibidaEn` al persis
 
 ## 4. Ejemplo JSON
 
-**Ejemplo ilustrativo** (no hay captura de mensaje real en evidencias del repo a la fecha de este documento). Coincide con el record y con los tests unitarios del consumidor.
+Ejemplo de payload (el mismo que usan los tests del consumidor). El formato es igual al que se publicó en AWS durante P2; el `eventId` real queda en la bitácora de Skarlett.
 
 ```json
 {
@@ -76,8 +76,8 @@ No hay campos extra en el record. La entidad local añade `recibidaEn` al persis
 
 | Garantía | Estado |
 | --- | --- |
-| Publicación persistente (`deliveryMode` persistent) | **Pendiente** — sin código publicador en `ms-catalogo` en ninguna rama remota inspeccionada |
-| Publisher confirms + returned messages | **Pendiente** — tarea N2 (Nicolás); no hay `RabbitTemplate` / confirms en Catálogo |
+| Publicación persistente (`deliveryMode` persistent) | **En código** — `CategoriaEventPublisher` en `ms-catalogo` publica mensajes persistentes |
+| Publisher confirms + returned messages | **En código** — `publisher-confirm-type=correlated` y `publisher-returns=true` en `ms-catalogo` (N2, Nicolás) |
 | Ack del consumidor tras persistir | **En código** — `acknowledge-mode=manual`; `basicAck` solo después de `CategoriaCopiaService.guardar` (`CategoriaCreadaListener`) |
 | Evento inválido | `basicNack(..., requeue=false)` |
 | Fallo al persistir (p. ej. RDS) | `basicNack(..., requeue=true)` |
@@ -92,7 +92,7 @@ No hay campos extra en el record. La entidad local añade `recibidaEn` al persis
 
 El PDF exige: con RabbitMQ detenido, al crear categoría mostrar **respuesta HTTP controlada**, consultar RDS Catálogo (el registro puede haber quedado guardado) y explicar la inconsistencia sin recuperación automática.
 
-**Estado:** comportamiento P7 **pendiente en publicador** (`ms-catalogo`, ramas `origin/dev`, `origin/feature/nico-ec2`, `origin/feature/skarlett-consumidor`, `origin/feature/ari-rabbitmq` y demás: sin `spring-boot-starter-amqp` ni publisher). No inventar respuesta HTTP ni confirms hasta que exista el código.
+**Estado:** implementado. Con RabbitMQ detenido, `ms-catalogo` responde HTTP 503 controlado; la categoría puede quedar guardada en RDS Catálogo sin evento (inconsistencia explicada, sin outbox). Evidencia en P7 de la bitácora de Skarlett.
 
 ### Consumidor
 
@@ -118,21 +118,21 @@ Cambio incompatible (renombrar campo, cambiar tipo de `categoriaId`, otro format
 | Ítem | Estado |
 | --- | --- |
 | Vhost / exchange / cola / binding / usuarios app | Documentado en inventario Ari (broker). Declaración también en consumidor si `declare=true` |
-| DTO `CategoriaCreadaEvent` | **Código** · `origin/feature/skarlett-consumidor` · `ms-solicitudes/.../messaging/CategoriaCreadaEvent.java` |
+| DTO `CategoriaCreadaEvent` | **Código** · `dev` · `ms-solicitudes/.../messaging/CategoriaCreadaEvent.java` |
 | `RabbitConfig` + Jackson converter | **Código** · misma rama · `.../messaging/RabbitConfig.java` |
 | Listener + ack manual | **Código** · `.../messaging/CategoriaCreadaListener.java` + `application.properties` |
 | Persistencia copia + `categoriaId` | **Código** · `CategoriaCopiaService` + entidad `CategoriaLocal` / tabla `categorias_locales` |
 | Tests consumidor (ack / nack / conserva id) | **Código** · `.../messaging/*Test.java` |
 | Dependencia AMQP en `ms-solicitudes` | **Código** · `pom.xml` (`spring-boot-starter-amqp`) |
-| Publicador en `ms-catalogo` (DTO, template, confirms, returns, mensaje persistente, error P7) | **Pendiente** · sin implementación en ramas remotas de Catálogo; asignación N1–N3 (Nicolás) |
-| Ejemplo JSON capturado en management UI / logs | **Pendiente** · no hay evidencia de mensaje real en el repo; sección 4 es ejemplo |
+| Publicador en `ms-catalogo` (DTO, template, confirms, returns, mensaje persistente, error P7) | **Código** · `.../messaging/CategoriaEventPublisher.java` + `RabbitConfig.java` (Nicolás) |
+| Ejemplo JSON capturado en management UI / logs | **Evidencia** · P2 de la bitácora de Skarlett (mismo `event_id` publicado y consumido) |
 | Idempotencia estricta por `eventId` | **Pendiente / no exigida** · hoy upsert por `categoriaId` |
-| Merge del consumidor a `dev` | **Pendiente** · messaging solo en `origin/feature/skarlett-consumidor` (no en `origin/dev` al inspeccionar) |
+| Merge del consumidor a `dev` | **Hecho** · integrado en `dev` |
 
 ---
 
 ## Referencias rápidas (solo lectura git)
 
-- Consumidor: `git show origin/feature/skarlett-consumidor:ms-solicitudes/src/main/java/cl/duoc/mesatech/solicitudes/messaging/...`
+- Consumidor: `git show dev:ms-solicitudes/src/main/java/cl/duoc/mesatech/solicitudes/messaging/...`
 - Propiedades: `.../ms-solicitudes/src/main/resources/application.properties`
 - Inventario: `docs/Evaluaciones/EP2/EP2 Entrega/Ari/Inventario_AWS_EP2.md`
