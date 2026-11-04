@@ -1,6 +1,6 @@
 # Avance EP2 — Ari
 
-**Fuente:** `Evidencia EP2 - Ari.docx` (capturas del 29 y 30 de octubre de 2026)  
+**Fuente:** `Evidencia EP2 - Ari.docx` (capturas del 29 y 30 de octubre, y del 4 de noviembre de 2026)  
 **Inventario vigente:** [../Inventario_AWS_EP2.md](../Inventario_AWS_EP2.md) (IDs, IPs, endpoints y security groups)  
 **Rol:** AWS Academy e infraestructura (tareas A1–A8 de `00-Distribucion-tareas-equipo.md`, sección 3.1)  
 **Región:** `us-east-1`
@@ -20,19 +20,17 @@ Los números (instance ID, IP, endpoint, security group) están en el inventario
 | A3 — Docker desde cero | Hecho | Docker Engine 29.9.2 y Compose v5.6.1 en la EC2 C (Ubuntu 24.04). |
 | A4 — `compose.yaml` | Hecho | Imagen `rabbitmq:4.2-management`, hostname `mesatech-rabbitmq`, puertos 5672/15672, volumen `/var/lib/rabbitmq`, `restart: unless-stopped`. Versionado en `infra/rabbitmq/compose.yaml`, con `.env.example` sin contraseñas. |
 | A5 — Security groups | Hecho | 22 y 15672 de RabbitMQ solo desde la IP admin `/32`. 5672 solo desde los SG de Catálogo y Solicitudes. 5432 de cada RDS solo desde el SG de su EC2. |
-| A6 — Recursos RabbitMQ | Hecho en lo visible | Vhost `mesatech`, `catalogo_publicador` y `solicitudes_consumidor` (sin `guest`), exchange `catalogo.exchange` (direct, durable), cola `solicitudes.catalogo.queue` y binding `categoria.creada`. Falta captura de los permisos configure/write/read. |
+| A6 — Recursos RabbitMQ | Hecho | Vhost `mesatech`, exchange, cola y binding. El 04-11-2026, Admin → Users: `catalogo_publicador` y `solicitudes_consumidor` entran solo a `mesatech` y no tienen tag administrator. |
 | A7 — Inventario | Hecho | `Inventario_AWS_EP2.md`. |
-| A8 — Entra ID (P8) | Sin evidencia | El documento no muestra comprobación de Entra. |
+| A8 — Entra ID (P8) | Hecho | Roles Cliente, Operador y Administrador en `api-cloud-native`. Login, 401 y 403 comprobados en P8 (bitácora de Skarlett). |
 
-IPv4 pública vigente de RabbitMQ (2026-11-03): `13.222.127.172`. Catálogo `3.87.142.122`, Solicitudes `13.220.116.190`. Verificar privadas en consola tras reinicio de Learner Lab.
+IPv4 públicas del 04-11-2026, en el inventario: RabbitMQ `100.53.8.151`, Catálogo `3.85.18.107`, Solicitudes `98.91.199.82`. La privada de RabbitMQ sigue siendo `172.31.18.133`.
 
 ---
 
-## Qué falta para cerrar la carpeta
+## Evidencias RabbitMQ (04-11-2026)
 
-1. Captura de permisos de `catalogo_publicador` y `solicitudes_consumidor` sobre el vhost `mesatech`.
-2. Captura de `docker compose logs` y `rabbitmq-diagnostics status`, y estado de `ufw` en las tres EC2.
-
-El `compose.yaml` ya está en `infra/rabbitmq/`. Entra ID quedó comprobado en P8 (bitácora de Skarlett): login con los roles cliente y administrador, 401 sin token y 403 por rol.
-
-Los security groups de Catálogo y Solicitudes, en esta evidencia, solo abren el SSH desde la IP de administración. Los puertos de los JAR (y el del BFF) quedan para cuando Nicolás y Skarlett desplieguen.
+- A6: usuarios `catalogo_publicador` y `solicitudes_consumidor` con acceso solo al vhost `mesatech`, sin tag administrador (captura Admin → Users). `mesatech_admin` sí tiene el tag administrator.
+- `docker compose ps` y `logs`: contenedor `rabbitmq:4.2-management` activo; conexión de `solicitudes_consumidor` desde la EC2 B (`172.31.23.125`) al vhost `mesatech`.
+- `rabbitmq-diagnostics status`: RabbitMQ 4.2.9, sin alarmas, listeners 5672 (AMQP) y 15672 (management).
+- A8: roles Cliente, Operador y Administrador asignados en `api-cloud-native`; login, 401 y 403 comprobados en P8.

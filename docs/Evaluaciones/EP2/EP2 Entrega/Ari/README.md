@@ -4,6 +4,6 @@ AWS Academy: EC2 A/B/C, 2 RDS, Docker/Compose RabbitMQ, security groups, vhost/u
 
 | Archivo | Uso |
 | --- | --- |
-| [Inventario_AWS_EP2.md](Inventario_AWS_EP2.md) | IDs, IPs, endpoints y security groups vigentes (2026-10-30) |
+| [Inventario_AWS_EP2.md](Inventario_AWS_EP2.md) | IDs, IPs, endpoints y security groups vigentes (públicas al 2026-11-04) |
 | [Evidencias/resumen-avance.md](Evidencias/resumen-avance.md) | Estado de las tareas A1–A8 |
 | [Evidencias/](Evidencias/) | Capturas (`Evidencia EP2 - Ari.docx`) |
