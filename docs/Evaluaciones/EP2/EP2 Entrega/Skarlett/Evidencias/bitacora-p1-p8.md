@@ -69,9 +69,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** La fila existe en RDS Catálogo, el mensaje se publicó, el log del consumidor cita ese `eventId` y `categorias_locales.categoria_id` conserva el id original. Luego se crea una solicitud eligiendo esa categoría en el formulario.
 
-**Obtenido.** Pendiente. El publicador todavía no está en el repositorio.
+**Obtenido.** 2026-11-04 03:34 UTC. El administrador crea `Redes-EP2-AWS` desde React. React y el BFF corren en el PC y llegan a `ms-catalogo` (EC2 A) y a `ms-solicitudes` (EC2 B) por túnel SSH, porque el BFF todavía no está desplegado en la nube. React confirma "ya está disponible para crear solicitudes" y la categoría aparece en el catálogo, que se lee desde la RDS de Catálogo. En la EC2 A, `ms-catalogo` publica a las 03:34:20.103 el evento `be46e6ed-e156-4a91-9b88-44ab7606283a` con `categoriaId=1`. En la EC2 B, el consumidor la persiste a las 03:34:20.285 con `categoria_id = 1` y el mismo `event_id`. La cola queda con 0 Ready, 0 Unacked y 1 consumidor.
 
-**Evidencia.** Pendiente: `P2-react-categoria.png`, `P2-rds-catalogo.png`, `P2-cola-o-log.png`, `P2-rds-solicitudes.png`, `P2-solicitud.png`.
+Pendiente: crear una solicitud con esa categoría. Faltan prioridades en la RDS de Catálogo.
+
+**Evidencia.** `P2-react-categoria.jpg`, `P2-aws-flujo.png`.
 
 ---
 
@@ -83,9 +85,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** La categoría queda en RDS Catálogo. En la cola `solicitudes.catalogo.queue` el mensaje figura Ready. `categorias_locales` todavía no tiene esa fila. No usar Get messages con confirmación que retire el mensaje.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:36 UTC. Con `mesatech-ms-solicitudes` detenido en la EC2 B, el administrador crea `Soporte-EP2-AWS`. `ms-catalogo` publica a las 03:36:05.675 el evento `ded82e91-a7ee-4ccb-b8cf-4265622aaa49` con `categoriaId=2`. La cola queda con 1 Ready, 0 Unacked y 0 consumidores, y `categorias_locales` no tiene la fila. React muestra "Internal Server Error": no viene del POST, que sí guarda, sino de la recarga posterior de `/v1/solicitudes/categorias` y `/v1/solicitudes/mias` con Solicitudes caído.
 
-**Evidencia.** Pendiente: `P3-cola-ready.png`, `P3-sin-fila-local.png`.
+La hora del encabezado de `P3-aws-cola-ready.png` es la del PC, adelantado unos 54 s respecto de AWS. Las horas de los logs son las de AWS.
+
+**Evidencia.** `P3-aws-cola-ready.png`, `P3-react-solicitudes-detenido.jpg`.
 
 ---
 
@@ -97,9 +101,9 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** El consumidor persiste la fila, hace ack y la cola queda sin ese mensaje en Ready ni Unacked. La fila en RDS es la prueba; la cola vacía sola no alcanza.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:37 UTC. `sudo systemctl start mesatech-ms-solicitudes` en la EC2 B. Conecta al broker a las 03:37:24.509 y persiste la categoría 2 (`Soporte-EP2-AWS`) a las 03:37:24.875, con el `event_id` publicado en P3. La cola vuelve a 0 Ready, 0 Unacked y 1 consumidor. El mensaje se consumió después de guardar la fila en la RDS.
 
-**Evidencia.** Pendiente: `P4-log-ack.png`, `P4-fila-local.png`, `P4-cola-vacia.png`.
+**Evidencia.** `P4-aws-consumo-diferido.png`.
 
 ---
 
@@ -111,9 +115,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** Siguen el vhost `mesatech`, el exchange `catalogo.exchange`, la cola y el mensaje. Al iniciar el consumidor, la fila aparece en RDS Solicitudes.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 04:08–04:11 UTC. Con `mesatech-ms-solicitudes` detenido en la EC2 B, el administrador crea `Broker-P5-AWS` desde React. `ms-catalogo` publica a las 04:08:33 el evento `2d116f92-cf33-4837-a13f-27b1e9d818bb` con `categoriaId=4`. Antes: el contenedor `e137a80ec073` (creado el 2026-10-29) tiene hostname `mesatech-rabbitmq` y volumen `rabbitmq_rabbitmq_data` en `/var/lib/rabbitmq`, y la cola durable tiene 1 Ready y 0 consumidores. En la EC2 C se ejecuta `docker compose down` (sin `-v`) y `docker compose up -d`. Después: el contenedor es otro (`25cd1d9431c9`, creado a las 04:10:27), con el mismo hostname y volumen. Siguen el vhost `mesatech`, `catalogo.exchange` (direct, durable), el binding `categoria.creada` y el mensaje (1 Ready). Al iniciar el consumidor, persiste la categoría 4 a las 04:11:45 y la cola queda con 0 Ready, 0 Unacked y 1 consumidor.
 
-**Evidencia.** Pendiente: `P5-mensaje-antes.png`, `P5-compose-ps.png`, `P5-despues-consumo.png`.
+`systemctl is-active` muestra `failed` mientras el consumidor está detenido: Java sale con código 143 ante el SIGTERM de `systemctl stop`. Es una detención manual, no una caída.
+
+**Evidencia.** `P5-aws-antes.png`, `P5-aws-broker-recreado.png`, `P5-aws-despues-consumo.png`.
 
 ---
 
@@ -125,9 +131,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** Las consultas posteriores muestran los mismos registros. No se pierden datos de ninguna RDS.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:40 UTC. Antes del reinicio, `ms-catalogo` corre en la EC2 A con PID 1152 y `ms-solicitudes` en la EC2 B con PID 1576, y `categorias_locales` tiene las categorías 1 y 2. Se reinicia `ms-catalogo` con `start-ms-catalogo.sh` (PID 1993, arriba 03:40:43) y `ms-solicitudes` con `systemctl restart` (PID 2173, arriba 03:40:58). Después, `categorias_locales` muestra las mismas dos filas, con los mismos `event_id` y `recibida_en`. React, a través del `ms-catalogo` reiniciado, sigue listando `Redes-EP2-AWS` y `Soporte-EP2-AWS` desde la RDS de Catálogo. No se perdieron datos.
 
-**Evidencia.** Pendiente: `P6-consulta-catalogo.png`, `P6-consulta-solicitudes.png`.
+Antes de reiniciar se respaldó el log de `ms-catalogo` en la EC2 A como `~/apps/ms-catalogo.log.respaldo-p2-p4`, porque el script de arranque lo vacía y ahí están las líneas de publicación de P2 y P3.
+
+**Evidencia.** `P6-aws-antes.png`, `P6-aws-despues.png`, `P6-react-catalogo.jpg`.
 
 ---
 
@@ -139,9 +147,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** Respuesta controlada del publicador. La consulta a RDS Catálogo muestra si el registro quedó guardado igual. Al levantar el broker se explica la inconsistencia, sin recuperación automática.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 04:13–04:15 UTC. Se ejecuta `docker compose stop` de RabbitMQ en la EC2 C. El administrador crea `Sin-broker-P7-AWS` desde React. `ms-catalogo` hace el `insert` en la RDS de Catálogo y a las 04:13:41 intenta conectarse a `172.31.18.133:5672`. Sin el confirm del broker, responde 503 y React muestra "Service Unavailable". Al recargar, el catálogo (que se lee de la RDS de Catálogo) lista `Sin-broker-P7-AWS`: el registro quedó guardado igual. En la RDS de Solicitudes no hay fila para esa categoría.
 
-**Evidencia.** Pendiente: `P7-error-publicador.png`, `P7-rds-catalogo.png`, `P7-sin-copia.png`.
+Con `docker compose start`, el broker vuelve y el consumidor se reconecta solo (0 Ready y 1 consumidor). Aun así, `Sin-broker-P7-AWS` sigue sin copia: hay 4 categorías en `categorias_locales` y 5 en Catálogo. Es la inconsistencia esperada. `ms-catalogo` guarda antes de publicar, sin transacción común ni outbox. El evento nunca llegó a la cola, así que no hay nada que reintentar ni consumir cuando el broker vuelve. Para corregirlo haría falta un patrón outbox o una republicación manual del evento.
+
+**Evidencia.** `P7-react-503.jpg`, `P7-react-catalogo-guardada.jpg`, `P7-aws-broker-detenido.png`, `P7-aws-broker-de-vuelta.png`.
 
 ---
 
@@ -153,6 +163,13 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** Login y operación autorizada. Rechazo sin token y por permisos insuficientes. No se puede pasar a `RESUELTA` si el estado no es `EN_PROCESO`. Responden `GET /v1/solicitudes/mias` y `GET /v2/solicitudes/mias`. La categoría recibida se puede elegir al crear la solicitud.
 
-**Obtenido.** Pendiente de repetir sobre la topología nueva. El código de estados y de v1/v2 se mantiene desde la EP1.
+**Obtenido.** 2026-11-04 03:42–03:44 UTC. React y el BFF corren en el PC, con túnel SSH a `ms-catalogo` y `ms-solicitudes` en AWS (ver P2).
 
-**Evidencia.** Pendiente: `P8-401.png`, `P8-403.png`, `P8-transicion.png`, `P8-v1-v2.png`.
+- Login y operación autorizada: el administrador entra con Entra y crea las prioridades Baja, Media y Alta en la RDS de Catálogo. El formulario solo ofrece las categorías recibidas por el evento (`Redes-EP2-AWS`, `Soporte-EP2-AWS`). Se registra la solicitud 0001, "Sin conexión en el laboratorio 3", con categoría `Redes-EP2-AWS` y prioridad Alta, y queda CREADA en la RDS de Solicitudes.
+- Transiciones: desde CREADA solo se ofrecen ASIGNADA y CANCELADA. Desde ASIGNADA, EN PROCESO, CANCELADA o volver a CREADA: RESUELTA no aparece. Desde EN_PROCESO aparece RESUELTA, y se pasa a RESUELTA. El backend también lo exige: `TransicionesEstado` rechaza con 409 "Una solicitud no puede pasar a RESUELTA si no está EN_PROCESO".
+- Rechazo sin token: `GET /v1/solicitudes/mias` y `GET /v2/solicitudes/mias` sin `Authorization` responden 401, tanto en el BFF como en el API Gateway.
+
+- Permisos insuficientes: con `cliente@estqbanquito2.onmicrosoft.com` (rol `cliente`) React solo muestra "Mis solicitudes", sin Bandeja general ni Catálogo, y no ve la solicitud del administrador. A las 03:49 UTC se llamó al BFF desde la consola del navegador con la sesión del cliente, sin pasar por la interfaz. `GET /v1/solicitudes` (bandeja general) responde 403, y `POST /v1/catalogo/categorias` también responde 403, así que la categoría no se crea.
+- v1 y v2: con el mismo token, `GET /v1/solicitudes/mias` responde 200 con una lista, y `GET /v2/solicitudes/mias` responde 200 con el formato v2 `{"version":"v2","usuario":…,"solicitudes":[]}`.
+
+**Evidencia.** `P8-react-form-categoria-recibida.jpg`, `P8-react-solicitud-creada.jpg`, `P8-react-resuelta.jpg`, `P8-aws-401-y-rds.png`, `P8-cliente-menu.jpg`, `P8-cliente-403-y-v2.jpg`.
