@@ -47,7 +47,7 @@ Ruta raíz del repo en PC de Nico (ejemplo):
 | Dato | Valor |
 | --- | --- |
 | Rol | EC2 A · `ms-catalogo` |
-| SSH (pública) | `ubuntu@3.87.142.122` |
+| SSH (pública) | `ubuntu@3.85.18.107` |
 | Archivo en PC | `infra/ec2/ms-catalogo.env` |
 | **Destino en servidor** | **`/home/ubuntu/apps/ms-catalogo.env`** |
 
@@ -56,8 +56,8 @@ Ruta raíz del repo en PC de Nico (ejemplo):
 1. Compilar: `.\infra\scripts\build-jars.ps1` → `infra/out/ms-catalogo.jar`
 2. Copiar:
    ```powershell
-   scp -i <mesatech-ep2.pem> infra/out/ms-catalogo.jar ubuntu@3.87.142.122:~/apps/
-   scp -i <mesatech-ep2.pem> infra/ec2/ms-catalogo.env ubuntu@3.87.142.122:~/apps/ms-catalogo.env
+   scp -i <mesatech-ep2.pem> infra/out/ms-catalogo.jar ubuntu@3.85.18.107:~/apps/
+   scp -i <mesatech-ep2.pem> infra/ec2/ms-catalogo.env ubuntu@3.85.18.107:~/apps/ms-catalogo.env
    ```
 3. En la EC2:
    ```bash
@@ -74,7 +74,7 @@ Ruta raíz del repo en PC de Nico (ejemplo):
 | Dato | Valor |
 | --- | --- |
 | Rol | EC2 B · `ms-solicitudes` |
-| SSH (pública) | `ubuntu@13.220.116.190` |
+| SSH (pública) | `ubuntu@98.91.199.82` |
 | Archivo en PC | `infra/ec2/ms-solicitudes.env` |
 | **Destino en servidor** | **`/home/ubuntu/apps/ms-solicitudes.env`** |
 

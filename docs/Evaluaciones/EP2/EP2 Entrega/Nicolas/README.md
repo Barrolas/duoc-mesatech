@@ -5,14 +5,13 @@ Publicador en `ms-catalogo`, RDS Catálogo, despliegue en EC2 A.
 ## Variables (sin secretos en Git)
 
 - Local: `.env` raíz (Docker).
-- AWS EC2 A (`3.87.142.122`): `infra/ec2/ms-catalogo.env` → copiar a `~/apps/ms-catalogo.env` en la instancia.
+- AWS EC2 A (`3.85.18.107`): `infra/ec2/ms-catalogo.env` → copiar a `~/apps/ms-catalogo.env` en la instancia.
 
 ## Despliegue rápido
 
 ```powershell
-.\infra\scripts\build-jars.ps1
-scp -i <pem> infra\out\ms-catalogo.jar ubuntu@3.87.142.122:~/apps/
-scp -i <pem> infra\ec2\ms-catalogo.env ubuntu@3.87.142.122:~/apps/ms-catalogo.env
+.\infra\scripts\deploy-ms-catalogo-ep2.ps1 -PemPath "C:\ruta\mesatech-ep2.pem"
+# Manual: build-jars.ps1 + scp JAR y ms-catalogo.env a ubuntu@3.85.18.107:~/apps/
 ```
 
 En EC2 A:
@@ -26,4 +25,4 @@ nohup java -jar ~/apps/ms-catalogo.jar > ~/apps/ms-catalogo.log 2>&1 &
 
 Consumidor en rama `feature/skarlett-consumidor`. Mismo JSON (`CategoriaCreadaEvent`). Tras merge de ambas ramas a `dev`, probar P1–P8.
 
-Capturas en `Evidencias/`.
+Capturas en `Evidencias/` (checklist `CHECKLIST-NICO.md`, pies para Word `pies-de-figura.txt`).

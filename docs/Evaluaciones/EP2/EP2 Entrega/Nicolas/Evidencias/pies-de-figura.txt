@@ -1,0 +1,17 @@
+Pies de figura — Nicolás EP2 (publicador ms-catalogo, EC2 A)
+
+Figura NIC-01 — Proceso Java `ms-catalogo.jar` en EC2 Catálogo (3.85.18.107) escuchando en el puerto 8082 (EP2 § despliegue MS / N5).
+
+Figura NIC-01b — Prueba SSH exitosa (`OK_SSH`) hacia EC2 A con clave de laboratorio (EP2 § acceso operativo / N5).
+
+Figura NIC-02 — Log de arranque: pool Hikari conectado a RDS PostgreSQL `mesatech_catalogo` y mensaje `Started CatalogoApplication` (EP2 § persistencia cloud / N4–N5).
+
+Figura NIC-03 — Script `probar-publicador-catalogo-ep2.ps1`: POST `/v1/catalogo/categorias` responde HTTP 200 con cuerpo JSON; log confirma publicación AMQP (EP2 § publicador / N2).
+
+Figura NIC-04 — Log `CategoriaEventPublisher`: evento publicado en exchange `catalogo.exchange` con routing key `categoria.creada` (categoriaId=3) (EP2 § mensajería / N2).
+
+Figura NIC-05a — RabbitMQ Management: cola durable `solicitudes.catalogo.queue` en vhost `mesatech`, con un consumidor activo desde EC2 Solicitudes (EP2 § broker / N2).
+
+Figura NIC-05b — Binding de la cola al exchange `catalogo.exchange` con routing key `categoria.creada` (EP2 § topología Rabbit / N2).
+
+Figura NIC-06 — Consulta `psql` desde EC2 A: fila persistida en tabla `categorias` (id=3, nombre `Evidencia-Nico-EP2`) en RDS Catálogo (EP2 § persistencia / N4).
