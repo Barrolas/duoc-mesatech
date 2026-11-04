@@ -159,6 +159,12 @@ Antes de reiniciar se respaldó el log de `ms-catalogo` en la EC2 A como `~/apps
 
 **Esperado.** Login y operación autorizada. Rechazo sin token y por permisos insuficientes. No se puede pasar a `RESUELTA` si el estado no es `EN_PROCESO`. Responden `GET /v1/solicitudes/mias` y `GET /v2/solicitudes/mias`. La categoría recibida se puede elegir al crear la solicitud.
 
-**Obtenido.** Pendiente de repetir sobre la topología nueva. El código de estados y de v1/v2 se mantiene desde la EP1.
+**Obtenido.** 2026-11-04 03:42–03:44 UTC. React y el BFF corren en el PC, con túnel SSH a `ms-catalogo` y `ms-solicitudes` en AWS (ver P2).
 
-**Evidencia.** Pendiente: `P8-401.png`, `P8-403.png`, `P8-transicion.png`, `P8-v1-v2.png`.
+- Login y operación autorizada: el administrador entra con Entra y crea las prioridades Baja, Media y Alta en la RDS de Catálogo. El formulario solo ofrece las categorías recibidas por el evento (`Redes-EP2-AWS`, `Soporte-EP2-AWS`). Se registra la solicitud 0001, "Sin conexión en el laboratorio 3", con categoría `Redes-EP2-AWS` y prioridad Alta, y queda CREADA en la RDS de Solicitudes.
+- Transiciones: desde CREADA solo se ofrecen ASIGNADA y CANCELADA. Desde ASIGNADA, EN PROCESO, CANCELADA o volver a CREADA: RESUELTA no aparece. Desde EN_PROCESO aparece RESUELTA, y se pasa a RESUELTA. El backend también lo exige: `TransicionesEstado` rechaza con 409 "Una solicitud no puede pasar a RESUELTA si no está EN_PROCESO".
+- Rechazo sin token: `GET /v1/solicitudes/mias` y `GET /v2/solicitudes/mias` sin `Authorization` responden 401, tanto en el BFF como en el API Gateway.
+
+Pendiente: el 403 con un usuario sin permisos (iniciar sesión como `cliente@` e intentar la bandeja general o el catálogo de admin) y la respuesta 200 de `GET /v2/solicitudes/mias` con token. React solo llama a v1.
+
+**Evidencia.** `P8-react-form-categoria-recibida.jpg`, `P8-react-solicitud-creada.jpg`, `P8-react-resuelta.jpg`, `P8-aws-401-y-rds.png`.
