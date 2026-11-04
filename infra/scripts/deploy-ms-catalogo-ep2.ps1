@@ -4,7 +4,7 @@
 param(
     [Parameter(Mandatory = $true)]
     [string] $PemPath,
-    [string] $HostIp = "3.87.142.122",
+    [string] $HostIp = "3.85.18.107",
     [string] $User = "ubuntu"
 )
 
