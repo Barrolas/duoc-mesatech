@@ -69,9 +69,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** La fila existe en RDS Catálogo, el mensaje se publicó, el log del consumidor cita ese `eventId` y `categorias_locales.categoria_id` conserva el id original. Luego se crea una solicitud eligiendo esa categoría en el formulario.
 
-**Obtenido.** Pendiente. El publicador todavía no está en el repositorio.
+**Obtenido.** 2026-11-04 03:34 UTC. El administrador crea `Redes-EP2-AWS` desde React. React y el BFF corren en el PC y llegan a `ms-catalogo` (EC2 A) y a `ms-solicitudes` (EC2 B) por túnel SSH, porque el BFF todavía no está desplegado en la nube. React confirma "ya está disponible para crear solicitudes" y la categoría aparece en el catálogo, que se lee desde la RDS de Catálogo. En la EC2 A, `ms-catalogo` publica a las 03:34:20.103 el evento `be46e6ed-e156-4a91-9b88-44ab7606283a` con `categoriaId=1`. En la EC2 B, el consumidor la persiste a las 03:34:20.285 con `categoria_id = 1` y el mismo `event_id`. La cola queda con 0 Ready, 0 Unacked y 1 consumidor.
 
-**Evidencia.** Pendiente: `P2-react-categoria.png`, `P2-rds-catalogo.png`, `P2-cola-o-log.png`, `P2-rds-solicitudes.png`, `P2-solicitud.png`.
+Pendiente: crear una solicitud con esa categoría. Faltan prioridades en la RDS de Catálogo.
+
+**Evidencia.** `P2-react-categoria.jpg`, `P2-aws-flujo.png`.
 
 ---
 
@@ -83,9 +85,11 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** La categoría queda en RDS Catálogo. En la cola `solicitudes.catalogo.queue` el mensaje figura Ready. `categorias_locales` todavía no tiene esa fila. No usar Get messages con confirmación que retire el mensaje.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:36 UTC. Con `mesatech-ms-solicitudes` detenido en la EC2 B, el administrador crea `Soporte-EP2-AWS`. `ms-catalogo` publica a las 03:36:05.675 el evento `ded82e91-a7ee-4ccb-b8cf-4265622aaa49` con `categoriaId=2`. La cola queda con 1 Ready, 0 Unacked y 0 consumidores, y `categorias_locales` no tiene la fila. React muestra "Internal Server Error": no viene del POST, que sí guarda, sino de la recarga posterior de `/v1/solicitudes/categorias` y `/v1/solicitudes/mias` con Solicitudes caído.
 
-**Evidencia.** Pendiente: `P3-cola-ready.png`, `P3-sin-fila-local.png`.
+La hora del encabezado de `P3-aws-cola-ready.png` es la del PC, adelantado unos 54 s respecto de AWS. Las horas de los logs son las de AWS.
+
+**Evidencia.** `P3-aws-cola-ready.png`, `P3-react-solicitudes-detenido.jpg`.
 
 ---
 
@@ -97,9 +101,9 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Esperado.** El consumidor persiste la fila, hace ack y la cola queda sin ese mensaje en Ready ni Unacked. La fila en RDS es la prueba; la cola vacía sola no alcanza.
 
-**Obtenido.** Pendiente.
+**Obtenido.** 2026-11-04 03:37 UTC. `sudo systemctl start mesatech-ms-solicitudes` en la EC2 B. Conecta al broker a las 03:37:24.509 y persiste la categoría 2 (`Soporte-EP2-AWS`) a las 03:37:24.875, con el `event_id` publicado en P3. La cola vuelve a 0 Ready, 0 Unacked y 1 consumidor. El mensaje se consumió después de guardar la fila en la RDS.
 
-**Evidencia.** Pendiente: `P4-log-ack.png`, `P4-fila-local.png`, `P4-cola-vacia.png`.
+**Evidencia.** `P4-aws-consumo-diferido.png`.
 
 ---
 
