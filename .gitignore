@@ -12,8 +12,11 @@ frontend/build/
 # Entornos y secretos (usar env.example / frontend/.env.example)
 .env
 .env.local
+.env-v2
 frontend/.env
 frontend/.env.local
+infra/ec2/ms-catalogo.env
+infra/ec2/ms-solicitudes.env
 **/application-local.properties
 
 # Claves de EC2 / SSH (nunca versionar)
