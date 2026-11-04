@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1480" viewBox="0 0 2400 1480" role="img" aria-labelledby="title desc">
+  <title id="title">MesaTech Cloud · Arquitectura de despliegue EP2</title>
+  <desc id="desc">Diagrama real de despliegue EP2: React, Entra ID, API Gateway, BFF, EC2 A/B/C, RDS y RabbitMQ en us-east-1.</desc>
+  <defs>
+    <marker id="arrow-req" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f4c5c"/>
+    </marker>
+    <marker id="arrow-auth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#c45c26"/>
+    </marker>
+    <marker id="arrow-msg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1a7a6d"/>
+    </marker>
+    <filter id="card-shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f4c5c" flood-opacity="0.08"/>
+    </filter>
+    <style type="text/css"><![CDATA[
+      .bg { fill: #f7fbfa; }
+      .title { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 28px; font-weight: 700; fill: #0f4c5c; }
+      .subtitle { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 15px; fill: #12353c; opacity: 0.85; }
+      .meta { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #0f4c5c; }
+      .h { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #0f4c5c; }
+      .em { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #2ec4b6; letter-spacing: 0.04em; text-transform: uppercase; }
+      .t { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #12353c; }
+      .t-sm { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; fill: #12353c; }
+      .mono { font-family: 'IBM Plex Mono', Consolas, monospace; font-size: 11px; fill: #0a3843; }
+      .aws-label { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #0f4c5c; }
+      .n { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #ffffff; }
+      .leg { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #12353c; }
+      .foot { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #0f4c5c; opacity: 0.75; }
+      .card { fill: #ffffff; stroke: rgba(15,76,92,0.18); stroke-width: 1.2; }
+      .card-soft { fill: #f3fbf9; stroke: rgba(15,76,92,0.14); stroke-width: 1.1; }
+      .card-warn { fill: #fff8f2; stroke: rgba(196,92,38,0.35); stroke-width: 1.2; }
+      .aws { fill: #ffffff; stroke: #2ec4b6; stroke-width: 2; stroke-dasharray: 0; }
+      .hdr-entra { fill: #c45c26; }
+      .hdr-teal { fill: #0f4c5c; }
+      .hdr-aqua { fill: #1fa89c; }
+      .hdr-msg { fill: #0d4a46; }
+      .hdr-db { fill: #0a3843; }
+      .hdr-txt { font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .line-req { fill: none; stroke: #0f4c5c; stroke-width: 2; }
+      .line-auth { fill: none; stroke: #c45c26; stroke-width: 2; stroke-dasharray: 6 4; }
+      .line-msg { fill: none; stroke: #1a7a6d; stroke-width: 2.4; stroke-dasharray: 2 6; }
+      .line-data { fill: none; stroke: #0f4c5c; stroke-width: 1.8; }
+      .badge { fill: #2ec4b6; }
+      .badge-dark { fill: #0f4c5c; }
+    ]]></style>
+  </defs>
+
+  <rect class="bg" width="2400" height="1480"/>
+
+  <!-- Header -->
+  <text class="title" x="48" y="48">MESATECH CLOUD · Arquitectura de despliegue EP2</text>
+  <text class="subtitle" x="48" y="74">DSY1107 · Cloud Native · us-east-1 · Learner Lab · 3 EC2 + 2 RDS + RabbitMQ</text>
+  <text class="meta" x="2352" y="48" text-anchor="end">EP2 · criterio C7</text>
+  <text class="meta" x="2352" y="70" text-anchor="end">Inventario Ari · 2026-10-30</text>
+  <line x1="48" y1="90" x2="2352" y2="90" stroke="#2ec4b6" stroke-width="2"/>
+
+  <!-- LEFT: Actores -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="48" y="118" width="280" height="168" rx="12"/>
+  </g>
+  <rect class="hdr-teal" x="48" y="118" width="280" height="32" rx="12"/>
+  <rect class="hdr-teal" x="48" y="134" width="280" height="16"/>
+  <text class="hdr-txt" x="64" y="140">Actores</text>
+  <text class="t" x="68" y="172">Cliente — crea y consulta solicitudes</text>
+  <text class="t" x="68" y="196">Operador — gestiona bandeja y estados</text>
+  <text class="t" x="68" y="220">Administrador — catálogo y usuarios</text>
+  <text class="t-sm" x="68" y="252">Acceso solo por React autenticado</text>
+  <text class="t-sm" x="68" y="270">con Microsoft Entra ID.</text>
+
+  <!-- Entra ID -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="48" y="308" width="280" height="168" rx="12"/>
+  </g>
+  <rect class="hdr-entra" x="48" y="308" width="280" height="32" rx="12"/>
+  <rect class="hdr-entra" x="48" y="324" width="280" height="16"/>
+  <text class="hdr-txt" x="64" y="330">Microsoft Entra ID</text>
+  <text class="t" x="68" y="362">SPA React + API api-cloud-native</text>
+  <text class="t" x="68" y="384">Scope access_as_user · token v2</text>
+  <text class="t" x="68" y="406">Roles: cliente, operador, admin</text>
+  <text class="t-sm" x="68" y="436">Login / logout · claims en Access Token</text>
+  <text class="t-sm" x="68" y="454">Heredado de la EP1 (P8).</text>
+
+  <!-- Frontend -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="48" y="498" width="280" height="176" rx="12"/>
+  </g>
+  <rect class="hdr-aqua" x="48" y="498" width="280" height="32" rx="12"/>
+  <rect class="hdr-aqua" x="48" y="514" width="280" height="16"/>
+  <text class="hdr-txt" x="64" y="520">Frontend · React + MSAL</text>
+  <text class="t" x="68" y="552">LoginRedirect / acquireTokenSilent</text>
+  <text class="t" x="68" y="574">Axios solo hacia API Gateway</text>
+  <text class="t" x="68" y="596">localhost:3000 en desarrollo</text>
+  <text class="t-sm" x="68" y="626">Nunca apunta a IPs de EC2 ni a RDS.</text>
+  <text class="t-sm" x="68" y="644">Canal único: Invoke URL del Gateway.</text>
+
+  <!-- AWS frame -->
+  <rect class="aws" x="360" y="118" width="1992" height="980" rx="18" fill="#ffffff"/>
+  <rect x="360" y="118" width="1992" height="44" rx="18" fill="#e8faf6" stroke="#2ec4b6" stroke-width="2"/>
+  <rect x="360" y="146" width="1992" height="16" fill="#e8faf6"/>
+  <text class="aws-label" x="384" y="146">AWS · us-east-1 · Learner Lab</text>
+  <text class="t-sm" x="2320" y="146" text-anchor="end">VPC default · AZ us-east-1b (EC2) · us-east-1d (RDS)</text>
+
+  <!-- API Gateway -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="392" y="188" width="420" height="168" rx="12"/>
+  </g>
+  <rect class="hdr-teal" x="392" y="188" width="420" height="32" rx="12"/>
+  <rect class="hdr-teal" x="392" y="204" width="420" height="16"/>
+  <text class="hdr-txt" x="408" y="210">API Gateway · HTTP API</text>
+  <text class="t" x="412" y="242">JWT Authorizer · CORS · path sin reescritura</text>
+  <text class="t" x="412" y="264">Rutas /v1 · /v2 · /api/usuario</text>
+  <text class="t" x="412" y="286">Integración HTTP hacia BFF :8080</text>
+  <text class="t-sm" x="412" y="318">Única puerta pública hacia el backend.</text>
+  <text class="t-sm" x="412" y="336">Sin token → 401 en el borde.</text>
+
+  <!-- BFF -->
+  <g filter="url(#card-shadow)">
+    <rect class="card-warn" x="852" y="188" width="420" height="168" rx="12"/>
+  </g>
+  <rect class="hdr-entra" x="852" y="188" width="420" height="32" rx="12"/>
+  <rect class="hdr-entra" x="852" y="204" width="420" height="16"/>
+  <text class="hdr-txt" x="868" y="210">BFF · Spring Boot :8080</text>
+  <text class="t" x="872" y="242">Resource Server · sin JPA / sin RDS propio</text>
+  <text class="t" x="872" y="264">Proxy a Catálogo :8082 y Solicitudes :8081</text>
+  <text class="t" x="872" y="286">Ubicación: EC2 A o B · por confirmar</text>
+  <text class="t-sm" x="872" y="318">Puertos de JAR pendientes de despliegue</text>
+  <text class="t-sm" x="872" y="336">(Nico / Skarlett). Convención EP1: 8080.</text>
+
+  <!-- Nota seguridad -->
+  <g filter="url(#card-shadow)">
+    <rect class="card-soft" x="1312" y="188" width="1000" height="168" rx="12"/>
+  </g>
+  <rect class="hdr-aqua" x="1312" y="188" width="1000" height="32" rx="12"/>
+  <rect class="hdr-aqua" x="1312" y="204" width="1000" height="16"/>
+  <text class="hdr-txt" x="1328" y="210">Reglas de perímetro EP2</text>
+  <text class="t" x="1332" y="242">React no llama a EC2 ni a RDS. Solo API Gateway con Bearer.</text>
+  <text class="t" x="1332" y="264">AMQP 5672 solo desde SG Catálogo y SG Solicitudes (no Internet).</text>
+  <text class="t" x="1332" y="286">Management 15672 y SSH 22 solo desde IP admin /32.</text>
+  <text class="t" x="1332" y="308">5432 de cada RDS solo desde el SG de su EC2. RDS sin acceso público.</text>
+  <text class="t-sm" x="1332" y="336">IP admin lab: 190.114.35.100/32 · actualizar si cambia.</text>
+
+  <!-- EC2 A -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="392" y="400" width="460" height="220" rx="12"/>
+  </g>
+  <rect class="hdr-teal" x="392" y="400" width="460" height="34" rx="12"/>
+  <rect class="hdr-teal" x="392" y="418" width="460" height="16"/>
+  <text class="hdr-txt" x="408" y="423">EC2 A · Catálogo + publicador</text>
+  <text class="em" x="412" y="456">mesatech-ep2-catalogo</text>
+  <text class="mono" x="412" y="478">i-0a7c485a5fd3c064c · t3.medium · us-east-1b</text>
+  <text class="t" x="412" y="504">IPv4 privada 172.31.17.69 · SG sg-054c453030ed5f8e8</text>
+  <text class="t" x="412" y="526">ms-catalogo.jar · puerto esperado :8082</text>
+  <text class="t" x="412" y="548">OpenJDK 17 · publicador AMQP (confirma)</text>
+  <text class="t-sm" x="412" y="576">Escribe RDS Catálogo y publica categoria.creada</text>
+  <text class="t-sm" x="412" y="596">hacia catalogo.exchange (direct, durable).</text>
+
+  <!-- EC2 B -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="892" y="400" width="460" height="220" rx="12"/>
+  </g>
+  <rect class="hdr-teal" x="892" y="400" width="460" height="34" rx="12"/>
+  <rect class="hdr-teal" x="892" y="418" width="460" height="16"/>
+  <text class="hdr-txt" x="908" y="423">EC2 B · Solicitudes + consumidor</text>
+  <text class="em" x="912" y="456">mesatech-ep2-solicitudes</text>
+  <text class="mono" x="912" y="478">i-0b99595991c09d866 · t3.medium · us-east-1b</text>
+  <text class="t" x="912" y="504">IPv4 privada 172.31.23.125 · SG sg-0571f2e504fd01ab3</text>
+  <text class="t" x="912" y="526">ms-solicitudes.jar · puerto esperado :8081</text>
+  <text class="t" x="912" y="548">OpenJDK 17 · @RabbitListener</text>
+  <text class="t-sm" x="912" y="576">Consume solicitudes.catalogo.queue y guarda</text>
+  <text class="t-sm" x="912" y="596">copia local conservando categoriaId.</text>
+
+  <!-- EC2 C RabbitMQ -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="1392" y="400" width="920" height="220" rx="12"/>
+  </g>
+  <rect class="hdr-msg" x="1392" y="400" width="920" height="34" rx="12"/>
+  <rect class="hdr-msg" x="1392" y="418" width="920" height="16"/>
+  <text class="hdr-txt" x="1408" y="423">EC2 C · RabbitMQ (Docker Compose)</text>
+  <text class="em" x="1412" y="456">mesatech-ep2-rabbitmq</text>
+  <text class="mono" x="1412" y="478">i-05fc13c5d3273e566 · t3.medium · us-east-1b · 172.31.18.133</text>
+  <text class="t" x="1412" y="504">Imagen rabbitmq:4.2-management · vhost mesatech · SG sg-0194df0045c5f001c</text>
+  <text class="t" x="1412" y="526">Exchange catalogo.exchange (direct, durable) · key categoria.creada</text>
+  <text class="t" x="1412" y="548">Cola solicitudes.catalogo.queue (durable, classic)</text>
+  <text class="t-sm" x="1412" y="576">AMQP 5672 solo SG A/B · UI 15672 y SSH 22 solo admin /32</text>
+  <text class="t-sm" x="1412" y="596">Usuarios app: catalogo_publicador · solicitudes_consumidor (sin guest)</text>
+
+  <!-- RDS Catálogo -->
+  <g filter="url(#card-shadow)">
+    <rect class="card-soft" x="392" y="660" width="700" height="170" rx="12"/>
+  </g>
+  <rect class="hdr-db" x="392" y="660" width="700" height="34" rx="12"/>
+  <rect class="hdr-db" x="392" y="678" width="700" height="16"/>
+  <text class="hdr-txt" x="408" y="683">RDS Catálogo · PostgreSQL</text>
+  <text class="em" x="412" y="716">mesatech-ep2-catalogo</text>
+  <text class="mono" x="412" y="738">db.t3.micro · us-east-1d · puerto 5432</text>
+  <text class="t" x="412" y="762">DB mesatech_catalogo · acceso público: No</text>
+  <text class="t-sm" x="412" y="786">Endpoint: mesatech-ep2-catalogo.cg33a3yt7ns0.us-east-1.rds.amazonaws.com</text>
+  <text class="t-sm" x="412" y="808">SG sg-0c718b6d89f69f687 · origen solo SG EC2 A</text>
+
+  <!-- RDS Solicitudes -->
+  <g filter="url(#card-shadow)">
+    <rect class="card-soft" x="1140" y="660" width="700" height="170" rx="12"/>
+  </g>
+  <rect class="hdr-db" x="1140" y="660" width="700" height="34" rx="12"/>
+  <rect class="hdr-db" x="1140" y="678" width="700" height="16"/>
+  <text class="hdr-txt" x="1156" y="683">RDS Solicitudes · PostgreSQL</text>
+  <text class="em" x="1160" y="716">mesatech-ep2-solicitudes</text>
+  <text class="mono" x="1160" y="738">db.t3.micro · us-east-1d · puerto 5432</text>
+  <text class="t" x="1160" y="762">DB mesatech_solicitudes · acceso público: No</text>
+  <text class="t-sm" x="1160" y="786">Endpoint: mesatech-ep2-solicitudes.cg33a3yt7ns0.us-east-1.rds.amazonaws.com</text>
+  <text class="t-sm" x="1160" y="808">SG sg-01ecd39653046dcb7 · origen solo SG EC2 B</text>
+
+  <!-- Flujo mensaje callout -->
+  <g filter="url(#card-shadow)">
+    <rect class="card" x="1880" y="660" width="432" height="170" rx="12"/>
+  </g>
+  <rect class="hdr-msg" x="1880" y="660" width="432" height="34" rx="12"/>
+  <rect class="hdr-msg" x="1880" y="678" width="432" height="16"/>
+  <text class="hdr-txt" x="1896" y="683">Recorrido del evento</text>
+  <text class="t" x="1896" y="720">1. Catálogo persiste categoría</text>
+  <text class="t" x="1896" y="742">2. Publica a catalogo.exchange</text>
+  <text class="t" x="1896" y="764">3. Binding categoria.creada</text>
+  <text class="t" x="1896" y="786">4. Cola → consumidor Solicitudes</text>
+  <text class="t-sm" x="1896" y="810">5. Copia local en RDS Solicitudes</text>
+
+  <!-- CONNECTORS -->
+  <!-- 1 Login React -> Entra -->
+  <path class="line-auth" d="M220 498 L220 476" marker-end="url(#arrow-auth)"/>
+  <circle class="badge" cx="220" cy="487" r="11"/><text class="n" x="220" y="491" text-anchor="middle">1</text>
+  <!-- 2 Token Entra -> React -->
+  <path class="line-auth" d="M120 476 L120 498" marker-end="url(#arrow-auth)"/>
+  <circle class="badge" cx="120" cy="487" r="11"/><text class="n" x="120" y="491" text-anchor="middle">2</text>
+
+  <!-- 3 React -> Gateway -->
+  <path class="line-req" d="M328 560 C350 560 350 250 392 250" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="350" cy="400" r="11"/><text class="n" x="350" y="404" text-anchor="middle">3</text>
+
+  <!-- 4 Gateway -> BFF -->
+  <path class="line-req" d="M812 272 L852 272" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="832" cy="272" r="11"/><text class="n" x="832" y="276" text-anchor="middle">4</text>
+
+  <!-- 5 BFF -> EC2 A / EC2 B -->
+  <path class="line-req" d="M980 356 L620 400" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="760" cy="372" r="11"/><text class="n" x="760" y="376" text-anchor="middle">5</text>
+  <path class="line-req" d="M1080 356 L1120 400" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="1110" cy="372" r="11"/><text class="n" x="1110" y="376" text-anchor="middle">5</text>
+
+  <!-- 6 EC2 A -> RDS Catálogo -->
+  <path class="line-data" d="M560 620 L560 660" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="560" cy="640" r="11"/><text class="n" x="560" y="644" text-anchor="middle">6</text>
+
+  <!-- 7 Message EC2 A -> RabbitMQ -->
+  <path class="line-msg" d="M852 480 C1020 460 1200 460 1392 480" marker-end="url(#arrow-msg)"/>
+  <circle cx="1122" cy="462" r="11" fill="#1a7a6d"/><text class="n" x="1122" y="466" text-anchor="middle">7</text>
+  <text class="t-sm" x="1122" y="448" text-anchor="middle" fill="#1a7a6d">AMQP · categoria.creada</text>
+
+  <!-- 7b consume annotation (gap B–C is narrow; flow explained in legend step 7–8) -->
+  <text class="t-sm" x="1372" y="548" text-anchor="end" fill="#1a7a6d">← consume cola</text>
+
+  <!-- 8 EC2 B -> RDS Solicitudes -->
+  <path class="line-data" d="M1120 620 L1400 660" marker-end="url(#arrow-req)"/>
+  <circle class="badge-dark" cx="1280" cy="640" r="11"/><text class="n" x="1280" y="644" text-anchor="middle">8</text>
+
+  <!-- Legend -->
+  <rect class="card" x="48" y="1120" width="2304" height="300" rx="14" filter="url(#card-shadow)"/>
+  <text class="h" x="72" y="1156">Leyenda del flujo EP2</text>
+
+  <line class="line-req" x1="72" y1="1184" x2="140" y2="1184" marker-end="url(#arrow-req)"/>
+  <text class="leg" x="152" y="1188">Petición / datos HTTP-SQL</text>
+  <line class="line-auth" x1="380" y1="1184" x2="448" y2="1184" marker-end="url(#arrow-auth)"/>
+  <text class="leg" x="460" y="1188">Autenticación Entra ID</text>
+  <line class="line-msg" x1="700" y1="1184" x2="768" y2="1184" marker-end="url(#arrow-msg)"/>
+  <text class="leg" x="780" y="1188">Mensaje AMQP (evento)</text>
+  <circle class="badge-dark" cx="1040" cy="1184" r="10"/><text class="n" x="1040" y="1188" text-anchor="middle">n</text>
+  <text class="leg" x="1058" y="1188">Paso numerado del recorrido</text>
+
+  <text class="leg" x="72" y="1228">1–2 · React autentica con Entra y recibe Access Token.</text>
+  <text class="leg" x="72" y="1252">3–4 · React llama al Gateway con Bearer; el Authorizer reenvía al BFF si el JWT es válido.</text>
+  <text class="leg" x="72" y="1276">5 · El BFF orquesta hacia Catálogo (:8082) o Solicitudes (:8081). No persiste.</text>
+  <text class="leg" x="72" y="1300">6 · Catálogo escribe en RDS Catálogo (5432 solo desde SG A).</text>
+  <text class="leg" x="72" y="1324">7 · El publicador envía el evento a catalogo.exchange con routing key categoria.creada.</text>
+  <text class="leg" x="72" y="1348">8 · El consumidor en Solicitudes lee la cola, guarda la copia local y escribe RDS Solicitudes.</text>
+
+  <text class="leg" x="1280" y="1228">IPs públicas omitidas a propósito (cambian al reiniciar).</text>
+  <text class="leg" x="1280" y="1252">Se muestran IPv4 privadas, Instance ID y nombres tag.</text>
+  <text class="leg" x="1280" y="1276">BFF: ubicación en EC2 A o B aún no cerrada por el equipo.</text>
+  <text class="leg" x="1280" y="1300">Puertos 8080/8081/8082: convención EP1; JAR EP2 por desplegar.</text>
+  <text class="leg" x="1280" y="1324">Sin contraseñas ni secretos en este diagrama.</text>
+  <text class="leg" x="1280" y="1348">Fuente de IDs: Inventario_AWS_EP2.md (Ari).</text>
+
+  <text class="foot" x="72" y="1392">Equipo: Ari Araya · Nicolás Barra · Giannina Guerrero · Skarlett Tropan</text>
+  <text class="foot" x="2328" y="1392" text-anchor="end">Documento de despliegue EP2 · coincidente con inventario vigente</text>
+</svg>

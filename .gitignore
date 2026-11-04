@@ -33,6 +33,9 @@ infra/ec2/ms-solicitudes.env
 
 # Capturas de informe (van a Drive/OneDrive, no al repo)
 **/capturas/
+# Excepción: láminas del deck EP2 (sí se versionan)
+!entregables/presentacion-ep2/img/capturas/
+!entregables/presentacion-ep2/img/capturas/**
 __pycache__/
 _draw_arquitectura.py
 

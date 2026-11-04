@@ -14,7 +14,7 @@
   function replayActive() {
     const slide = document.querySelector(".slide.is-active");
     if (!slide) return;
-    slide.querySelectorAll(".anim").forEach((el) => {
+    slide.querySelectorAll(".anim, .arch-chain > *, .arch-grid > *, .arch-note, .sg-bar, .arch-steps, .arch > figcaption").forEach((el) => {
       el.style.animation = "none";
       void el.offsetWidth;
       el.style.animation = "";
@@ -41,14 +41,25 @@
     event.stopPropagation();
     dismiss();
   });
+
   let started = false;
   function run() {
     if (started) return;
     started = true;
     requestAnimationFrame(() => splash.classList.add("is-run"));
-    window.setTimeout(dismiss, reduced ? 700 : 2400);
+    window.setTimeout(dismiss, reduced ? 800 : 3400);
   }
-  if (document.readyState === "complete") run();
-  else window.addEventListener("load", run, { once: true });
-  window.setTimeout(run, 3000);
+
+  const logo = splash.querySelector(".splash-logo img");
+  function whenPainted() {
+    if (document.readyState === "complete") run();
+    else window.addEventListener("load", run, { once: true });
+  }
+  if (logo && !logo.complete) {
+    logo.addEventListener("load", whenPainted, { once: true });
+    logo.addEventListener("error", whenPainted, { once: true });
+  } else {
+    whenPainted();
+  }
+  window.setTimeout(run, 4000);
 })();
