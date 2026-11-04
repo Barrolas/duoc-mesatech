@@ -14,6 +14,7 @@ function App() {
   const { instance, accounts } = useMsal();
   const [sesionApi, setSesionApi] = useState(null);
   const [catalogo, setCatalogo] = useState({ categorias: [], prioridades: [] });
+  const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
   const [mias, setMias] = useState([]);
   const [todas, setTodas] = useState([]);
   const [vista, setVista] = useState("mias");
@@ -24,11 +25,33 @@ function App() {
   const permisos = permisosDesdeRoles(sesionApi?.roles);
 
   const avisar = (texto, tipo = "danger") => {
+    window.clearTimeout(window.__mtFeedbackTimer);
     setMensaje({ texto, tipo });
     if (tipo === "success") {
-      window.clearTimeout(window.__mtFeedbackTimer);
       window.__mtFeedbackTimer = window.setTimeout(() => setMensaje(null), 4500);
     }
+  };
+
+  const esperarCategoriaLocal = async (nombre) => {
+    const buscado = (nombre || "").trim();
+    if (!buscado || !cuenta) {
+      return;
+    }
+    for (let intento = 0; intento < 4; intento += 1) {
+      await new Promise((resolver) => window.setTimeout(resolver, 2000));
+      try {
+        const data = await apiGet(instance, cuenta, "/v1/solicitudes/categorias");
+        const lista = Array.isArray(data) ? data : [];
+        setCategoriasDisponibles(lista);
+        if (lista.some((item) => item.nombre === buscado)) {
+          avisar(`La categoría «${buscado}» ya está disponible para crear solicitudes.`, "success");
+          return;
+        }
+      } catch {
+        return;
+      }
+    }
+    avisar("La categoría sigue en camino. Actualice el listado de solicitudes en unos segundos.", "warning");
   };
 
   const cargar = useCallback(async () => {
@@ -39,12 +62,14 @@ function App() {
       const usuario = await apiGet(instance, cuenta, "/api/usuario");
       setSesionApi(usuario);
 
-      const [miasData, catalogoData] = await Promise.all([
+      const [miasData, catalogoData, categoriasData] = await Promise.all([
         apiGet(instance, cuenta, "/v1/solicitudes/mias"),
         apiGet(instance, cuenta, "/v1/catalogo"),
+        apiGet(instance, cuenta, "/v1/solicitudes/categorias"),
       ]);
       setMias(Array.isArray(miasData) ? miasData : []);
       setCatalogo(catalogoData || { categorias: [], prioridades: [] });
+      setCategoriasDisponibles(Array.isArray(categoriasData) ? categoriasData : []);
 
       const puedeVerTodas = permisosDesdeRoles(usuario.roles).verTodas;
       if (puedeVerTodas) {
@@ -137,6 +162,8 @@ function App() {
             vista={vista}
             permisos={permisos}
             catalogo={catalogo}
+            categoriasDisponibles={categoriasDisponibles}
+            onActualizarCategorias={() => cargar()}
             mias={mias}
             todas={todas}
             ocupado={ocupado}
@@ -154,10 +181,10 @@ function App() {
               )
             }
             onCrearCategoria={(body) =>
-              ejecutar(
-                () => apiPost(instance, cuenta, "/v1/catalogo/categorias", body),
-                "La categoría fue registrada."
-              )
+              ejecutar(async () => {
+                await apiPost(instance, cuenta, "/v1/catalogo/categorias", body);
+                esperarCategoriaLocal(body?.nombre);
+              }, "La categoría quedó en el catálogo. En solicitudes aparecerá cuando se consuma el evento.")
             }
             onCrearPrioridad={(body) =>
               ejecutar(
