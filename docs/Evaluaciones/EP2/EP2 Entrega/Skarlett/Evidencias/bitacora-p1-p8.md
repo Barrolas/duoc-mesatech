@@ -1,6 +1,6 @@
 # Bitácora P1–P8 — Skarlett
 
-Cada prueba pide preparación, datos, resultado esperado, resultado obtenido y evidencia. Los resultados de ejecución quedan pendientes hasta el despliegue en la EC2 B y el publicador de Nicolás. No se inventan capturas.
+Cada prueba pide preparación, datos, resultado esperado, resultado obtenido y evidencia. Las pruebas P1–P8 se ejecutaron en AWS el 04-11-2026, con la EC2 B desplegada y el publicador de Nicolás funcionando. No se inventan capturas.
 
 Consulta de la copia local, desde la EC2 B:
 
@@ -71,7 +71,7 @@ La EC2 A todavía no tiene el BFF ni `ms-catalogo` desplegados. Cuando estén, e
 
 **Obtenido.** 2026-11-04 03:34 UTC. El administrador crea `Redes-EP2-AWS` desde React. React y el BFF corren en el PC y llegan a `ms-catalogo` (EC2 A) y a `ms-solicitudes` (EC2 B) por túnel SSH, porque el BFF todavía no está desplegado en la nube. React confirma "ya está disponible para crear solicitudes" y la categoría aparece en el catálogo, que se lee desde la RDS de Catálogo. En la EC2 A, `ms-catalogo` publica a las 03:34:20.103 el evento `be46e6ed-e156-4a91-9b88-44ab7606283a` con `categoriaId=1`. En la EC2 B, el consumidor la persiste a las 03:34:20.285 con `categoria_id = 1` y el mismo `event_id`. La cola queda con 0 Ready, 0 Unacked y 1 consumidor.
 
-Pendiente: crear una solicitud con esa categoría. Faltan prioridades en la RDS de Catálogo.
+Pendiente: Realizado en P8 (ver evidencia de P8).
 
 **Evidencia.** `P2-react-categoria.jpg`, `P2-aws-flujo.png`.
 
