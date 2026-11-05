@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: mesatech-postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: mesatech
       POSTGRES_PASSWORD: mesatech
@@ -16,6 +16,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+
+  rabbitmq:
+    image: rabbitmq:4.2-management
+    container_name: mesatech-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 volumes:
   postgres_data:

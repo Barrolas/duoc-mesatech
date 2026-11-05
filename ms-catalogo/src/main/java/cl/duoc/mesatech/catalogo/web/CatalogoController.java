@@ -2,6 +2,8 @@ package cl.duoc.mesatech.catalogo.web;
 
 import cl.duoc.mesatech.catalogo.domain.Categoria;
 import cl.duoc.mesatech.catalogo.domain.Prioridad;
+import cl.duoc.mesatech.catalogo.messaging.CategoriaEventPublisher;
+import cl.duoc.mesatech.catalogo.messaging.PublicacionEventoException;
 import cl.duoc.mesatech.catalogo.repo.CategoriaRepository;
 import cl.duoc.mesatech.catalogo.repo.PrioridadRepository;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,16 @@ public class CatalogoController {
 
     private final CategoriaRepository categorias;
     private final PrioridadRepository prioridades;
+    private final CategoriaEventPublisher eventos;
 
-    public CatalogoController(CategoriaRepository categorias, PrioridadRepository prioridades) {
+    public CatalogoController(
+            CategoriaRepository categorias,
+            PrioridadRepository prioridades,
+            CategoriaEventPublisher eventos
+    ) {
         this.categorias = categorias;
         this.prioridades = prioridades;
+        this.eventos = eventos;
     }
 
     @GetMapping("/v1/catalogo")
@@ -38,8 +46,21 @@ public class CatalogoController {
 
     @PostMapping("/v1/catalogo/categorias")
     public Categoria crearCategoria(@RequestBody Categoria body) {
+        if (body.getNombre() == null || body.getNombre().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre");
+        }
         body.setId(null);
-        return categorias.save(body);
+        body.setNombre(body.getNombre().trim());
+        Categoria guardada = categorias.save(body);
+        try {
+            eventos.publicarCategoriaCreada(guardada);
+        } catch (PublicacionEventoException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    ex.getMessage()
+            );
+        }
+        return guardada;
     }
 
     @PostMapping("/v1/catalogo/prioridades")

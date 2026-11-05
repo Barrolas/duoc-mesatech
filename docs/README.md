@@ -77,3 +77,16 @@ docs/
 | `infra/` | 5432 | `docker compose up -d` |
 
 Plantillas de variables: `env.example`, `frontend/.env.example`.
+
+---
+
+## Evaluaciones (EP1 / EP2)
+
+Carpetas de entregas al estilo cuidarte-mas:
+
+| Ruta | Uso |
+| --- | --- |
+| [Evaluaciones/](Evaluaciones/) | EP1 y EP2 |
+| [Evaluaciones/EP2/EP2 Entrega/00-Distribucion-tareas-equipo.md](Evaluaciones/EP2/EP2%20Entrega/00-Distribucion-tareas-equipo.md) | **Reparto EP2 del equipo** |
+| [equipo/plan-trabajo-ep2.md](equipo/plan-trabajo-ep2.md) | Acceso rápido al plan EP2 |
+| [Contenido Academico/](Contenido%20Academico/) | Apuntes y labs de apoyo |

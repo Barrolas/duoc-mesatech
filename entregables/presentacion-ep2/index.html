@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F4C5C" />
+  <title>MesaTech Cloud · EP2 · DSY1107</title>
+  <script>if (/[?&]capture\b/.test(location.search)) document.documentElement.classList.add("is-capture");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/deck.css?v=ep2d" />
+  <link rel="stylesheet" href="css/ep2.css?v=ep3j" />
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h4l1 4-2.5 1.5a12 12 0 006 6L17 12l4 1v4a2 2 0 01-2 2A16 16 0 015 7a2 2 0 012-2z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4V7a2 2 0 012-2z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 6h8M12 8v8"/></symbol>
+    <symbol id="i-gateway" viewBox="0 0 24 24"><path d="M4 11h16M4 11l4-6h8l4 6M4 11v8h16v-8"/><path d="M10 19v-4h4v4"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="14" r="4"/><path d="M11 12l9-9M17 4l3 3"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 00.4-8 6 6 0 00-11.5-1.5A4 4 0 007 18z"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/><path d="M8 7h.01M8 17h.01"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5 9-5z"/><path d="M3 14l9 5 9-5"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v10c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 19c1.8-.4 5-1.8 5-5"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 18L18 6"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3L12 4z"/><path d="M12 10v4M12 17h.01"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-notes" viewBox="0 0 24 24"><path d="M6 4h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M14 4v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></symbol>
+    <symbol id="i-hex" viewBox="0 0 24 24"><path d="M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z"/></symbol>
+    <symbol id="i-spa" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2"/></symbol>
+    <symbol id="i-bff" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 12h8M12 8v8"/></symbol>
+  </svg>
+
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="progress"><span></span></div>
+      <div class="slides">
+
+        <section class="slide cover cover-hero" data-section="Portada" data-who="Giannina" data-time="30 s" data-say="Buenas noches. Somos MesaTech Cloud: Ari, Nicolás, Skarlett y yo. En la EP1, Solicitudes le pedía la categoría a Catálogo y esperaba la respuesta. Si Catálogo no respondía, Solicitudes fallaba con él. Esa llamada es síncrona. En esta evaluación la convertimos en un mensaje asíncrono: Catálogo publica y sigue, y Solicitudes lo lee cuando puede. El costo es un breve retraso. Ahora mostramos por qué, y cómo lo aplicamos." data-hint="Desde las 20:00: «buenas noches». No ofrecer demo en vivo. Si preguntan por el portal: el trámite del usuario sigue igual. La pregunta de la EP2 es la comunicación entre servicios." data-notes="Buenas noches. Somos MesaTech Cloud: Ari, Nicolás, Skarlett y yo. En la EP1, Solicitudes le pedía la categoría a Catálogo y esperaba la respuesta. Si Catálogo no respondía, Solicitudes fallaba con él. Esa llamada es síncrona. En esta evaluación la convertimos en un mensaje asíncrono: Catálogo publica y sigue, y Solicitudes lo lee cuando puede. El costo es un breve retraso. Ahora mostramos por qué, y cómo lo aplicamos.">
+          <div class="deco cover-visual" aria-hidden="true"><img src="img/corporativas/mesatech-logo-wallpaper-16x9.png" alt="" /></div>
+          <div class="deco cover-scrim" aria-hidden="true"></div>
+          <header class="cover-top anim">
+            <img class="cover-duoc" src="img/marca/duoc-uc-white.png" alt="Duoc UC" />
+            <p class="cover-course">Desarrollo Cloud Native I · DSY1107 · Noviembre 2026</p>
+          </header>
+          <div class="cover-main">
+            <img class="cover-mark anim" src="img/marca/logo-white.png" alt="" />
+            <p class="kicker anim d1">Evaluación parcial n.° 2</p>
+            <h1 class="anim d2">MesaTech<br />Cloud</h1>
+            <p class="cover-sub anim d3">De lo síncrono a lo asíncrono</p>
+            <p class="cover-case anim d4">En la EP1, Solicitudes pedía la categoría en el mismo instante. Si Catálogo no respondía, Solicitudes fallaba con él. En la EP2 esa llamada es un mensaje: Catálogo publica y sigue; Solicitudes lo lee cuando puede. El costo es un breve retraso.</p>
+          </div>
+          <footer class="cover-foot anim d5">
+            <p class="cover-team">Ari&nbsp;Araya · Nicolás&nbsp;Barra · Giannina&nbsp;Guerrero · Skarlett&nbsp;Tropan</p>
+            <p class="cover-docente"><span>Docente</span><strong>Paulo Andrés Berríos Díaz</strong></p>
+          </footer>
+        </section>
+
+        <section class="slide" data-section="Cambio" data-who="Giannina" data-time="50 s" data-say="La decisión es dejar de esperar la respuesta. En la EP1, Solicitudes llamaba a Catálogo por API en el momento, y las dos bases vivían en el mismo Postgres. Los dos tenían que estar arriba juntos. Ahora Catálogo guarda la categoría, publica el mensaje y sigue. Si Solicitudes está detenido, el mensaje espera en la cola. Elegimos un exchange direct, con la etiqueta categoria.creada, porque solo Solicitudes necesita esa copia. No es un aviso a varios servicios. La copia llega un poco después. En P2 fue Redes-EP2-AWS, con el mismo id en las dos bases." data-hint="Consistencia eventual: las bases quedan iguales después de un breve tiempo, no en el mismo instante. Fanout copiaría el mensaje a varias colas. Aquí hay un solo consumidor. Si preguntan por qué no seguir con la API: los dos servicios tenían que estar disponibles al mismo tiempo." data-notes="La decisión es dejar de esperar la respuesta. En la EP1, Solicitudes llamaba a Catálogo por API en el momento, y las dos bases vivían en el mismo Postgres. Los dos tenían que estar arriba juntos. Ahora Catálogo guarda la categoría, publica el mensaje y sigue. Si Solicitudes está detenido, el mensaje espera en la cola. Elegimos un exchange direct, con la etiqueta categoria.creada, porque solo Solicitudes necesita esa copia. No es un aviso a varios servicios. La copia llega un poco después. En P2 fue Redes-EP2-AWS, con el mismo id en las dos bases.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">01 · Cambio <small>Giannina</small></div>
+          </div>
+          <div class="split">
+            <div>
+              <p class="kicker anim">Por qué dejamos la llamada en el momento</p>
+              <h2 class="anim d1">La respuesta ya no se espera.</h2>
+              <p class="lede anim d2">En la EP1 los dos servicios tenían que estar arriba juntos: la categoría se pedía por API, ahí mismo. Ahora Catálogo guarda, publica y sigue. Solicitudes lee el mensaje cuando puede. En P2 ese mensaje fue «Redes-EP2-AWS», id 1 en las dos bases.</p>
+              <div class="facts">
+                <article class="fact anim d3"><span class="mark"><svg class="ico"><use href="#i-flow"></use></svg></span><div><h3>Catálogo no espera</h3><p>Si Solicitudes está detenido, la categoría igual queda guardada. El aviso espera en la cola hasta que el servicio vuelva.</p></div></article>
+                <article class="fact anim d4"><span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span><div><h3>Cada uno escribe lo suyo</h3><p>Solicitudes no abre la base de Catálogo. El formulario usa la copia local, la que ya llegó por el aviso.</p></div></article>
+                <article class="fact anim d5"><span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span><div><h3>Un solo destinatario</h3><p>El aviso llega solo a Solicitudes, que es quien arma la solicitud. Exchange direct: una etiqueta, una cola.</p></div></article>
+              </div>
+            </div>
+            <div class="scene scene-compare anim d2" aria-hidden="true">
+              <div class="cmp-block cmp-before">
+                <span class="scene-label">EP1 · síncrono</span>
+                <div class="cmp-row">
+                  <div class="cmp-node"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><strong>ms-solicitudes</strong></div>
+                  <div class="cmp-link"><span>GET por API</span></div>
+                  <div class="cmp-node"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><strong>ms-catalogo</strong></div>
+                </div>
+                <div class="cmp-base"><svg class="ico"><use href="#i-db"></use></svg>Un Postgres en Docker con las dos bases</div>
+              </div>
+              <div class="cmp-block cmp-after">
+                <span class="scene-label">EP2 · asíncrono</span>
+                <div class="cmp-row cmp-row-4">
+                  <div class="cmp-node"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><strong>Catálogo</strong><small>publica</small></div>
+                  <div class="cmp-link is-async"><span>evento</span></div>
+                  <div class="cmp-node cmp-broker"><span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span><strong>RabbitMQ</strong><small>exchange → cola</small></div>
+                  <div class="cmp-link is-async"><span>consume</span></div>
+                  <div class="cmp-node"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><strong>Solicitudes</strong><small>copia local</small></div>
+                </div>
+                <div class="cmp-dbs">
+                  <div class="cmp-base"><svg class="ico"><use href="#i-db"></use></svg>RDS Catálogo</div>
+                  <div class="cmp-base"><svg class="ico"><use href="#i-db"></use></svg>RDS Solicitudes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide slide-arch" data-section="Arquitectura" data-who="Giannina" data-time="50 s" data-say="El mensaje necesita un lugar donde esperar. Ese lugar es el broker, en el medio. A la izquierda, la persona sigue entrando con una llamada: React, Entra ID, el Gateway y el BFF. El BFF llama a los dos: Catálogo en el 8082 y Solicitudes en el 8081. Eso no pasó a ser asíncrono. Dentro de AWS hay tres EC2. La A es Catálogo y publica. La C es RabbitMQ. La B es Solicitudes y consume. Cada uno escribe solo en su base. La línea punteada es el tramo asíncrono: sale de A, pasa por el exchange y la cola en C, y llega a B. Ari explica por qué están separados." data-hint="Las dos flechas salen del BFF: 8082 a Catálogo y 8081 a Solicitudes. Seguir la línea punteada. No leer IDs ni direcciones. En P2 y P8 el BFF corrió en el PC con túnel SSH a las EC2 A y B. No está desplegado en AWS." data-notes="El mensaje necesita un lugar donde esperar. Ese lugar es el broker, en el medio. A la izquierda, la persona sigue entrando con una llamada: React, Entra ID, el Gateway y el BFF. El BFF llama a los dos: Catálogo en el 8082 y Solicitudes en el 8081. Eso no pasó a ser asíncrono. Dentro de AWS hay tres EC2. La A es Catálogo y publica. La C es RabbitMQ. La B es Solicitudes y consume. Cada uno escribe solo en su base. La línea punteada es el tramo asíncrono: sale de A, pasa por el exchange y la cola en C, y llega a B. Ari explica por qué están separados.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">02 · Arquitectura <small>Giannina</small></div>
+          </div>
+          <div class="lead anim">
+            <p class="kicker">Dónde espera el mensaje</p>
+            <h2 class="anim d1">El broker queda entre los dos.</h2>
+          </div>
+          <figure class="arch">
+            <div class="arch-board">
+              <div class="arch-top">
+                <div class="arch-side">
+                  <p class="arch-zone">Fuera de AWS · la llamada</p>
+                  <div class="arch-chain">
+                    <article class="arch-card">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-users"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">Entrada</p>
+                          <h3>Usuario</h3>
+                        </div>
+                      </div>
+                      <p class="arch-role">Cliente, operador o administrador.</p>
+                    </article>
+                    <div class="arr" aria-hidden="true"><span>1</span></div>
+                    <article class="arch-card is-ep1">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-key"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">EP1</p>
+                          <h3>Entra ID <span class="ep1">EP1</span></h3>
+                        </div>
+                      </div>
+                      <p class="arch-role">Entrega el token v2 a React.</p>
+                      <p class="arch-meta">access_as_user</p>
+                    </article>
+                    <div class="arr" aria-hidden="true"><span>2</span></div>
+                    <article class="arch-card">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-monitor"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">Paso 3</p>
+                          <h3>React</h3>
+                        </div>
+                        <span class="arch-badges"><span>3</span></span>
+                      </div>
+                      <p class="arch-role">Solo llama al Gateway.</p>
+                      <p class="arch-meta">sin IPs de las EC2</p>
+                    </article>
+                    <div class="arr" aria-hidden="true"><span>443</span></div>
+                  </div>
+                  <p class="arch-note">React no llama a las EC2. La única puerta es el Gateway, por el puerto 443.</p>
+                  <ul class="sg-bar">
+                    <li><strong>Perímetro</strong></li>
+                    <li><code>5672</code><span>solo SG A + SG B</span></li>
+                    <li><code>15672</code><span>admin /32</span></li>
+                    <li><code>22</code><span>admin /32</span></li>
+                    <li><code>5432</code><span>cada RDS, solo su SG</span></li>
+                    <li><span>RDS sin Internet · sin secretos · inventario Ari</span></li>
+                  </ul>
+                </div>
+
+                <div class="arch-aws">
+                  <header class="arch-aws-head">
+                    <p><strong>AWS VPC · us-east-1</strong><span>EC2 us-east-1b · RDS us-east-1d</span></p>
+                  </header>
+                  <div class="arch-grid">
+                    <article class="arch-card g-gw">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-gateway"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">Paso 4 <span class="arch-badges"><span>4</span></span></p>
+                          <h3>API Gateway</h3>
+                        </div>
+                      </div>
+                      <p class="arch-role">Reenvía al BFF.</p>
+                      <p class="arch-meta">HTTPS 443 · JWT</p>
+                    </article>
+                    <div class="arr g-a80" aria-hidden="true"><span>8080</span></div>
+                    <article class="arch-card is-ep1 g-bff">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-bff"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">Paso 5</p>
+                          <h3>BFF <span class="ep1">EP1</span></h3>
+                        </div>
+                        <span class="arch-badges"><span>5</span></span>
+                      </div>
+                      <p class="arch-role">Llama a Catálogo y a Solicitudes.</p>
+                      <p class="arch-meta">HTTP 8080 · sin JPA · por confirmar</p>
+                    </article>
+
+                    <div class="arch-under">
+                    <div class="fork g-fork" aria-hidden="true">
+                      <span class="fork-bar"></span>
+                      <span class="fork-tag">llama a los dos</span>
+                      <span class="fork-drop is-left"><em><b>8082</b> · Catálogo</em></span>
+                      <span class="fork-drop is-right"><em><b>8081</b> · Solicitudes</em></span>
+                    </div>
+
+                    <article class="arch-card g-cat">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-server"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">EC2 A <span class="arch-badges"><span>6</span><span class="is-msg">7</span></span></p>
+                          <h3>Catálogo</h3>
+                        </div>
+                      </div>
+                      <p class="arch-role">Guarda la categoría y publica.</p>
+                      <p class="arch-meta">puerto por confirmar</p>
+                    </article>
+                    <div class="arr is-amqp g-aa" aria-hidden="true"><span>publica</span></div>
+                    <article class="arch-card is-broker g-mq">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-mail"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">EC2 C · 5672</p>
+                          <h3>RabbitMQ</h3>
+                        </div>
+                      </div>
+                      <ul class="mq-list">
+                        <li><span>exchange</span><b>catalogo.exchange</b></li>
+                        <li><span>key</span><b>categoria.creada</b></li>
+                        <li><span>cola</span><b>solicitudes.<wbr>catalogo.queue</b></li>
+                      </ul>
+                      <p class="arch-meta">sin guest · mesatech</p>
+                    </article>
+                    <div class="arr is-amqp g-ab" aria-hidden="true"><span>consume</span></div>
+                    <article class="arch-card g-sol">
+                      <div class="arch-head">
+                        <span class="arch-ico"><svg class="ico"><use href="#i-server"></use></svg></span>
+                        <div class="arch-id">
+                          <p class="arch-kicker">EC2 B <span class="arch-badges"><span class="is-msg">8</span></span></p>
+                          <h3>Solicitudes</h3>
+                        </div>
+                      </div>
+                      <p class="arch-role">Guarda la copia local.</p>
+                      <p class="arch-meta">categoriaId</p>
+                    </article>
+
+                    <div class="varr g-d6">5432</div>
+                    <p class="fork-note g-n2">El broker no guarda categorías.</p>
+                    <div class="varr g-d8">5432</div>
+
+                    <article class="arch-card is-rds g-rds1">
+                      <h3><span class="arch-ico"><svg class="ico"><use href="#i-db"></use></svg></span>RDS Catálogo</h3>
+                      <p class="arch-k">mesatech_<wbr>catalogo</p>
+                      <p class="arch-meta">solo SG A</p>
+                    </article>
+                    <article class="arch-card is-rds g-rds2">
+                      <h3><span class="arch-ico"><svg class="ico"><use href="#i-db"></use></svg></span>RDS Solicitudes</h3>
+                      <p class="arch-k">mesatech_<wbr>solicitudes</p>
+                      <p class="arch-meta">solo SG B</p>
+                    </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="arch-flow">
+              <ol class="arch-steps">
+                <li><span>1</span><span>Login en Entra</span></li>
+                <li><span>2</span><span>Token a la SPA</span></li>
+                <li><span>3</span><span>Llama al Gateway</span></li>
+                <li><span>4</span><span>Reenvía al BFF</span></li>
+                <li><span>5</span><span>Orquesta los JAR</span></li>
+                <li><span>6</span><span>Escribe en su RDS</span></li>
+                <li class="is-msg"><span>7</span><span>Publica el aviso</span></li>
+                <li class="is-msg"><span>8</span><span>Guarda la copia</span></li>
+              </ol>
+              <p class="arch-flow-note">El BFF llama a los dos: Catálogo por el 8082 y Solicitudes por el 8081. La línea punteada es el otro tramo: Catálogo deja el mensaje y no espera la copia.</p>
+            </div>
+          </figure>
+        </section>
+
+        <section class="slide" data-section="Infraestructura" data-who="Ari" data-time="55 s" data-say="El mensaje solo sirve si un servicio puede caer sin arrastrar al otro. Por eso, en us-east-1, dejé tres EC2 t3.medium: una para Catálogo, otra para Solicitudes y otra solo para RabbitMQ. Cada una tiene su security group. También dos RDS PostgreSQL, db.t3.micro, sin acceso público. Si compartieran una base, aunque fuera con esquemas distintos, volveríamos al acoplamiento de la EP1. En Catálogo y Solicitudes quedó OpenJDK 17 para correr los JAR. La captura de RDS es del momento de creación: Solicitudes todavía decía Creando." data-hint="Las bases son mesatech_catalogo y mesatech_solicitudes. El usuario maestro está fuera del repositorio. No leer los IDs de instancia." data-notes="El mensaje solo sirve si un servicio puede caer sin arrastrar al otro. Por eso, en us-east-1, dejé tres EC2 t3.medium: una para Catálogo, otra para Solicitudes y otra solo para RabbitMQ. Cada una tiene su security group. También dos RDS PostgreSQL, db.t3.micro, sin acceso público. Si compartieran una base, aunque fuera con esquemas distintos, volveríamos al acoplamiento de la EP1. En Catálogo y Solicitudes quedó OpenJDK 17 para correr los JAR. La captura de RDS es del momento de creación: Solicitudes todavía decía Creando.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">03 · Infraestructura <small>Ari</small></div>
+          </div>
+          <div class="split split-deploy">
+            <div>
+              <p class="kicker anim">Caer por separado</p>
+              <h2 class="anim d1">Si uno se detiene, el otro sigue.</h2>
+              <p class="lede anim d2">El mensaje solo sirve si un servicio puede caer sin arrastrar al otro. Por eso cada uno tiene su máquina y su base. Una sola base, aunque tuviera esquemas distintos, los volvería a atar como en la EP1.</p>
+              <div class="stack anim d2">
+                <article class="stack-row"><span class="lane">EC2 A</span><div><strong>mesatech-ep2-catalogo</strong><p>Crea la categoría y publica el aviso · OpenJDK 17</p></div></article>
+                <article class="stack-row"><span class="lane">EC2 B</span><div><strong>mesatech-ep2-solicitudes</strong><p>Lee el aviso y guarda la copia · OpenJDK 17</p></div></article>
+                <article class="stack-row"><span class="lane">EC2 C</span><div><strong>mesatech-ep2-rabbitmq</strong><p>Solo el intermediario. No guarda categorías</p></div></article>
+                <article class="stack-row"><span class="lane">2 RDS</span><div><strong>PostgreSQL · db.t3.micro</strong><p>Cada base acepta solo a la EC2 de su servicio</p></div></article>
+              </div>
+            </div>
+            <div class="deploy-shots">
+              <figure class="shot anim d3">
+                <div class="shot-card frame-aws">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 · Instancias</div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ep2/ari-ec2-instancias.png">
+                    <img src="img/capturas/ep2/ari-ec2-instancias.png" alt="Consola EC2 con las instancias mesatech-ep2-catalogo, mesatech-ep2-rabbitmq y mesatech-ep2-solicitudes, tipo t3.medium" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+                </div>
+                <figcaption>Tres máquinas. Ninguna ejecuta el servicio de la otra.</figcaption>
+              </figure>
+              <figure class="shot anim d4">
+                <div class="shot-card frame-aws">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>Aurora and RDS · Bases de datos</div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ep2/ari-rds-bases.png">
+                    <img src="img/capturas/ep2/ari-rds-bases.png" alt="Consola RDS con las bases mesatech-ep2-catalogo y mesatech-ep2-solicitudes, PostgreSQL db.t3.micro" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+                </div>
+                <figcaption>Dos bases privadas. La captura es del momento en que Solicitudes aún se estaba creando.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="RabbitMQ" data-who="Ari" data-time="45 s" data-say="Si el mensaje se pierde, Solicitudes nunca se entera de la categoría. Por eso no usamos latest. La imagen es rabbitmq 4.2-management. Es un solo nodo, no un clúster. El hostname queda fijo, mesatech-rabbitmq, porque RabbitMQ guarda sus datos según el nombre del nodo. El 5672 es el puerto de las aplicaciones. El 15672 es la consola. El volumen y el mensaje persistente hacen que la cola siga si se recrea el contenedor. Hacen falta las tres piezas: exchange durable, cola durable y mensaje persistente. P5 lo comprobó." data-hint="Las credenciales van en un .env en la EC2, fuera de git. Sin volumen, o con el mensaje solo en memoria, recrear el contenedor pierde la cola. No hay segundo nodo ni cookie de Erlang." data-notes="Si el mensaje se pierde, Solicitudes nunca se entera de la categoría. Por eso no usamos latest. La imagen es rabbitmq 4.2-management. Es un solo nodo, no un clúster. El hostname queda fijo, mesatech-rabbitmq, porque RabbitMQ guarda sus datos según el nombre del nodo. El 5672 es el puerto de las aplicaciones. El 15672 es la consola. El volumen y el mensaje persistente hacen que la cola siga si se recrea el contenedor. Hacen falta las tres piezas: exchange durable, cola durable y mensaje persistente. P5 lo comprobó.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">04 · RabbitMQ <small>Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">El mensaje es el único puente</p>
+            <h2 class="anim d1">Por eso se escribe a disco.</h2>
+            <p class="lede anim d2">Si el aviso se pierde, Solicitudes nunca se entera. La imagen queda fija en 4.2, el nodo no cambia de nombre y el mensaje se escribe a disco. Si se recrea el contenedor, la cola sigue. P5 lo comprobó.</p>
+          </div>
+          <div class="spec-row anim d2">
+            <article class="spec"><span>Sistema</span><strong>Ubuntu 24.04 LTS</strong></article>
+            <article class="spec"><span>Docker Engine</span><strong>29.9.2</strong></article>
+            <article class="spec"><span>Compose</span><strong>v5.6.1</strong></article>
+            <article class="spec spec-accent"><span>Imagen</span><strong>rabbitmq:4.2-management</strong></article>
+          </div>
+          <div class="pills compose-pills anim d3">
+            <span class="pill">hostname mesatech-rabbitmq</span>
+            <span class="pill">5672 · AMQP</span>
+            <span class="pill">15672 · consola</span>
+            <span class="pill">volumen /var/lib/rabbitmq</span>
+            <span class="pill">mensaje persistente</span>
+            <span class="pill">restart: unless-stopped</span>
+            <span class="pill warn">credenciales en .env fuera de git</span>
+          </div>
+          <figure class="shot fill anim d3">
+            <div class="shot-card frame-terminal shot-contain">
+              <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>EC2 C · docker compose pull · up -d · ps</div>
+              <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ep2/ari-compose-ps.png">
+                <img src="img/capturas/ep2/ari-compose-ps.png" alt="Terminal con docker compose: imagen rabbitmq:4.2-management descargada, red y volumen creados, contenedor iniciado" />
+                <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+              </button>
+            </div>
+            <figcaption>5672 es el puerto por donde hablan Catálogo y Solicitudes. 15672 es la consola, solo para administrar.</figcaption>
+          </figure>
+        </section>
+
+        <section class="slide" data-section="Red" data-who="Ari" data-time="45 s" data-say="Al poner el broker aparece un acceso que antes no existía. El puerto 5672 solo acepta al security group de Catálogo y al de Solicitudes. La consola y el SSH solo se abren a una IP, con máscara /32. Cada base acepta el 5432 solo desde su propia EC2. Solicitudes no entra a la base de Catálogo, ni al revés. El permiso apunta al security group y no a la IP, porque en el laboratorio la IP cambia al reiniciar. Y no usamos el usuario guest. Cada aplicación tiene el suyo." data-hint="/32 es una sola dirección. Las RDS no tienen acceso público. Los puertos 8081 y 8082 se abren solo desde el BFF, al desplegar." data-notes="Al poner el broker aparece un acceso que antes no existía. El puerto 5672 solo acepta al security group de Catálogo y al de Solicitudes. La consola y el SSH solo se abren a una IP, con máscara /32. Cada base acepta el 5432 solo desde su propia EC2. Solicitudes no entra a la base de Catálogo, ni al revés. El permiso apunta al security group y no a la IP, porque en el laboratorio la IP cambia al reiniciar. Y no usamos el usuario guest. Cada aplicación tiene el suyo.">
+          <div class="deco deco-side" aria-hidden="true"><img src="img/corporativas/mesatech-gateway-identidad.png" alt="" /></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">05 · Red <small>Ari</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">Un acceso que antes no existía</p>
+            <h2 class="anim d1">El broker no queda abierto.</h2>
+            <p class="lede anim d2">Al poner un intermediario aparece un puerto nuevo. Solo Catálogo y Solicitudes pueden usarlo. Ninguno de los dos entra a la base del otro.</p>
+          </div>
+          <div class="net-layout">
+            <table class="sg-table anim d2">
+              <thead>
+                <tr><th>Destino</th><th>Puerto</th><th>Origen permitido</th><th>Para qué</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>EC2 C · RabbitMQ</strong></td><td><code>5672</code> AMQP</td><td>SG de EC2 A y SG de EC2 B</td><td>Solo A y B hablan con el broker</td></tr>
+                <tr><td><strong>EC2 C · RabbitMQ</strong></td><td><code>15672</code> consola</td><td>IP de administración /32</td><td>La consola no queda en internet</td></tr>
+                <tr><td><strong>EC2 A, B y C</strong></td><td><code>22</code> SSH</td><td>IP de administración /32</td><td>SSH solo desde esa IP</td></tr>
+                <tr><td><strong>RDS Catálogo</strong></td><td><code>5432</code></td><td>Solo SG de EC2 A</td><td>Solicitudes no entra aquí</td></tr>
+                <tr><td><strong>RDS Solicitudes</strong></td><td><code>5432</code></td><td>Solo SG de EC2 B</td><td>Catálogo no entra aquí</td></tr>
+              </tbody>
+            </table>
+            <div class="facts net-facts">
+              <article class="fact anim d3"><span class="mark"><svg class="ico"><use href="#i-lock"></use></svg></span><div><h3>Las bases no son públicas</h3><p>Desde internet no hay camino a PostgreSQL. Entra solo la EC2 dueña, por el puerto 5432.</p></div></article>
+              <article class="fact anim d4"><span class="mark"><svg class="ico"><use href="#i-shield"></use></svg></span><div><h3>El permiso no usa la IP</h3><p>Apunta al security group de la máquina. Si al reiniciar cambia la IP, la regla sigue valiendo.</p></div></article>
+              <article class="fact anim d5"><span class="mark"><svg class="ico"><use href="#i-ban"></use></svg></span><div><h3>Sin usuario de prueba</h3><p>RabbitMQ no usa guest. Catálogo publica con un usuario y Solicitudes lee con otro.</p></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Mensajería" data-who="Ari" data-time="45 s" data-say="Catálogo no escribe en la cola. En este modelo el productor publica en un exchange y no necesita conocer el nombre de la cola. El nuestro se llama catalogo.exchange. Es direct y durable: elige el destino y no guarda el mensaje. La etiqueta categoria.creada tiene que coincidir completa. Así el mensaje llega a solicitudes.catalogo.queue, que es donde espera. El vhost mesatech separa este proyecto del resto del broker. Hay dos usuarios, uno para publicar y otro para leer, sin permiso de administrador. Si la etiqueta no coincide, el mensaje vuelve a Catálogo." data-hint="Direct es coincidencia exacta de la etiqueta. Fanout la ignoraría y copiaría el mensaje a todas las colas. Durable es la definición del exchange y de la cola. El mensaje, además, va persistente. En la EC2 B el consumidor corre con RABBITMQ_DECLARE igual a false." data-notes="Catálogo no escribe en la cola. En este modelo el productor publica en un exchange y no necesita conocer el nombre de la cola. El nuestro se llama catalogo.exchange. Es direct y durable: elige el destino y no guarda el mensaje. La etiqueta categoria.creada tiene que coincidir completa. Así el mensaje llega a solicitudes.catalogo.queue, que es donde espera. El vhost mesatech separa este proyecto del resto del broker. Hay dos usuarios, uno para publicar y otro para leer, sin permiso de administrador. Si la etiqueta no coincide, el mensaje vuelve a Catálogo.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">06 · Mensajería <small>Ari</small></div>
+          </div>
+          <div class="split split-deploy split-msg">
+            <div>
+              <p class="kicker anim">El productor no conoce la cola</p>
+              <h2 class="anim d1">Catálogo no escribe en la cola.</h2>
+              <p class="lede anim d2">En este modelo, Catálogo no elige la cola. Publica en el exchange con la etiqueta <code>categoria.creada</code>. RabbitMQ deja el mensaje en la cola de Solicitudes solo porque la etiqueta coincide.</p>
+              <div class="stack stack-tight anim d3">
+                <article class="stack-row"><span class="lane">Vhost</span><div><strong><code>mesatech</code></strong><p>Separa las colas de este proyecto de cualquier otra del mismo broker</p></div></article>
+                <article class="stack-row"><span class="lane">Exchange</span><div><strong><code>catalogo.exchange</code></strong><p>Recibe el aviso y elige la cola. No lo guarda</p></div></article>
+                <article class="stack-row"><span class="lane">Etiqueta</span><div><strong><code>categoria.creada</code></strong><p>Tiene que coincidir completa. Si no, el aviso vuelve a Catálogo</p></div></article>
+                <article class="stack-row"><span class="lane">Cola</span><div><strong><code>solicitudes.catalogo.queue</code></strong><p>Aquí espera el JSON, en orden, hasta que Solicitudes lo lea</p></div></article>
+                <article class="stack-row"><span class="lane">Usuarios</span><div><strong><code>catalogo_publicador</code> · <code>solicitudes_consumidor</code></strong><p>Quien publica no administra. Quien lee no puede publicar</p></div></article>
+              </div>
+            </div>
+            <div class="deploy-shots deploy-single">
+              <figure class="shot anim d3">
+                <div class="shot-card frame-browser">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span><span class="frame-url">RabbitMQ · Queues and Streams · solicitudes.catalogo.queue</span></div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ep2/nic-05-rabbit-binding.png">
+                    <img src="img/capturas/ep2/nic-05-rabbit-binding.png" alt="Consola de RabbitMQ: cola solicitudes.catalogo.queue durable en el vhost mesatech, enlazada a catalogo.exchange con categoria.creada" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+                </div>
+                <figcaption>La consola muestra el enlace: catalogo.exchange entrega categoria.creada a la cola de Solicitudes.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" data-section="Contrato" data-who="Giannina" data-time="50 s" data-say="Antes, Catálogo y Solicitudes se entendían por la respuesta de la API. Ahora se compilan por separado y el único acuerdo es este JSON. Son cinco campos. eventId identifica el envío. tipoEvento es siempre categoria.creada. fechaEvento va en UTC. categoriaId es el mismo número de la base de Catálogo, para no inventar otra categoría. nombre es el texto que ve el técnico en el formulario. No prometemos entrega exactamente una vez. Si el mismo id llega de nuevo, Solicitudes actualiza la fila. Si falta un campo, rechaza el mensaje. En P2, el id 1 y Redes-EP2-AWS quedaron iguales en las dos bases." data-hint="Contrato versión 1.0. La actualización es por categoriaId, no por eventId. Renombrar un campo obliga a subir la versión y a cambiar los dos servicios." data-notes="Antes, Catálogo y Solicitudes se entendían por la respuesta de la API. Ahora se compilan por separado y el único acuerdo es este JSON. Son cinco campos. eventId identifica el envío. tipoEvento es siempre categoria.creada. fechaEvento va en UTC. categoriaId es el mismo número de la base de Catálogo, para no inventar otra categoría. nombre es el texto que ve el técnico en el formulario. No prometemos entrega exactamente una vez. Si el mismo id llega de nuevo, Solicitudes actualiza la fila. Si falta un campo, rechaza el mensaje. En P2, el id 1 y Redes-EP2-AWS quedaron iguales en las dos bases.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">07 · Contrato <small>Giannina</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">Ya no comparten la llamada</p>
+            <h2 class="anim d1">El acuerdo es el JSON, no el código.</h2>
+            <p class="lede anim d2">Antes se entendían por la respuesta de la API. Ahora solo comparten este mensaje. La entrega es al menos una vez: si el mismo id llega de nuevo, se actualiza la fila.</p>
+          </div>
+          <div class="contract">
+            <table class="sg-table field-table anim d2">
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Regla</th></tr></thead>
+              <tbody>
+                <tr><td><code>eventId</code></td><td>String</td><td>Identifica este envío</td></tr>
+                <tr><td><code>tipoEvento</code></td><td>String</td><td>Solo se acepta <code>categoria.creada</code></td></tr>
+                <tr><td><code>fechaEvento</code></td><td>Instant</td><td>Cuándo se publicó, en UTC</td></tr>
+                <tr><td><code>categoriaId</code></td><td>Long</td><td>El mismo número en las dos bases</td></tr>
+                <tr><td><code>nombre</code></td><td>String</td><td>El texto que ve el técnico en el formulario</td></tr>
+              </tbody>
+            </table>
+            <figure class="shot code-shot anim d3">
+              <div class="shot-card frame-terminal">
+                <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>JSON · routing key categoria.creada<span class="frame-tag">Contrato v1.0</span></div>
+<pre class="code"><span class="p">{</span>
+  <span class="k">"eventId"</span>: <span class="s">"be46e6ed-e156-4a91-9b88-44ab7606283a"</span>,
+  <span class="k">"tipoEvento"</span>: <span class="s">"categoria.creada"</span>,
+  <span class="k">"fechaEvento"</span>: <span class="s">"2026-11-04T03:34:20Z"</span>,
+  <span class="k">"categoriaId"</span>: <span class="n">1</span>,
+  <span class="k">"nombre"</span>: <span class="s">"Redes-EP2-AWS"</span>
+<span class="p">}</span></pre>
+              </div>
+              <figcaption>En P2, el id 1 y el nombre Redes-EP2-AWS quedaron iguales en las dos bases. Si falta un campo, Solicitudes rechaza el aviso.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="slide slide-jwt slide-acks" data-section="Confirmaciones" data-who="Nico · Skarlett" data-time="55 s" data-say="Recibir el mensaje no es haberlo guardado. Hay dos confirmaciones, y cubren tramos distintos. Nicolás: Catálogo usa publisher confirms. RabbitMQ le avisa si recibió el mensaje. Si la etiqueta no tiene cola, se lo devuelve. Eso se llama returned. Skarlett: Solicitudes confirma a mano, y solo después de guardar la copia. Si confirmara antes y la base falla, la categoría se pierde. Si el JSON está mal, lo rechazamos sin reencolar, porque releerlo da el mismo error. No tenemos una cola de fallidos para archivarlo. Si falla el guardado, el mensaje vuelve a la cola. Si llega dos veces, queda una sola fila." data-hint="Confirm significa que el broker recibió el mensaje. Ack significa que la copia ya está en PostgreSQL. Sin outbox: en P7, con el broker caído, Catálogo responde 503 y la fila queda solo en su base." data-notes="Recibir el mensaje no es haberlo guardado. Hay dos confirmaciones, y cubren tramos distintos. Nicolás: Catálogo usa publisher confirms. RabbitMQ le avisa si recibió el mensaje. Si la etiqueta no tiene cola, se lo devuelve. Eso se llama returned. Skarlett: Solicitudes confirma a mano, y solo después de guardar la copia. Si confirmara antes y la base falla, la categoría se pierde. Si el JSON está mal, lo rechazamos sin reencolar, porque releerlo da el mismo error. No tenemos una cola de fallidos para archivarlo. Si falla el guardado, el mensaje vuelve a la cola. Si llega dos veces, queda una sola fila.">
+          <div class="deco deco-jwt" aria-hidden="true"><img src="img/corporativas/mesatech-gateway-identidad.png" alt="" /></div>
+          <div class="deco deco-jwt-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">08 · Confirmaciones <small>Nico · Skarlett</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">Dos tramos, dos confirmaciones</p>
+            <h2 class="anim d1">Recibir el aviso no es haberlo guardado.</h2>
+          </div>
+          <div class="gates anim d2">
+            <div class="gate">
+              <span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span>
+              <strong>Publicador · Catálogo</strong>
+              <span>Catálogo sabe si RabbitMQ recibió el aviso. Si la etiqueta no tiene cola, el broker se lo devuelve.</span>
+              <span class="pill">En código y en AWS · Nicolás</span>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="gate">
+              <span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span>
+              <strong>Consumidor · Solicitudes</strong>
+              <span>Solicitudes confirma solo cuando la copia ya está en su base. Si confirma antes y la base falla, la categoría se pierde.</span>
+              <span class="pill">En código y en AWS · Skarlett</span>
+            </div>
+          </div>
+          <div class="outcomes anim d3">
+            <article class="outcome tone-ok"><b>basicAck</b><strong>Copia guardada</strong><span>La fila ya está en PostgreSQL. Recién ahí RabbitMQ borra el aviso.</span></article>
+            <article class="outcome"><b>nack · sin reencolar</b><strong>JSON inválido</strong><span>Releerlo da el mismo error. No tenemos una cola aparte para guardar ese fallo.</span></article>
+            <article class="outcome"><b>nack · reencolar</b><strong>Falla al guardar</strong><span>La base no respondió. El aviso vuelve a la cola para intentarlo de nuevo.</span></article>
+            <article class="outcome"><b>upsert</b><strong>Mismo categoriaId</strong><span>El aviso puede llegar dos veces. La segunda deja una sola fila.</span></article>
+          </div>
+          <p class="src-note anim d4">Dos confirmaciones distintas. Un fallo de formato no queda archivado: no hay DLQ.</p>
+        </section>
+
+        <section class="slide" data-section="Continuidad" data-who="Giannina" data-time="45 s" data-say="Ojo con el alcance. No todo pasó a ser asíncrono. La petición del usuario sigue en línea: React pide el token a Entra ID, el Gateway lo valida y el BFF vuelve a revisar token y rol. Si no hay token, responden 401. Siguen conviviendo v1 y v2. Lo que sí cambió es el origen de las categorías del formulario. Salen de la copia, por GET /v1/solicitudes/categorias. El BFF ya responde esa ruta. En el Gateway, Ari la está creando. En P8 el BFF corrió en el PC, con túnel hacia las EC2. Skarlett muestra qué propiedad del mensaje prueba cada caso." data-hint="401 es falta de identidad. 403 es que el rol no alcanza. 409 es una transición no permitida. El túnel es un límite de despliegue, no de mensajería." data-notes="Ojo con el alcance. No todo pasó a ser asíncrono. La petición del usuario sigue en línea: React pide el token a Entra ID, el Gateway lo valida y el BFF vuelve a revisar token y rol. Si no hay token, responden 401. Siguen conviviendo v1 y v2. Lo que sí cambió es el origen de las categorías del formulario. Salen de la copia, por GET /v1/solicitudes/categorias. El BFF ya responde esa ruta. En el Gateway, Ari la está creando. En P8 el BFF corrió en el PC, con túnel hacia las EC2. Skarlett muestra qué propiedad del mensaje prueba cada caso.">
+          <div class="deco deco-side" aria-hidden="true"><img src="img/corporativas/mesatech-tres-roles.png" alt="" /></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">09 · Continuidad <small>Giannina</small></div>
+          </div>
+          <div class="split split-cont">
+            <div>
+              <p class="kicker anim">Qué no pasó a ser asíncrono</p>
+              <h2 class="anim d1">La petición del usuario sigue en línea.</h2>
+              <p class="lede anim d2">El cambio es entre servicios. Quien usa el portal sigue esperando la respuesta de su petición. Las categorías del formulario salen de la copia, no de una llamada a Catálogo en ese instante.</p>
+              <div class="stack stack-tight anim d2">
+                <article class="stack-row"><span class="lane">Front</span><div><strong>React + MSAL</strong><p>Pide el token a Entra ID y lo manda en cada petición</p></div></article>
+                <article class="stack-row lane-entra"><span class="lane">Identidad</span><div><strong>Microsoft Entra ID</strong><p>Distingue cliente, operador y administrador</p></div></article>
+                <article class="stack-row"><span class="lane">Borde</span><div><strong>API Gateway</strong><p>Única entrada pública. Sin token responde 401</p></div></article>
+                <article class="stack-row lane-entra"><span class="lane">Orquesta</span><div><strong>BFF :8080</strong><p>Vuelve a revisar token y rol. No tiene base</p></div></article>
+                <article class="stack-row"><span class="lane">Contratos</span><div><strong>v1 y v2</strong><p>«Mis solicitudes» sigue en las dos versiones</p></div></article>
+              </div>
+            </div>
+            <div class="cont-side anim d3">
+              <div class="route-card">
+                <span class="scene-label">Ruta nueva en BFF</span>
+                <p><code>GET /v1/solicitudes/categorias</code></p>
+                <span>El formulario pide las categorías ya copiadas. El BFF ya responde ese GET. En el Gateway, Ari está creando la ruta. En P8 el BFF corrió en el PC, con túnel a las EC2.</span>
+              </div>
+              <figure class="shot">
+                <div class="shot-card frame-browser">
+                  <div class="frame-bar"><span class="frame-dots"><i></i><i></i><i></i></span>P8 · 401 sin token</div>
+                  <button type="button" class="shot-zoom" aria-label="Ampliar captura" data-zoom="img/capturas/ep2/p8-401.png">
+                    <img src="img/capturas/ep2/p8-401.png" alt="P8: GET /v1 y /v2 sin Authorization responden 401 en BFF y en API Gateway" />
+                    <span class="shot-hint"><svg class="ico"><use href="#i-zoom"></use></svg></span>
+                  </button>
+                </div>
+                <figcaption>Sin token, BFF y Gateway responden 401. La petición ni siquiera llega a Catálogo. P8, 4 de noviembre.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide slide-checks" data-section="Pruebas" data-who="Skarlett" data-time="60 s" data-say="Estas ocho pruebas no son una lista de checks. Cada una responde una propiedad del mensaje, y se ejecutaron en AWS el 4 de noviembre. P1: máquinas y bases distintas. P2: Redes-EP2-AWS quedó con el mismo id en las dos bases. P3: con Solicitudes detenido, el mensaje queda esperando. P4: al volver, guarda la copia y recién entonces confirma. P5: se recrea el contenedor y el mensaje sigue, porque está en disco. P6: reiniciar los JAR no borra las filas ya guardadas. P7: con RabbitMQ apagado, el alta responde 503. La categoría queda en Catálogo y no hay copia, porque no hay reintento posterior. P8: sin token, 401; con rol cliente, 403; y v1 y v2 responden 200. P2 y P8 usaron el BFF en el PC, por túnel." data-hint="P7 es el caso para la defensa: 503, fila solo en Catálogo, sin outbox. No presentar el túnel como si el BFF estuviera desplegado. Clic en la tarjeta abre la captura; si hay más de una, la flecha pasa a la siguiente." data-notes="Estas ocho pruebas no son una lista de checks. Cada una responde una propiedad del mensaje, y se ejecutaron en AWS el 4 de noviembre. P1: máquinas y bases distintas. P2: Redes-EP2-AWS quedó con el mismo id en las dos bases. P3: con Solicitudes detenido, el mensaje queda esperando. P4: al volver, guarda la copia y recién entonces confirma. P5: se recrea el contenedor y el mensaje sigue, porque está en disco. P6: reiniciar los JAR no borra las filas ya guardadas. P7: con RabbitMQ apagado, el alta responde 503. La categoría queda en Catálogo y no hay copia, porque no hay reintento posterior. P8: sin token, 401; con rol cliente, 403; y v1 y v2 responden 200. P2 y P8 usaron el BFF en el PC, por túnel.">
+          <div class="deco deco-checks" aria-hidden="true"><img src="img/corporativas/mesatech-nueve-chequeos.png" alt="" /></div>
+          <div class="deco deco-checks-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo-white.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">10 · Pruebas <small>Skarlett</small></div>
+          </div>
+          <div class="lead lead-row">
+            <div>
+              <p class="kicker anim">La decisión, puesta a prueba</p>
+              <h2 class="anim d1">Espera, confirmación y caída.</h2>
+            </div>
+            <p class="proof-lede anim d1">Ocho pruebas en AWS, el 4 de noviembre. Cada tarjeta abre su captura.</p>
+          </div>
+          <div class="proof-scene anim d2">
+            <div class="proof-hop">
+              <span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span>
+              <div><strong>Guarda</strong><small>Catálogo publica y sigue</small></div>
+            </div>
+            <div class="proof-hop">
+              <span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span>
+              <div><strong>Espera</strong><small>El aviso aguanta en la cola</small></div>
+            </div>
+            <div class="proof-hop">
+              <span class="mark"><svg class="ico"><use href="#i-check"></use></svg></span>
+              <div><strong>Confirma</strong><small>El ack va después de guardar</small></div>
+            </div>
+            <div class="proof-hop is-fall">
+              <span class="mark"><svg class="ico"><use href="#i-alert"></use></svg></span>
+              <div><strong>Cae</strong><small>Sin broker, el alta es 503</small></div>
+            </div>
+            <span class="proof-packet" aria-hidden="true"></span>
+          </div>
+          <div class="proof-grid anim d3">
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p1-ec2-b.png","alt":"P1: ms-solicitudes activo en la EC2 B","cap":"P1 · La EC2 B corre ms-solicitudes, conectado a su RDS y a RabbitMQ."},{"src":"img/capturas/ep2/p1-rds-solicitudes.png","alt":"P1: tablas de la RDS de solicitudes","cap":"P1 · La base de Solicitudes es otra: categorias_locales y solicitudes, separadas de Catálogo."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-server"></use></svg></span><span><b>P1</b><strong>Separación</strong></span></span>
+              <span class="proof-body">Catálogo y Solicitudes corren en máquinas y bases distintas.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p1-ec2-b.png" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p2-react-categoria.jpg","alt":"P2: React confirma la categoría Redes-EP2-AWS","cap":"P2 · React confirma Redes-EP2-AWS. El BFF corría en el PC, por túnel SSH."},{"src":"img/capturas/ep2/p2-aws-flujo.png","alt":"P2: el mismo id en Catálogo y en Solicitudes","cap":"P2 · El publicador envió el id 1 y el consumidor guardó ese mismo id."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><span><b>P2</b><strong>Mismo id</strong></span></span>
+              <span class="proof-body">«Redes-EP2-AWS» quedó con id 1 en las dos bases.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p2-react-categoria.jpg" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p3-cola-ready.png","alt":"P3: un aviso Ready y cero consumidores","cap":"P3 · La cola quedó con 1 Ready y 0 consumidores. El aviso espera."},{"src":"img/capturas/ep2/p3-react-detenido.jpg","alt":"P3: React no puede recargar porque Solicitudes está detenido","cap":"P3 · La recarga de React falla porque Solicitudes está caído. El alta en Catálogo sí quedó."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-clock"></use></svg></span><span><b>P3</b><strong>En espera</strong></span></span>
+              <span class="proof-body">Solicitudes detenido: 1 aviso Ready y todavía sin fila local.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p3-cola-ready.png" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p4-consumo-diferido.png","alt":"P4: el consumidor guarda la copia y la cola vuelve a cero","cap":"P4 · Al volver, persistió Soporte-EP2-AWS y la cola quedó en 0. El ack fue después de guardar."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-check"></use></svg></span><span><b>P4</b><strong>Ack después</strong></span></span>
+              <span class="proof-body">Al volver, guardó la copia y recién entonces confirmó.</span>
+              <span class="proof-more">1 captura</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p4-consumo-diferido.png" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p5-broker-recreado.png","alt":"P5: contenedor nuevo y el aviso sigue en la cola","cap":"P5 · Otro contenedor, el mismo hostname y el mismo volumen. El aviso seguía Ready."},{"src":"img/capturas/ep2/p5-despues.png","alt":"P5: al volver el consumidor la fila queda en la RDS","cap":"P5 · Al iniciar el consumidor, la categoría quedó en la RDS y la cola volvió a 0."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-hex"></use></svg></span><span><b>P5</b><strong>En disco</strong></span></span>
+              <span class="proof-body">Otro contenedor, mismo volumen: el aviso seguía en la cola.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p5-broker-recreado.png" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p6-despues.png","alt":"P6: las filas siguen después de reiniciar los JAR","cap":"P6 · Después del reinicio, categorias_locales sigue con las mismas filas."},{"src":"img/capturas/ep2/p6-react-catalogo.jpg","alt":"P6: React sigue listando las categorías ya guardadas","cap":"P6 · React sigue listando Redes-EP2-AWS y Soporte-EP2-AWS desde la RDS de Catálogo."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-code"></use></svg></span><span><b>P6</b><strong>Las filas quedan</strong></span></span>
+              <span class="proof-body">Reiniciar los JAR no borró las categorías ya guardadas.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p6-react-catalogo.jpg" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card is-fall" data-shots='[{"src":"img/capturas/ep2/p7-react-503.jpg","alt":"P7: React muestra Service Unavailable 503 con RabbitMQ detenido","cap":"P7 · Con RabbitMQ detenido, crear la categoría responde 503."},{"src":"img/capturas/ep2/p7-catalogo-guardada.jpg","alt":"P7: la categoría quedó en Catálogo y no tiene copia","cap":"P7 · Sin-broker-P7-AWS quedó en Catálogo. En Solicitudes no hay copia: el aviso nunca entró a la cola."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-alert"></use></svg></span><span><b>P7</b><strong>Sin broker</strong></span></span>
+              <span class="proof-body">El alta responde 503. Queda en Catálogo y no existe copia.</span>
+              <span class="proof-more">2 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p7-react-503.jpg" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+            <button type="button" class="proof-card" data-shots='[{"src":"img/capturas/ep2/p8-401.png","alt":"P8: sin token, BFF y Gateway responden 401","cap":"P8 · Sin token, BFF y Gateway responden 401. El BFF corría en el PC, por túnel."},{"src":"img/capturas/ep2/p8-403-v2.jpg","alt":"P8: el cliente recibe 403 y v1/v2 responden 200","cap":"P8 · Rol cliente: 403 en la bandeja. Con token, v1 y v2 de Mis solicitudes responden 200."},{"src":"img/capturas/ep2/p8-form-categoria.jpg","alt":"P8: el formulario ofrece la categoría copiada por el aviso","cap":"P8 · El formulario ofrece la categoría que llegó por el aviso."}]'>
+              <span class="proof-head"><span class="mark"><svg class="ico"><use href="#i-shield"></use></svg></span><span><b>P8</b><strong>La puerta</strong></span></span>
+              <span class="proof-body">Sin token 401, cliente 403, y v1/v2 en 200.</span>
+              <span class="proof-more">3 capturas</span>
+              <span class="proof-peek" aria-hidden="true"><img src="img/capturas/ep2/p8-401.png" alt="" /><span class="proof-zoom"><svg class="ico"><use href="#i-zoom"></use></svg></span></span>
+            </button>
+          </div>
+          <p class="proof-note anim d4">P2 y P8 usaron el BFF en el PC, por túnel. No es una falla del mensaje.</p>
+        </section>
+
+        <section class="slide" data-section="Estado" data-who="Nico" data-time="45 s" data-say="Al 4 de noviembre el modelo está aplicado hasta aquí. La infraestructura, el broker, el publicador, el consumidor y las pruebas P1 a P8 están hechos. Lo que queda abierto es del mensaje. Si el broker está caído al crear, esa fila no se republica sola. No prometemos una sola entrega: un aviso repetido actualiza la misma fila. No hay DLQ: un JSON malo se descarta. Hay un solo nodo: si cae la EC2 de RabbitMQ, no hay otro broker. El volumen protege un reinicio del contenedor, no la caída de la máquina." data-hint="No decir que P1 a P8 están pendientes. Si preguntan por el informe, hay Word y PDF. No abrir el BFF ni la ruta del Gateway: ya estaban desde la evaluación anterior y esta fase de prueba no mostró ese tramo. Si insisten, una frase al final." data-notes="Al 4 de noviembre el modelo está aplicado hasta aquí. La infraestructura, el broker, el publicador, el consumidor y las pruebas P1 a P8 están hechos. Lo que queda abierto es del mensaje. Si el broker está caído al crear, esa fila no se republica sola. No prometemos una sola entrega: un aviso repetido actualiza la misma fila. No hay DLQ: un JSON malo se descarta. Hay un solo nodo: si cae la EC2 de RabbitMQ, no hay otro broker. El volumen protege un reinicio del contenedor, no la caída de la máquina.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">11 · Estado <small>Nico</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">Hasta dónde llega lo aplicado</p>
+            <h2 class="anim d1">Lo cubierto, y lo que falta.</h2>
+          </div>
+          <div class="status-cols">
+            <div class="status-col anim d2">
+              <p class="status-head is-done"><svg class="ico"><use href="#i-check"></use></svg>Listo</p>
+              <article class="fact"><span class="mark"><svg class="ico"><use href="#i-server"></use></svg></span><div><h3>Infraestructura en AWS</h3><p>Tres máquinas, dos bases privadas y las reglas de red ya aplicadas · Ari</p></div></article>
+              <article class="fact"><span class="mark"><svg class="ico"><use href="#i-code"></use></svg></span><div><h3>Publicar y copiar</h3><p>Catálogo publica y Solicitudes guarda la copia. Los dos JAR están en AWS · Nico y Skarlett</p></div></article>
+              <article class="fact"><span class="mark"><svg class="ico"><use href="#i-check"></use></svg></span><div><h3>P1 a P8</h3><p>Ejecutadas el 4 de noviembre, con bitácora y capturas · Skarlett</p></div></article>
+              <article class="fact"><span class="mark"><svg class="ico"><use href="#i-notes"></use></svg></span><div><h3>Contrato, diagrama e informe</h3><p>El JSON del aviso, el despliegue y el Word/PDF · Giannina y Skarlett</p></div></article>
+            </div>
+            <div class="status-col status-next anim d3">
+              <p class="status-head"><svg class="ico"><use href="#i-clock"></use></svg>Abierto</p>
+              <article class="fact"><span class="mark">1</span><div><h3>La fila no se republica sola</h3><p>Si el broker está caído al crear, Catálogo responde 503. Cuando RabbitMQ vuelve, esa categoría no se publica de nuevo.</p></div></article>
+              <article class="fact"><span class="mark">2</span><div><h3>No hay entrega única</h3><p>Si el mismo aviso llega dos veces, Solicitudes actualiza la fila por categoriaId. No deduplica por eventId.</p></div></article>
+              <article class="fact"><span class="mark">3</span><div><h3>Un aviso malo se pierde</h3><p>No hay DLQ. Si el JSON está mal, se descarta y no queda archivado para revisarlo después.</p></div></article>
+              <article class="fact"><span class="mark">4</span><div><h3>Un solo broker</h3><p>Si cae la EC2 C, no hay otro nodo. El volumen protege un reinicio del contenedor, no la caída de la máquina.</p></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide slide-agenda slide-route" data-section="Recorrido" data-who="Equipo" data-time="60 s" data-say="Si nos piden el recorrido, los cuatro primeros pasos siguen siendo una llamada. Uno: React envía el alta con el token. Dos: el Gateway lo acepta y lo pasa al BFF. Tres: el BFF exige rol administrador y llama a Catálogo. Cuatro: Catálogo guarda la fila y obtiene el id. Ahí termina lo síncrono. Cinco: publica en el exchange, no en la cola. Seis: la etiqueta coincide y el JSON espera en la cola de Solicitudes. Siete: Solicitudes lo lee. Si está detenido, el mensaje sigue ahí. Ocho: guarda el mismo id y solo entonces confirma. Recién ahí RabbitMQ puede borrar el mensaje." data-hint="Cualquiera del equipo puede decir esta lámina. Si el broker está caído, el paso 4 ocurre y el 5 no confirma: eso es P7. Si el consumidor está detenido, el mensaje espera en el paso 6: eso es P3 y P4." data-notes="Si nos piden el recorrido, los cuatro primeros pasos siguen siendo una llamada. Uno: React envía el alta con el token. Dos: el Gateway lo acepta y lo pasa al BFF. Tres: el BFF exige rol administrador y llama a Catálogo. Cuatro: Catálogo guarda la fila y obtiene el id. Ahí termina lo síncrono. Cinco: publica en el exchange, no en la cola. Seis: la etiqueta coincide y el JSON espera en la cola de Solicitudes. Siete: Solicitudes lo lee. Si está detenido, el mensaje sigue ahí. Ocho: guarda el mismo id y solo entonces confirma. Recién ahí RabbitMQ puede borrar el mensaje.">
+          <div class="deco deco-agenda" aria-hidden="true"><img src="img/corporativas/mesatech-canal-unico.png" alt="" /></div>
+          <div class="deco deco-agenda-scrim" aria-hidden="true"></div>
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">12 · Recorrido <small>Equipo</small></div>
+          </div>
+          <div class="lead anim">
+            <p class="kicker">El mensaje, de la llamada al ack</p>
+            <h2 class="anim d1">Primero es síncrono.<br>Después, no.</h2>
+          </div>
+          <div class="route-board anim d2">
+            <section class="route-lane is-sync">
+              <header class="route-lane-head">
+                <span class="mark"><svg class="ico"><use href="#i-flow"></use></svg></span>
+                <strong>La llamada</strong>
+                <small>01 a 04 siguen en línea. Catálogo tiene que responder.</small>
+              </header>
+              <div class="route-row">
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-monitor"></use></svg></span><b>01</b></span>
+                    <strong>React envía</strong>
+                    <span>El administrador crea la categoría. La petición sale con el token.</span>
+                  </div>
+                  <span class="route-scene scene-send" aria-hidden="true"><i class="sc-screen"></i><i class="sc-bit"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-gateway"></use></svg></span><b>02</b></span>
+                    <strong>Gateway acepta</strong>
+                    <span>Valida el token y pasa la petición al BFF, en el puerto 8080.</span>
+                  </div>
+                  <span class="route-scene scene-gate" aria-hidden="true"><i class="sc-frame"></i><i class="sc-token"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-bff"></use></svg></span><b>03</b></span>
+                    <strong>El BFF autoriza</strong>
+                    <span>Exige rol administrador y llama a Catálogo en el 8082.</span>
+                  </div>
+                  <span class="route-scene scene-role" aria-hidden="true"><i class="sc-shield"></i><i class="sc-ok"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-db"></use></svg></span><b>04</b></span>
+                    <strong>Catálogo guarda</strong>
+                    <span>La fila queda en su base. Ese id es el que viaja en el aviso.</span>
+                  </div>
+                  <span class="route-scene scene-save" aria-hidden="true"><i class="sc-db"></i><i class="sc-row"></i></span>
+                </article>
+              </div>
+            </section>
+            <section class="route-lane is-async">
+              <header class="route-lane-head">
+                <span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span>
+                <strong>El aviso</strong>
+                <small>Catálogo ya guardó. El mensaje puede quedar en la cola.</small>
+              </header>
+              <div class="route-row">
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-mail"></use></svg></span><b>05</b></span>
+                    <strong>Publica</strong>
+                    <span>Lo envía a catalogo.exchange. No escribe la cola por su cuenta.</span>
+                  </div>
+                  <span class="route-scene scene-pub" aria-hidden="true"><i class="sc-node"></i><i class="sc-node sc-ex"></i><i class="sc-mail"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-layers"></use></svg></span><b>06</b></span>
+                    <strong>La etiqueta coincide</strong>
+                    <span>categoria.creada deja el JSON esperando en la cola de Solicitudes.</span>
+                  </div>
+                  <span class="route-scene scene-tag" aria-hidden="true"><i class="sc-tag sc-a"></i><i class="sc-tag sc-b"></i><i class="sc-slot"></i><i class="sc-msg"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-server"></use></svg></span><b>07</b></span>
+                    <strong>Solicitudes lee</strong>
+                    <span>Si el servicio está detenido, el aviso sigue en la cola.</span>
+                  </div>
+                  <span class="route-scene scene-read" aria-hidden="true"><i class="sc-slot"></i><i class="sc-msg"></i><i class="sc-eye"></i></span>
+                </article>
+                <article class="route-card">
+                  <div class="route-copy">
+                    <span class="route-head"><span class="mark"><svg class="ico"><use href="#i-check"></use></svg></span><b>08</b></span>
+                    <strong>Confirma después</strong>
+                    <span>Guarda el mismo id. Recién entonces RabbitMQ borra el aviso.</span>
+                  </div>
+                  <span class="route-scene scene-ack" aria-hidden="true"><i class="sc-row"></i><i class="sc-ok"></i></span>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="slide cover cover-close" data-section="Cierre" data-who="Giannina" data-time="30 s" data-say="Cerramos con la decisión. Dejamos de esperar: Catálogo publica y sigue, y Solicitudes lee cuando puede. El mensaje tiene que durar: se escribe a disco y se confirma solo cuando la copia ya está guardada. Y no todo es asíncrono: la petición del usuario sigue en línea. Ari hizo la infraestructura y el broker. Nicolás, el publicador. Skarlett, el consumidor y las pruebas. Yo, el diagrama, el contrato y este relato. Quedamos atentos a sus preguntas." data-hint="Después de «preguntas», esperar en silencio. Si preguntan por lo abierto: la fila no se republica sola, no hay entrega única, no hay DLQ y no hay un segundo nodo. P1 a P8 ya están hechas. El BFF y la ruta del formulario no se nombran, salvo que pregunten." data-notes="Cerramos con la decisión. Dejamos de esperar: Catálogo publica y sigue, y Solicitudes lee cuando puede. El mensaje tiene que durar: se escribe a disco y se confirma solo cuando la copia ya está guardada. Y no todo es asíncrono: la petición del usuario sigue en línea. Ari hizo la infraestructura y el broker. Nicolás, el publicador. Skarlett, el consumidor y las pruebas. Yo, el diagrama, el contrato y este relato. Quedamos atentos a sus preguntas.">
+          <div class="deco cover-visual" aria-hidden="true"><img src="img/corporativas/mesatech-cierre-concepto.png" alt="" /></div>
+          <div class="deco cover-scrim" aria-hidden="true"></div>
+          <header class="cover-top anim">
+            <div class="close-id">
+              <img class="cover-duoc" src="img/marca/duoc-uc-white.png" alt="Duoc UC" />
+              <p class="cover-course">Desarrollo Cloud Native I · DSY1107</p>
+            </div>
+          </header>
+          <div class="close-main">
+            <p class="kicker anim d1">Evaluación parcial n.° 2</p>
+            <h1 class="anim d2">La decisión, en tres frases.</h1>
+            <div class="close-points anim d3">
+              <article><em>01</em><div><strong>Dejar de esperar</strong><span>Catálogo publica y sigue. Solicitudes lee el mensaje cuando puede.</span></div></article>
+              <article><em>02</em><div><strong>Que el mensaje dure</strong><span>Se escribe a disco y se confirma solo cuando la copia ya está guardada.</span></div></article>
+              <article><em>03</em><div><strong>No todo es asíncrono</strong><span>La petición del usuario sigue en línea. El cambio es entre los servicios.</span></div></article>
+            </div>
+            <p class="close-ask anim d4">Preguntas</p>
+          </div>
+          <footer class="close-foot anim d4">
+            <div class="close-team">
+              <article><em>Ari</em><span>AWS y RabbitMQ</span></article>
+              <article><em>Giannina</em><span>Diagrama, contrato y continuidad</span></article>
+              <article><em>Nicolás</em><span>Publicador y Catálogo</span></article>
+              <article><em>Skarlett</em><span>Consumidor y pruebas</span></article>
+            </div>
+            <p class="cover-docente"><span>Docente</span><strong>Paulo Andrés Berríos Díaz</strong></p>
+          </footer>
+        </section>
+      </div>
+
+      <aside class="speaker">
+        <strong>Guion</strong>
+        <div class="note-say">
+          <span data-note-time>Decir</span>
+          <p data-note-say></p>
+        </div>
+        <div class="note-hint">
+          <span>Si preguntan</span>
+          <p data-note-hint></p>
+        </div>
+      </aside>
+      <div class="chrome">
+        <div class="wordmark"><img src="img/marca/logo.png" alt="" /> <span class="sec-label" data-section-label>Portada</span></div>
+        <div class="dots" data-dots></div>
+        <div class="nav">
+          <button type="button" data-prev aria-label="Anterior"><svg class="ico"><use href="#i-prev"></use></svg></button>
+          <div class="counter" data-counter>01 / 14</div>
+          <button type="button" data-next aria-label="Siguiente"><svg class="ico"><use href="#i-next"></use></svg></button>
+          <button type="button" class="wide" data-notes-toggle aria-label="Notas"><svg class="ico"><use href="#i-notes"></use></svg></button>
+          <button type="button" data-full aria-label="Pantalla completa"><svg class="ico"><use href="#i-full"></use></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" data-lightbox hidden>
+    <button type="button" class="lightbox-close" data-lightbox-close aria-label="Cerrar">×</button>
+    <button type="button" class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Captura anterior" hidden><svg class="ico"><use href="#i-prev"></use></svg></button>
+    <button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Captura siguiente" hidden><svg class="ico"><use href="#i-next"></use></svg></button>
+    <div>
+      <img alt="" />
+      <p></p>
+    </div>
+  </div>
+
+  <div class="splash" data-splash aria-hidden="true">
+    <div class="splash-inner">
+      <div class="splash-logo" aria-hidden="true">
+        <img src="img/marca/logo-color.png" alt="MesaTech Cloud" />
+      </div>
+      <div class="sp-panel">
+        <div class="sp-track">
+          <span class="sp-line"></span>
+          <span class="sp-node sp-a">
+            <svg viewBox="0 0 40 44" aria-hidden="true"><polygon points="20,1.5 38.5,12 38.5,32 20,42.5 1.5,32 1.5,12" /><circle cx="20" cy="22" r="3.1" /></svg>
+            <small>Catálogo</small>
+          </span>
+          <span class="sp-node sp-b">
+            <svg viewBox="0 0 40 44" aria-hidden="true"><polygon points="20,1.5 38.5,12 38.5,32 20,42.5 1.5,32 1.5,12" /><circle cx="20" cy="22" r="3.1" /></svg>
+            <small>RabbitMQ</small>
+          </span>
+          <span class="sp-node sp-c">
+            <svg viewBox="0 0 40 44" aria-hidden="true"><polygon points="20,1.5 38.5,12 38.5,32 20,42.5 1.5,32 1.5,12" /><circle cx="20" cy="22" r="3.1" /></svg>
+            <small>Solicitudes</small>
+          </span>
+          <span class="sp-dot"></span>
+        </div>
+      </div>
+      <div class="splash-copy">
+        <p class="splash-word">MESATECH <span>CLOUD</span></p>
+        <p class="splash-sub">EP2 · De la llamada al mensaje</p>
+      </div>
+    </div>
+    <p class="splash-skip">Clic o cualquier tecla para continuar</p>
+  </div>
+  <script src="js/deck.js?v=ep2p"></script>
+  <script src="js/splash.js?v=ep2p"></script>
+</body>
+</html>
