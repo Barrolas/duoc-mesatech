@@ -1,0 +1,10 @@
+{
+  "eventId": "b1c2d3e4-f5a6-4789-0123-456789abcdef",
+  "tipoEvento": "solicitud.creada",
+  "fechaEvento": "2026-11-24T21:10:00Z",
+  "solicitudId": 1001,
+  "titulo": "Incidente red sucursal Oriente",
+  "prioridadNombre": "URGENTE",
+  "prioridadNivel": 9,
+  "categoriaNombre": "Infraestructura"
+}

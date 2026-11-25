@@ -1,0 +1,9 @@
+{
+  "eventId": "f7a8b9c0-1234-4def-0123-456789abcdef",
+  "tipoEvento": "catalogo.prioridad.renombrada",
+  "fechaEvento": "2026-11-24T21:14:00Z",
+  "prioridadId": 2,
+  "nombreAnterior": "Alta",
+  "nombreNuevo": "",
+  "nivel": 4
+}

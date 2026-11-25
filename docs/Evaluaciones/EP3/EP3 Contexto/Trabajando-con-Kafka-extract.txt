@@ -1,0 +1,216 @@
+Instalando Kafka
+Arquitectura a instalar
+Recuerde instalar docker (engine) para ubuntu: 
+crear una carpeta llamada “kafka” sin comillas. Ingrese a esta carpeta.
+crear archivo: docker-compose.yml dentro de una ingrese a la carpeta creada. Puede usar “nano docker-compose.yml”. 
+Copiar lo siguiente dentro del archivo:
+name: kafka-lab
+services:
+  # ZooKeeper: coordinación y metadatos del clúster
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.9.0
+    container_name: zookeeper
+    hostname: zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD-SHELL", "cub zk-ready zookeeper:2181 30"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - kafka_network
+  # Kafka Broker: servidor de mensajería
+  kafka:
+    image: confluentinc/cp-kafka:7.9.0
+    container_name: kafka
+    hostname: kafka
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      # Listeners internos y externos
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      # Configuración de broker único
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # Configuración de tópicos
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      # Retención de mensajes: 7 días
+      KAFKA_LOG_RETENTION_HOURS: 168
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "cub kafka-ready -b localhost:29092 1 30"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - kafka_network
+  # Kafka UI: administración web
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "kafka-local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:29092"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+      DYNAMIC_CONFIG_ENABLED: "false"
+    networks:
+      - kafka_network
+volumes:
+  zookeeper_data:
+  zookeeper_log:
+  kafka_data:
+networks:
+  kafka_network:
+    driver: bridge
+IMPORTANTE: En el anterior yml, cambie localhost:9092 por la IP de su maquina ec2
+Ejecutar el comando: docker compose up -d
+Solo para propositos de este laboratorio, abriremos el puerto 8080 para acceder a la UI de Kafka. Debe cerrar este puerto o detener la instancia dado que no pide user/pass
+Abra Chrome o Edge y registre la IP de la instancia EC y el puerto 8080
+Has clic en Agregar Topico y registra los siguientes datos
+Has clic en “crear topico”
+Preparando un nuevo proyecto Spring Boot con Kafka BASICO
+Prepare un nuevo proyecto Kafka
+Registre los siguientes parametros en application.properties
+# ============================================
+# CONFIGURACION GENERAL DE SPRING BOOT
+# ============================================
+spring.application.name=bodega
+server.port=8888
+# ============================================
+# CONEXION A APACHE KAFKA
+# ============================================
+# Usar IP o DNS EC2 si Kafka esta en otro servidor
+spring.kafka.bootstrap-servers=13.217.230.30:9092
+# ============================================
+# PRODUCTOR KAFKA
+# ============================================
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
+# Confirmacion de escritura del broker
+spring.kafka.producer.acks=all
+# ============================================
+# CONSUMIDOR KAFKA
+# ============================================
+spring.kafka.consumer.group-id=mi-grupo-educativo
+spring.kafka.consumer.auto-offset-reset=earliest
+spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+# Spring Round Robin: Ejecucion circular entre particiones del topico
+#spring.kafka.producer.properties.partitioner.class=org.apache.kafka.clients.producer.RoundRobinPartitioner
+# Gestion automatica de offsets por Spring Kafka
+spring.kafka.consumer.enable-auto-commit=false
+# ============================================
+# LOGS
+# ============================================
+logging.level.root=INFO
+logging.level.org.springframework.kafka=INFO
+Creando un controller
+Crearemos un package controller y un archivo dentro llamado KafkaController
+Usaremos el siguiente codigo
+package com.pcfactory.bodega.controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+/**
+• Controlador REST que envía mensajes a Kafka
+• Demuestra dos conceptos:
+    o Sin Key: Round Robin (distribuye entre particiones 0, 1, 2...)
+    o Con Key: Sticky Partitioning (todos a la misma partición)
+*/
+@RestController
+@RequestMapping("/api/v1/kafka")
+public class KafkaController {
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    public KafkaController(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+    /**
+    * Ejemplos de uso:
+    * - SIN KEY (Round Robin - distribuye entre particiones):
+    *       GET http://localhost:8888/api/kafka/send?message=Mensaje1
+    * - CON KEY (Sticky Partitioning - misma partición):
+    *       GET http://localhost:8888/api/kafka/send?message=Mensaje1&key=orden-555
+    */
+    @GetMapping("/send")
+    public String sendMessage(@RequestParam String message, @RequestParam(required = false) String key) {
+        String topicName = "tutorial-particiones";
+        if (key != null && !key.isEmpty()) {
+            // Con Key: Kafka calcula hash(key) para determinar partición
+            // Todos los mensajes con la misma key van a la MISMA partición
+            kafkaTemplate.send(topicName, key, message);
+            return "Mensaje enviado al topic '" + topicName + "' con KEY: " + key + " | MENSAJE: " + message;
+        } else {
+            // Sin Key: Kafka usa Round Robin
+            // Distribuye automáticamente entre particiones 0, 1, 2
+            kafkaTemplate.send(topicName, message);
+            return "Mensaje enviado al topic '" + topicName + "' (sin key - distribución automática) | MENSAJE: " + message;
+        }
+    }
+    /**
+    * Endpoint de verificación
+    */
+    @GetMapping("/health")
+    public String health() {
+        return "Aplicación de Kafka Tutorial está corriendo en puerto 8888";
+    }
+}
+Creando el Listener
+Ahora crearemos el listener del topico. Para ello crearemos un package llamado consumer, y dentro crearemos la clase llamada KafkaConsumer
+Usaremos el siguiente código:
+package com.pcfactory.bodega.consumer;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Service;
+@Service
+public class KafkaConsumer {
+    @KafkaListener(topics = "tutorial-particiones", groupId = "mi-grupo-educativo")
+    public void listen(
+            @Payload String message,
+            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+            @Header(KafkaHeaders.OFFSET) long offset,
+            @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key) {
+        // Imprimir información de manera clara y visual
+        System.out.println("\n" + "=".repeat(100));
+        System.out.printf(" MENSAJE RECIBIDO%n");
+        System.out.printf(" Partición: %d%n", partition);
+        System.out.printf(" Offset: %d%n", offset);
+        System.out.printf(" Key: %s%n", key != null ? key : "(sin key)");
+        System.out.printf(" Mensaje: %s%n", message);
+        System.out.println("=".repeat(100) + "\n");
+    }
+}
+Ejecutar el proyecto. Abrir postman e inyectar un request, por ejemplo:

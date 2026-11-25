@@ -1,0 +1,8 @@
+{
+  "eventId": "d5e6f7a8-9012-4bcd-ef01-23456789abcd",
+  "tipoEvento": "solicitud.estado",
+  "fechaEvento": "2026-11-24T21:12:30Z",
+  "solicitudId": 1001,
+  "estadoAnterior": "EN_PROCESO",
+  "estadoNuevo": "FINALIZADA"
+}
