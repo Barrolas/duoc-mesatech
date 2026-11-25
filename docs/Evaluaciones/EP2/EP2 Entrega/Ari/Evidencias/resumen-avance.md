@@ -24,7 +24,7 @@ Los números (instance ID, IP, endpoint, security group) están en el inventario
 | A7 — Inventario | Hecho | `Inventario_AWS_EP2.md`. |
 | A8 — Entra ID (P8) | Hecho | Roles Cliente, Operador y Administrador en `api-cloud-native`. Login, 401 y 403 comprobados en P8 (bitácora de Skarlett). |
 
-IPv4 públicas del 04-11-2026, en el inventario: RabbitMQ `100.53.8.151`, Catálogo `3.85.18.107`, Solicitudes `98.91.199.82`. La privada de RabbitMQ sigue siendo `172.31.18.133`.
+IPv4 públicas vigentes (reinicio lab): RabbitMQ `54.175.159.238`, Catálogo `3.85.193.219`, Solicitudes `54.88.68.55`. Privadas EC2: confirmar en consola (AMQP usa IP privada de Rabbit en `RABBITMQ_HOST`).
 
 ---
 

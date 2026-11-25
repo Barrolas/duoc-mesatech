@@ -1,0 +1,7 @@
+Repositorio prueba simple de publicador y suscriptor Kafka
+https://github.com/pauloberrios44/seccion-1-kafka-basico.git
+
+
+
+Repositorio usando consumidor y mysql
+https://github.com/pauloberrios44/kafka-persistencia-mysql-seccion-1.git

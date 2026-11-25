@@ -1,0 +1,154 @@
+--- page 1 ---
+DSY1107 · EP3 · MesaTech Cloud
+1
+Evaluación parcial 3 · MesaTech Cloud
+Seguimiento operativo con Apache Kafka
+DSY1107 · Desarrollo Cloud Native I · Equipos de 2 a 3 integrantes
+El encargo
+La mesa de soporte necesita saber qué solicitudes requieren atención preferente, cómo avanzan y qué cambios
+de prioridad deben revisar los operadores. Extiendan los servicios de la EP2 para producir y procesar tres tipos
+de eventos Kafka mientras continúa funcionando la aplicación. Al finalizar, un operador deberá poder tomar un
+identificador de evento, localizarlo en los logs y verificar su efecto en RDS.
+Continuidad del servicio
+Un cliente debe poder autenticarse y registrar su solicitud desde React a través de API Gateway y el BFF.
+Catálogo y Solicitudes siguen desplegados en EC2 distintas, cada uno con su propio RDS. La categoría creada
+en Catálogo debe seguir disponible en Solicitudes mediante el flujo RabbitMQ de la EP2. Mantengan operativas
+las versiones v1 y v2.
+Qué necesita cada usuario
+• El operador de soporte necesita distinguir las solicitudes que requieren atención preferente y reconocer
+ cuándo una solicitud sale de atención.
+• El responsable del catálogo necesita distinguir un cambio de nombre de prioridad que requiere revisión de
+ una corrección de formato.
+• El equipo de producción necesita averiguar qué pasó con un evento, verificar si se guardó el resultado y
+ detectar dónde se acumula trabajo pendiente.
+Extiendan los servicios Spring Boot existentes con productores y consumidores Kafka. Elijan la distribución de
+los listeners, los contratos de datos y el modelo de persistencia. Cada servicio escribe en su propio RDS.
+Documenten cómo las decisiones del equipo satisfacen las necesidades anteriores.
+
+--- page 2 ---
+DSY1107 · EP3 · MesaTech Cloud
+2
+1 · Contratos y reglas de negocio
+Cada operación exitosa debe generar un evento. Mantengan activos los tres tópicos durante la prueba
+integrada. Creen exactamente tres particiones por tópico de negocio. Si agregan un tópico auxiliar para errores,
+asígnenle también tres particiones.
+Hecho de negocio
+Resultado que debe quedar registrado
+Se crea una solicitud
+Una solicitud de prioridad alta queda identificada para atención preferente. Las demás
+solicitudes válidas quedan registradas para atención normal.
+Una solicitud cambia de
+estado
+Cuando pasa a resuelta o cerrada, el historial indica que salió de atención. Para los demás
+cambios válidos registra que continúa en seguimiento. Debe ser posible identificar el estado
+anterior y el nuevo.
+Cambia el nombre de
+una prioridad
+Un cambio del nombre que va más allá de mayúsculas o espacios requiere revisión del
+catálogo. Una diferencia solo de mayúsculas o espacios se registra como corrección de
+formato.
+Asignen un tópico a cada hecho. La operación de negocio en el servicio propietario debe originar el evento.
+Elijan una key que relacione los eventos de la misma entidad. Para cada caso, el consumidor debe aplicar la
+regla en un service de Spring Boot y persistir el resultado.
+Contratos JSON y validación al recibir
+Diseñen un DTO por tipo de evento. Cada contrato debe permitir identificar el evento, la entidad afectada, el
+momento de la operación y los datos necesarios para tomar la decisión. Entreguen por tópico dos archivos .json
+de autoría del equipo. Uno debe representar un caso válido y el otro debe contener JSON bien formado con un
+valor que infrinja el contrato.
+El Kafka listener debe recibir el DTO tipado y ejecutar la validación del payload antes de aplicar la regla.
+Seleccionen anotaciones de validación acordes con los tipos y el dominio de cada campo. Justifiquen qué
+valores son obligatorios, qué textos admiten y qué rangos o valores de negocio corresponden.
+Producción debe poder identificar el campo y el motivo del rechazo. Verifiquen que el evento inválido no genera
+una escritura de negocio y que el siguiente evento válido con la misma key sí se procesa.
+
+--- page 3 ---
+DSY1107 · EP3 · MesaTech Cloud
+3
+2 · Particiones, lectura concurrente y consumer lag
+Qué demostrar sobre las keys
+Con los tres tópicos en uso simultáneo, demuestren que los consumidores pueden aprovechar las tres
+particiones de cada tópico en paralelo. Presenten la asignación real de particiones a miembros del grupo y
+justifiquen la concurrencia elegida. Muestren dos cambios sucesivos de una solicitud con la misma key, en la
+misma partición y con offsets crecientes. Usen distintas entidades para demostrar actividad en las tres
+particiones.
+Incidente operativo de consumer lag
+Durante un aumento de demanda, las solicitudes siguen ingresando, pero sus resultados de seguimiento tardan
+en aparecer. Producción les pide determinar en qué partición se acumula el trabajo y cuánto tarda el grupo en
+recuperarse. Reproduzcan el incidente en un tópico mientras los otros dos siguen funcionando.
+• Registren por grupo y partición la hora, CURRENT-OFFSET, LOG-END-OFFSET y lag antes de la
+ acumulación, con eventos pendientes y después de la recuperación. Calculen el lag como
+LOG-END-OFFSET menos CURRENT-OFFSET y sumen las tres particiones para obtener el total del grupo
+en ese tópico.
+• Comparen lecturas con concurrencia 1 y 3 usando lotes equivalentes y la misma distribución de keys.
+ Informen el volumen, las asignaciones, el tiempo de recuperación y la tasa de lectura observada. Expliquen
+qué cambió y qué evidencia apoya su interpretación.
+• Contrasten la recuperación con resultados en RDS y rechazos en el log. Indiquen qué revisaría un operador si
+ el lag de una partición permanece alto.
+Artefacto operativo para producción
+Entreguen un archivo operacion.log o .jsonl exportado de una ejecución real. Cada registro de consumo debe
+identificar fecha UTC, nivel, servicio, grupo, tópico, partición, offset, key, eventId si está disponible y resultado.
+El productor debe registrar el envío confirmado o el fallo. Registren éxito después de guardar y rechazo con
+campo y motivo. Para fallos transitorios documenten la estrategia de reintento acotado y para datos inválidos el
+destino del rechazo. Los logs deben omitir tokens, contraseñas y datos personales. Incluyan una búsqueda por
+eventId que permita al operador reconstruir un caso.
+
+--- page 4 ---
+DSY1107 · EP3 · MesaTech Cloud
+4
+3 · Entrega, pruebas y pauta de corrección
+Entreguen el commit evaluado, los seis archivos JSON, configuración de tópicos y grupos, instrucciones
+reproducibles, informe breve con evidencias y el archivo de logs. En el informe identifiquen versiones, EC2 y
+propietario de cada RDS. Para cada prueba indiquen entrada, resultado esperado, resultado obtenido y
+evidencia. Pueden automatizar la publicación del lote para reservar tiempo de la presentación.
+Pruebas de aceptación
+• Continuidad. Desde React creen una categoría por la ruta protegida, comprueben su llegada por RabbitMQ y
+ creen una solicitud con ella. Verifiquen además una operación v1/v2 y un rechazo de acceso sin token.
+• Tres flujos. Ejecuten las tres operaciones de dominio con los consumidores activos. Para cada tópico
+ relacionen el evento enviado, key, partición, decisión del service, fila en RDS y log. Prueben los dos
+resultados de cada regla con datos identificables.
+• Validación. Por cada tópico envíen el DTO inválido y después el válido con la misma key. Muestren el motivo
+ del rechazo, la ausencia de efecto de negocio para ese evento y la escritura del siguiente.
+• Lectura concurrente. Presenten las asignaciones, el orden dentro de una partición y las medidas de lag y tasa
+ para concurrencia 1 y 3. Conserven evidencias del lote aunque en vivo se les pida repetir solo una parte.
+Pauta de 100 puntos
+Criterio
+Puntos
+Evidencia para asignar los puntos
+Continuidad EP2
+10
+5 por flujo seguro con RabbitMQ operativo y 5 por EC2 distintas y RDS propios
+verificables.
+Producción Kafka
+15
+5 por tópico con evento originado por la operación real, key correcta y archivo
+JSON reproducible.
+Validación DTO
+15
+5 por tópico con DTO tipado en el listener, restricciones adecuadas y prueba de
+rechazo seguida de consumo válido.
+Services y RDS
+15
+5 por regla con sus dos resultados comprobados y escritura trazable en el RDS
+propietario.
+Particiones y grupos
+10
+5 por topología y asignaciones verificadas y 5 por pruebas de afinidad de key,
+orden y distribución.
+Consumer lag
+15
+5 por medición por partición, 5 por comparación de concurrencia y 5 por
+interpretación con evidencia.
+Operación y logs
+10
+5 por archivo contextual de ejecución y 5 por reconstrucción de un éxito y
+diagnóstico de un rechazo.
+Defensa individual
+10
+5 por localizar y explicar una evidencia en vivo y 5 por interpretar una pregunta
+sobre regla, partición, error o lag.
+Los primeros 90 puntos corresponden al equipo. Para cada subcriterio de 5 puntos asignen 5 si se demuestra
+completo, 2,5 si hay implementación y evidencia parcial, o 0 si falta evidencia verificable.
+Presentación en vivo
+Presenten el sistema en funcionamiento, con los servicios levantados y los datos de prueba preparados. Cada
+integrante debe poder seguir un evento y explicar la evidencia solicitada. El docente elegirá qué evidencia
+repetir en vivo.
