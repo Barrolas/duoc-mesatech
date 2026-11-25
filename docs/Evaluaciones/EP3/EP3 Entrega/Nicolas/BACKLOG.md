@@ -3,6 +3,8 @@
 **Tópico dueño:** `mesatech.catalogo.prioridad` (key `prioridad-{id}`)  
 **Mantener EP2:** publicador Rabbit `categoria.creada` sin regresiones.
 
+**Orden de trabajo:** ver [`PLANIFICACION.md`](PLANIFICACION.md) (fases 1→5).
+
 ---
 
 ## N0 — Estudio repos
