@@ -26,6 +26,7 @@ public class Solicitud {
     private String descripcion;
     private String categoria;
     private String prioridad;
+    private Integer prioridadNivel;
     private String usuarioSolicitante;
 
     @Enumerated(EnumType.STRING)
