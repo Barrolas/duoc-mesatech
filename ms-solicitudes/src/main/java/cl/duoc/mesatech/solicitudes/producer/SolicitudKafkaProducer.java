@@ -1,7 +1,10 @@
-package cl.duoc.mesatech.solicitudes.messaging.kafka;
+package cl.duoc.mesatech.solicitudes.producer;
 
 import cl.duoc.mesatech.solicitudes.domain.EstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.Solicitud;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudCreadaDTO;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudEstadoDTO;
+import cl.duoc.mesatech.solicitudes.service.OperacionLogService;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,7 @@ public class SolicitudKafkaProducer {
 
     private static final Logger log = LoggerFactory.getLogger(SolicitudKafkaProducer.class);
 
-    private final KafkaTemplate<Object, Object> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final JsonMapper jsonMapper;
     private final OperacionLogService operacionLog;
     private final String topicCreada;
@@ -26,11 +29,11 @@ public class SolicitudKafkaProducer {
     private final String groupId;
 
     public SolicitudKafkaProducer(
-            KafkaTemplate<Object, Object> kafkaTemplate,
+            KafkaTemplate<String, String> kafkaTemplate,
             JsonMapper jsonMapper,
             OperacionLogService operacionLog,
-            @Value("${mesatech.kafka.topics.solicitud-creada}") String topicCreada,
-            @Value("${mesatech.kafka.topics.solicitud-estado}") String topicEstado,
+            @Value("${app.kafka.mistopicos.solicitud-creada}") String topicCreada,
+            @Value("${app.kafka.mistopicos.solicitud-estado}") String topicEstado,
             @Value("${spring.kafka.consumer.group-id}") String groupId
     ) {
         this.kafkaTemplate = kafkaTemplate;
@@ -44,9 +47,9 @@ public class SolicitudKafkaProducer {
     public String publicarSolicitudCreada(Solicitud solicitud, String prioridadNombre, int prioridadNivel) {
         String eventId = UUID.randomUUID().toString();
         String key = "solicitud-" + solicitud.getId();
-        SolicitudCreadaEvent evento = new SolicitudCreadaEvent(
+        SolicitudCreadaDTO evento = new SolicitudCreadaDTO(
                 eventId,
-                SolicitudCreadaEvent.TIPO,
+                SolicitudCreadaDTO.TIPO,
                 Instant.now(),
                 solicitud.getId(),
                 solicitud.getTitulo(),
@@ -61,9 +64,9 @@ public class SolicitudKafkaProducer {
     public String publicarCambioEstado(Long solicitudId, EstadoSolicitud estadoAnterior, EstadoSolicitud estadoNuevo) {
         String eventId = UUID.randomUUID().toString();
         String key = "solicitud-" + solicitudId;
-        SolicitudEstadoEvent evento = new SolicitudEstadoEvent(
+        SolicitudEstadoDTO evento = new SolicitudEstadoDTO(
                 eventId,
-                SolicitudEstadoEvent.TIPO,
+                SolicitudEstadoDTO.TIPO,
                 Instant.now(),
                 solicitudId,
                 estadoAnterior.name(),

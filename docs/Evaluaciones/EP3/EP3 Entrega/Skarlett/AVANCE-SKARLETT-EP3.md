@@ -4,15 +4,15 @@ Rama: `feature/skarlett-ep3-kafka` (desde `dev`, commit fb26b69). Disertación: 
 
 ## 1. Mi parte, ya aplicada en esta rama (ms-solicitudes)
 - Dependencias `spring-boot-starter-kafka` y validation en `ms-solicitudes/pom.xml`.
-- **2 productores** (`SolicitudKafkaProducer`): `mesatech.solicitud.creada` y `mesatech.solicitud.estado`, key `solicitud-{id}`.
-- **2 `@KafkaListener`** en el consumer group `mesatech-solicitudes-kafka`, con `@Valid`, **ack manual** después de guardar e **idempotencia por `eventId`**.
+- **2 productores** (`producer/SolicitudKafkaProducer`): `mesatech.solicitud.creada` y `mesatech.solicitud.estado`, key `solicitud-{id}`.
+- **2 `@KafkaListener`** en `consumer/SolicitudesConsumer`, group `mesatech-solicitudes-kafka`, con `@Valid`, **ack manual** después de guardar e **idempotencia por `eventId`**. DTOs: `dto/SolicitudCreadaDTO` y `dto/SolicitudEstadoDTO`. Properties: `app.kafka.mistopicos.*`.
 - Tablas `seguimiento_solicitud` e `historial_estado_solicitud` (entidades + repos).
 - **DLQ** `mesatech.dlq.eventos` con `DefaultErrorHandler` + `DeadLetterPublishingRecoverer` (evento inválido no bloquea la partición).
 - Concurrencia controlada solo con `KAFKA_LISTENER_CONCURRENCY` (default 3) para la prueba de lag 1 vs 3.
 - Log de operación `operacion.jsonl` (`OperacionLogService`): fecha UTC, grupo, tópico, partición, offset, key, eventId, resultado.
 - `infra/docker-compose.kafka.yml` (KRaft apache/kafka:3.9.0) y `infra/kafka/crear-topicos.sh` (4 tópicos × 3 particiones).
 - Continuidad RabbitMQ EP2 (`categoria.creada`) intacta.
-- Tests: **20 tests, 0 fallos** (`mvn test`).
+- Tests: **20 tests, 0 fallos** (`mvn -q test`, JDK 17), también después del refactor de paquetes.
 
 ### Probado en local (Docker: Kafka KRaft + Postgres 16 + RabbitMQ)
 - 4 tópicos con 3 particiones.
@@ -22,7 +22,7 @@ Rama: `feature/skarlett-ep3-kafka` (desde `dev`, commit fb26b69). Disertación: 
 - Concurrencia 1 = 1 consumidor por listener; 3 = 3.
 - Los 6 JSON de contrato de Giannina (rama `feature/giannina-ep3`) pasan la validación; los inválidos fallan solo por la regla de negocio.
 
-> Nota: `env.example` choca en una sección con `feature/giannina-ep3`. Al mergear, mantener el bloque `KAFKA_BOOTSTRAP_SERVERS` de Giannina y agregar `KAFKA_LISTENER_CONCURRENCY`, `KAFKA_TOPIC_*` y `OPERACION_LOG_PATH`.
+> Nota: `env.example` queda alineado con `feature/nico-ep3-kafka`: el bloque final es el de Nico (`KAFKA_BOOTSTRAP_SERVERS` y `KAFKA_CONSUMER_GROUP_ID=mesatech-catalogo-kafka`). Las variables de solicitudes (`KAFKA_SOLICITUDES_GROUP_ID`, `KAFKA_LISTENER_CONCURRENCY`, `KAFKA_TOPIC_*`, `OPERACION_LOG_PATH`) van antes, para que el merge no choque. Detalle en `REFACTOR-KAFKA-SKARLETT.md`.
 
 ## 2. Borradores para el equipo (propuestas, NO aplicadas)
 Carpeta `docs/Evaluaciones/EP3/EP3 Entrega/Skarlett/borradores-equipo/`. Cada uno revisa y aplica en su propia rama.

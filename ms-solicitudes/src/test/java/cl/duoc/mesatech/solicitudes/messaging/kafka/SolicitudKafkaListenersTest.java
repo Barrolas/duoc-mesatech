@@ -1,7 +1,12 @@
 package cl.duoc.mesatech.solicitudes.messaging.kafka;
 
+import cl.duoc.mesatech.solicitudes.consumer.SolicitudesConsumer;
 import cl.duoc.mesatech.solicitudes.domain.HistorialEstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.SeguimientoSolicitud;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudCreadaDTO;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudEstadoDTO;
+import cl.duoc.mesatech.solicitudes.service.OperacionLogService;
+import cl.duoc.mesatech.solicitudes.service.SeguimientoSolicitudService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -38,12 +43,12 @@ class SolicitudKafkaListenersTest {
         when(seguimientoService.registrarCreacion(any(), anyString(), anyInt(), anyLong(), anyString()))
                 .thenReturn(Optional.of(guardado));
 
-        SolicitudCreadaKafkaListener listener = new SolicitudCreadaKafkaListener(
+        SolicitudesConsumer listener = new SolicitudesConsumer(
                 seguimientoService, operacionLog, "mesatech-solicitudes-kafka"
         );
-        SolicitudCreadaEvent evento = new SolicitudCreadaEvent(
+        SolicitudCreadaDTO evento = new SolicitudCreadaDTO(
                 "a3f2c8e1-9b4d-4c7a-8f1e-2d6b5a4c3e2f",
-                SolicitudCreadaEvent.TIPO,
+                SolicitudCreadaDTO.TIPO,
                 Instant.parse("2026-11-24T21:10:00Z"),
                 1001L,
                 "Incidente",
@@ -66,12 +71,12 @@ class SolicitudKafkaListenersTest {
         when(seguimientoService.registrarCambioEstado(any(), anyString(), anyInt(), anyLong(), anyString()))
                 .thenReturn(Optional.of(guardado));
 
-        SolicitudEstadoKafkaListener listener = new SolicitudEstadoKafkaListener(
+        SolicitudesConsumer listener = new SolicitudesConsumer(
                 seguimientoService, operacionLog, "mesatech-solicitudes-kafka"
         );
-        SolicitudEstadoEvent evento = new SolicitudEstadoEvent(
+        SolicitudEstadoDTO evento = new SolicitudEstadoDTO(
                 "c4d5e6f7-8901-4abc-def0-123456789abc",
-                SolicitudEstadoEvent.TIPO,
+                SolicitudEstadoDTO.TIPO,
                 Instant.parse("2026-11-24T21:12:30Z"),
                 1001L,
                 "EN_PROCESO",

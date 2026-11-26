@@ -1,4 +1,4 @@
-package cl.duoc.mesatech.solicitudes.messaging.kafka;
+package cl.duoc.mesatech.solicitudes.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

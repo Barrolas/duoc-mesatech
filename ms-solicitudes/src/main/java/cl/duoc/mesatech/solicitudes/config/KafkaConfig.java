@@ -1,6 +1,7 @@
-package cl.duoc.mesatech.solicitudes.messaging.kafka;
+package cl.duoc.mesatech.solicitudes.config;
 
 import cl.duoc.mesatech.solicitudes.messaging.EventoInvalidoException;
+import cl.duoc.mesatech.solicitudes.service.OperacionLogService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,9 +9,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListenerConfigurer;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistrar;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ConsumerRecordRecoverer;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
@@ -25,6 +30,10 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.util.stream.Collectors;
 
+/**
+ * Beans Kafka (patrón curso: factory + ack manual) y DLQ de solicitudes.
+ * Tópicos en {@code app.kafka.mistopicos.*}.
+ */
 @EnableKafka
 @Configuration
 public class KafkaConfig implements KafkaListenerConfigurer {
@@ -41,16 +50,21 @@ public class KafkaConfig implements KafkaListenerConfigurer {
     }
 
     @Bean
+    KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
     RecordMessageConverter recordMessageConverter(JsonMapper jsonMapper) {
         return new StringJacksonJsonMessageConverter(jsonMapper);
     }
 
     @Bean
     DefaultErrorHandler kafkaErrorHandler(
-            KafkaTemplate<Object, Object> kafkaTemplate,
+            KafkaTemplate<String, String> kafkaTemplate,
             OperacionLogService operacionLog,
             @Value("${spring.kafka.consumer.group-id}") String groupId,
-            @Value("${mesatech.kafka.topics.dlq:mesatech.dlq.eventos}") String dlqTopic
+            @Value("${app.kafka.mistopicos.dlq:mesatech.dlq.eventos}") String dlqTopic
     ) {
         DeadLetterPublishingRecoverer dlpr = new DeadLetterPublishingRecoverer(
                 kafkaTemplate,
@@ -88,6 +102,21 @@ public class KafkaConfig implements KafkaListenerConfigurer {
                 EventoInvalidoException.class
         );
         return handler;
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
+            ConsumerFactory<String, String> consumerFactory,
+            DefaultErrorHandler kafkaErrorHandler,
+            RecordMessageConverter recordMessageConverter
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        factory.setCommonErrorHandler(kafkaErrorHandler);
+        factory.setRecordMessageConverter(recordMessageConverter);
+        return factory;
     }
 
     static boolean esErrorDeContrato(Throwable ex) {

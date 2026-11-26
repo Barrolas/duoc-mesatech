@@ -3,7 +3,7 @@ package cl.duoc.mesatech.solicitudes.service;
 import cl.duoc.mesatech.solicitudes.domain.EstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.Solicitud;
 import cl.duoc.mesatech.solicitudes.domain.TransicionesEstado;
-import cl.duoc.mesatech.solicitudes.messaging.kafka.SolicitudKafkaProducer;
+import cl.duoc.mesatech.solicitudes.producer.SolicitudKafkaProducer;
 import cl.duoc.mesatech.solicitudes.repo.CategoriaLocalRepository;
 import cl.duoc.mesatech.solicitudes.repo.SolicitudRepository;
 import org.springframework.http.HttpStatus;

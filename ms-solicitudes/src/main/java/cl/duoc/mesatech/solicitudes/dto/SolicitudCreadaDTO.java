@@ -1,4 +1,4 @@
-package cl.duoc.mesatech.solicitudes.messaging.kafka;
+package cl.duoc.mesatech.solicitudes.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -10,7 +10,10 @@ import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
 
-public record SolicitudCreadaEvent(
+/**
+ * DTO Kafka — contrato Giannina §2.1 · tópico {@code mesatech.solicitud.creada}.
+ */
+public record SolicitudCreadaDTO(
         @NotBlank(message = "es obligatorio")
         @Pattern(
                 regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",

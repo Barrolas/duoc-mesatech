@@ -1,8 +1,10 @@
-package cl.duoc.mesatech.solicitudes.messaging.kafka;
+package cl.duoc.mesatech.solicitudes.service;
 
 import cl.duoc.mesatech.solicitudes.domain.EstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.HistorialEstadoSolicitud;
 import cl.duoc.mesatech.solicitudes.domain.SeguimientoSolicitud;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudCreadaDTO;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudEstadoDTO;
 import cl.duoc.mesatech.solicitudes.messaging.EventoInvalidoException;
 import cl.duoc.mesatech.solicitudes.repo.HistorialEstadoSolicitudRepository;
 import cl.duoc.mesatech.solicitudes.repo.SeguimientoSolicitudRepository;
@@ -33,7 +35,7 @@ public class SeguimientoSolicitudService {
 
     @Transactional
     public Optional<SeguimientoSolicitud> registrarCreacion(
-            SolicitudCreadaEvent evento,
+            SolicitudCreadaDTO evento,
             String topico,
             int particion,
             long offset,
@@ -72,7 +74,7 @@ public class SeguimientoSolicitudService {
 
     @Transactional
     public Optional<HistorialEstadoSolicitud> registrarCambioEstado(
-            SolicitudEstadoEvent evento,
+            SolicitudEstadoDTO evento,
             String topico,
             int particion,
             long offset,

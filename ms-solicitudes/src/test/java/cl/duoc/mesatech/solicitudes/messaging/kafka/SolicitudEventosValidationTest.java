@@ -1,5 +1,8 @@
 package cl.duoc.mesatech.solicitudes.messaging.kafka;
 
+import cl.duoc.mesatech.solicitudes.dto.SolicitudCreadaDTO;
+import cl.duoc.mesatech.solicitudes.dto.SolicitudEstadoDTO;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -17,7 +20,7 @@ class SolicitudEventosValidationTest {
 
     @Test
     void rechazaSolicitudCreadaConPrioridadNivelFueraDeRango() {
-        SolicitudCreadaEvent invalido = new SolicitudCreadaEvent(
+        SolicitudCreadaDTO invalido = new SolicitudCreadaDTO(
                 "b1c2d3e4-f5a6-4789-0123-456789abcdef",
                 "solicitud.creada",
                 Instant.parse("2026-11-24T21:10:00Z"),
@@ -28,16 +31,16 @@ class SolicitudEventosValidationTest {
                 "Infraestructura"
         );
 
-        Set<ConstraintViolation<SolicitudCreadaEvent>> violaciones = validator.validate(invalido);
+        Set<ConstraintViolation<SolicitudCreadaDTO>> violaciones = validator.validate(invalido);
         assertEquals(1, violaciones.size());
-        ConstraintViolation<SolicitudCreadaEvent> v = violaciones.iterator().next();
+        ConstraintViolation<SolicitudCreadaDTO> v = violaciones.iterator().next();
         assertEquals("prioridadNivel", v.getPropertyPath().toString());
         assertEquals("debe estar entre 1 y 5", v.getMessage());
     }
 
     @Test
     void aceptaSolicitudCreadaValida() {
-        SolicitudCreadaEvent valido = new SolicitudCreadaEvent(
+        SolicitudCreadaDTO valido = new SolicitudCreadaDTO(
                 "a3f2c8e1-9b4d-4c7a-8f1e-2d6b5a4c3e2f",
                 "solicitud.creada",
                 Instant.parse("2026-11-24T21:10:00Z"),
@@ -53,7 +56,7 @@ class SolicitudEventosValidationTest {
 
     @Test
     void aceptaSolicitudEstadoValida() {
-        SolicitudEstadoEvent valido = new SolicitudEstadoEvent(
+        SolicitudEstadoDTO valido = new SolicitudEstadoDTO(
                 "c4d5e6f7-8901-4abc-def0-123456789abc",
                 "solicitud.estado",
                 Instant.parse("2026-11-24T21:12:30Z"),
@@ -67,7 +70,7 @@ class SolicitudEventosValidationTest {
 
     @Test
     void rechazaEstadoNuevoFueraDelEnum() {
-        SolicitudEstadoEvent invalido = new SolicitudEstadoEvent(
+        SolicitudEstadoDTO invalido = new SolicitudEstadoDTO(
                 "d5e6f7a8-9012-4bcd-ef01-23456789abcd",
                 "solicitud.estado",
                 Instant.parse("2026-11-24T21:12:30Z"),
@@ -76,7 +79,7 @@ class SolicitudEventosValidationTest {
                 "FINALIZADA"
         );
 
-        Set<ConstraintViolation<SolicitudEstadoEvent>> violaciones = validator.validate(invalido);
+        Set<ConstraintViolation<SolicitudEstadoDTO>> violaciones = validator.validate(invalido);
         assertEquals(1, violaciones.size());
         assertEquals("estadoNuevo", violaciones.iterator().next().getPropertyPath().toString());
     }
