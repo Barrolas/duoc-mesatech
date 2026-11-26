@@ -18,6 +18,7 @@ El detalle paso a paso está **separado por integrante**. Este archivo es el **�
 | [`README.md`](README.md) | Mapa de carpetas |
 | [`equipo/PAUTA-Y-CONTEXTO.md`](equipo/PAUTA-Y-CONTEXTO.md) | Qué pide la pauta, criterios 100 pts, defensa, lecciones EP2 |
 | [`ARQUITECTURA-ACUERDOS.md`](ARQUITECTURA-ACUERDOS.md) | **Alternativa 1 cerrada** — BFF en A, tópicos, groups, tablas |
+| [`equipo/INSTRUCCIONES-REFACTOR-KAFKA.md`](equipo/INSTRUCCIONES-REFACTOR-KAFKA.md) | **Contrato Giannina + paquetes lab** — qué debe refactorizar cada uno |
 
 ---
 

@@ -1,6 +1,7 @@
 # Nicolás — EP3 Catálogo + Kafka (prioridad) + EC2 A
 
 **Planificación:** [`PLANIFICACION.md`](PLANIFICACION.md) (fases y próximo paso)  
+**Equipo (refactor Kafka):** [`../equipo/INSTRUCCIONES-REFACTOR-KAFKA.md`](../equipo/INSTRUCCIONES-REFACTOR-KAFKA.md)  
 **Backlog:** [`BACKLOG.md`](BACKLOG.md)  
 **Repos ejemplo:** [`REFERENCIAS-KAFKA.md`](REFERENCIAS-KAFKA.md)  
 **Env cloud:** `infra/ec2/ms-catalogo.env` (gitignored)  

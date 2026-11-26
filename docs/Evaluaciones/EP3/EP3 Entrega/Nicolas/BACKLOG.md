@@ -11,7 +11,7 @@
 
 1. Clonar repos en `REFERENCIAS-KAFKA.md`.
 2. Ejecutar lab básico local si hace falta.
-3. Listar packages a crear: `messaging/kafka/` en `ms-catalogo`.
+3. Metodología lab + dominio: `PrioridadRenombradaDTO`, `CatalogoConsumer`, `CatalogoPrioridadService` (ver `REFERENCIAS-KAFKA.md`).
 
 ---
 

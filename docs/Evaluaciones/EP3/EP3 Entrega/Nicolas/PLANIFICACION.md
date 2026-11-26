@@ -72,18 +72,25 @@ Al terminar esta planificación en código + cloud:
 
 ### Fase 3 — Dominio, productor y consumidor (N3, N4)
 
-#### Artefactos en `ms-catalogo`
+#### Artefactos en `ms-catalogo` — metodología lab + contrato Giannina
+
+Ver [`REFERENCIAS-KAFKA.md`](REFERENCIAS-KAFKA.md).
 
 ```text
-messaging/kafka/
-  PrioridadRenombradaEvent.java      # DTO + validaciones contrato
-  PrioridadRenombradaPublisher.java  # KafkaTemplate + JSON + logs
-  PrioridadRenombradaListener.java   # @KafkaListener + Acknowledgment
-  PrioridadAuditoriaService.java     # normalizar nombres + tipoCambio
+dto/
+  PrioridadRenombradaDTO.java    # record + @Valid (JSON Giannina)
+consumer/
+  CatalogoConsumer.java          # estilo VentaConsumer del lab
+service/
+  CatalogoPrioridadService.java  # regla formato / sustantivo → RDS
 domain/
-  AuditoriaPrioridad.java            # entidad JPA
+  AuditoriaPrioridad.java        # tabla auditoria_prioridad
 repo/
   AuditoriaPrioridadRepository.java
+config/
+  KafkaConfig.java
+web/
+  CatalogoController.java        # publica tras cambio de nombre
 ```
 
 #### Tabla `auditoria_prioridad` (RDS Catálogo)
@@ -108,7 +115,7 @@ Migración: `ddl-auto=update` documentado en README Nico (o script SQL en `infra
 | 3.4 | Listener | `@Valid`, `MethodValidationException` / `ConstraintViolation` → log, **no** INSERT |
 | 3.5 | Servicio auditoría | Regla contrato §2.3 |
 | 3.6 | Ack manual | `acknowledge()` solo tras `save` exitoso |
-| 3.7 | Tests unitarios | `PrioridadAuditoriaServiceTest` (formato vs sustantivo); listener o DTO validation test |
+| 3.7 | Tests unitarios | Tests de `VentaService` (formato vs sustantivo); validación `VentaDTO` |
 
 **Criterio de hecho:** PUT prioridad en local → fila en `auditoria_prioridad`; Rabbit categoría sin cambios en tests existentes.
 
@@ -182,7 +189,7 @@ Marcar al cerrar cada fase (fecha + commit hash):
 | Fase | Hecho | Commit / nota |
 | --- | --- | --- |
 | 1 | ☑ | rama `feature/nico-ep3-kafka`, `infra/kafka/*` |
-| 2 | ☐ | |
-| 3 | ☐ | |
+| 2 | ☑ | spring-kafka, validation, KafkaConfig, env |
+| 3 | ☑ | PrioridadRenombradaDTO, CatalogoConsumer, auditoria_prioridad |
 | 4 | ☐ | |
 | 5 | ☐ | |

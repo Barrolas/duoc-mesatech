@@ -37,6 +37,7 @@ if (-not $env:RABBITMQ_VHOST) { $env:RABBITMQ_VHOST = "mesatech" }
 if (-not $env:RABBITMQ_USER) { $env:RABBITMQ_USER = "mesatech" }
 if (-not $env:RABBITMQ_PASSWORD) { $env:RABBITMQ_PASSWORD = "mesatech" }
 if (-not $env:RABBITMQ_DECLARE) { $env:RABBITMQ_DECLARE = "true" }
+if (-not $env:KAFKA_BOOTSTRAP_SERVERS) { $env:KAFKA_BOOTSTRAP_SERVERS = "localhost:9092" }
 
 function Start-MesatechJob {
     param([string]$Name, [string]$Jar)
@@ -65,6 +66,7 @@ function Start-MesatechJob {
         RABBITMQ_USER              = $env:RABBITMQ_USER
         RABBITMQ_PASSWORD          = $env:RABBITMQ_PASSWORD
         RABBITMQ_DECLARE           = $env:RABBITMQ_DECLARE
+        KAFKA_BOOTSTRAP_SERVERS    = $env:KAFKA_BOOTSTRAP_SERVERS
     }
     $job = Start-Job -Name $Name -ScriptBlock $script -ArgumentList $RepoRoot, $jarPath, $log, $envMap
     Write-Host "Job $Name (Id $($job.Id)) log: $log"

@@ -15,7 +15,7 @@
 
 ## S1 — Config Kafka `ms-solicitudes`
 
-Igual patrón que Nico (`BACKLOG.md` en Nicolas): properties, group-id, manual ack, `env.example`.
+Igual patrón que Nico: [`equipo/INSTRUCCIONES-REFACTOR-KAFKA.md`](../equipo/INSTRUCCIONES-REFACTOR-KAFKA.md) · DTOs `SolicitudCreadaDTO` / `SolicitudEstadoDTO` (record) · `SolicitudesConsumer` · properties `app.kafka.mistopicos.*` · manual ack.
 
 ---
 
