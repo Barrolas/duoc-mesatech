@@ -5,7 +5,7 @@
 **Equipo:** Ari · Nicolás · Giannina · Skarlett  
 **Repo:** `duoc-mesatech`  
 **Fecha:** 2026-11-24  
-**Cuenta AWS:** Learner Lab de Ari (recrear infra + API Gateway).
+**Cuenta AWS:** Learner Lab de Ari, **misma cuenta de la EP2 reutilizada** (decisión del 2026-11-27 por créditos restantes). Recrear/ajustar infra + API Gateway sobre esa cuenta.
 
 El detalle paso a paso está **separado por integrante**. Este archivo es el **índice**.
 
@@ -58,7 +58,7 @@ El detalle paso a paso está **separado por integrante**. Este archivo es el **�
 ## Próximos pasos (semana 1)
 
 1. Reunión 30 min → cerrar `ARQUITECTURA-ACUERDOS.md`.
-2. Ari: EIP + EC2 D Kafka + inventario borrador.
+2. Ari: EIP + EC2 D Kafka + inventario — **hecho** (2026-11-28; inventario enviado al equipo).
 3. Giannina: contratos + Gateway en cuanto exista invoke URL.
 4. Nico / Skarlett: clonar repos ejemplo, ramas `feature/*-ep3-kafka`.
 
