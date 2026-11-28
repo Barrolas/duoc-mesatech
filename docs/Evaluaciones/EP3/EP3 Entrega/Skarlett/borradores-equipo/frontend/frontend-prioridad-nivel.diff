@@ -1,0 +1,18 @@
+diff --git a/frontend/src/components/FormCrearSolicitud.js b/frontend/src/components/FormCrearSolicitud.js
+index 79f9c7f..23e37d9 100644
+--- a/frontend/src/components/FormCrearSolicitud.js
++++ b/frontend/src/components/FormCrearSolicitud.js
+@@ -17,11 +17,13 @@ export default function FormCrearSolicitud({
+ 
+   const enviar = async (evento) => {
+     evento.preventDefault();
++    const prioridadSeleccionada = prioridades.find((item) => item.nombre === prioridad);
+     await onCrear({
+       titulo: titulo.trim(),
+       descripcion: descripcion.trim(),
+       categoria: categoria || null,
+       prioridad: prioridad || null,
++      prioridadNivel: prioridadSeleccionada?.nivel ?? null,
+     });
+     setTitulo("");
+     setDescripcion("");

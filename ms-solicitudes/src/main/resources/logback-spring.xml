@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty scope="context" name="OPERACION_LOG_PATH"
+                    source="mesatech.operacion.log-path"
+                    defaultValue="logs/operacion.jsonl"/>
+
+    <appender name="OPERACION_JSONL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${OPERACION_LOG_PATH}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${OPERACION_LOG_PATH}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="OPERACION_JSONL" level="INFO" additivity="true">
+        <appender-ref ref="OPERACION_JSONL_FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
