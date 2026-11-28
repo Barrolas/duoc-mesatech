@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/deck.css?v=ep2d" />
-  <link rel="stylesheet" href="css/ep2.css?v=ep3j" />
+  <link rel="stylesheet" href="css/ep2.css?v=ep3k" />
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -784,6 +784,106 @@
             <p class="cover-docente"><span>Docente</span><strong>Paulo Andrés Berríos Díaz</strong></p>
           </footer>
         </section>
+
+        <section class="slide slide-ep3" data-section="EP3" data-who="Giannina" data-time="45 s" data-say="La EP3 no reemplaza la EP2. La petición del usuario sigue en línea: React llama al Gateway y el Gateway solo reenvía. El BFF, en la EC2 A, valida el token. Sin token responde 401. Con un rol que no alcanza, responde 403. RabbitMQ sigue: Catálogo publica categoria.creada y Solicitudes guarda la copia. Lo nuevo es Kafka, en una EC2 D. Hay tres tópicos, cada uno con tres particiones. La key junta los eventos de la misma solicitud o de la misma prioridad." data-hint="Este bloque va después del cierre de la EP2. Si preguntan quién valida el token: el BFF, no el Gateway. Kafka y Rabbit usan la IP privada, no la Elastic IP." data-notes="La EP3 no reemplaza la EP2. La petición del usuario sigue en línea: React llama al Gateway y el Gateway solo reenvía. El BFF, en la EC2 A, valida el token. Sin token responde 401. Con un rol que no alcanza, responde 403. RabbitMQ sigue: Catálogo publica categoria.creada y Solicitudes guarda la copia. Lo nuevo es Kafka, en una EC2 D. Hay tres tópicos, cada uno con tres particiones. La key junta los eventos de la misma solicitud o de la misma prioridad.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">EP3 · Continuidad <small>Giannina</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">Lo de la EP2 sigue en pie</p>
+            <h2 class="anim d1">Rabbit se queda. Kafka entra.</h2>
+          </div>
+          <div class="ep3-grid anim d2">
+            <article class="ep3-card">
+              <h3>La petición sigue en línea</h3>
+              <dl>
+                <dt>Recorrido</dt>
+                <dd>React llama al Gateway. El Gateway reenvía. El BFF valida el token y el rol.</dd>
+                <dt>Sin token</dt>
+                <dd>El BFF responde 401. Si el rol no alcanza, responde 403.</dd>
+                <dt>Dónde vive</dt>
+                <dd>El BFF queda en la EC2 A, puerto 8080. No tiene base propia.</dd>
+              </dl>
+            </article>
+            <article class="ep3-card">
+              <h3>RabbitMQ se mantiene</h3>
+              <dl>
+                <dt>Hecho</dt>
+                <dd>Catálogo publica <code>categoria.creada</code> en <code>catalogo.exchange</code>.</dd>
+                <dt>Destino</dt>
+                <dd>La cola <code>solicitudes.catalogo.queue</code>. Solicitudes guarda la copia.</dd>
+                <dt>Dónde vive</dt>
+                <dd>EC2 C, puerto 5672. No se reemplaza por Kafka.</dd>
+              </dl>
+            </article>
+            <article class="ep3-card is-new">
+              <h3>Kafka entra</h3>
+              <dl>
+                <dt>Hechos</dt>
+                <dd>Tres tópicos. Cada uno con tres particiones.</dd>
+                <dt>Key</dt>
+                <dd>Junta los eventos de la misma solicitud o de la misma prioridad.</dd>
+                <dt>Dónde vive</dt>
+                <dd>EC2 D. Bootstrap por IP privada, puerto 9092. La UI va en el 8088.</dd>
+              </dl>
+            </article>
+          </div>
+        </section>
+
+        <section class="slide slide-ep3" data-section="Hechos" data-who="Giannina" data-time="50 s" data-say="Cada operación exitosa publica un JSON. Los tres comparten eventId, tipoEvento y fechaEvento. La key no va dentro del JSON: Kafka la usa para elegir la partición. Solicitud creada: si el nivel es 4 o 5, la atención es preferente; si no, es normal. Cambio de estado: RESUELTA o CERRADA sale de atención; cualquier otro estado válido sigue en seguimiento. Cambio de nombre: si solo cambian mayúsculas o espacios, es una corrección; si cambia el texto, es una revisión. Un JSON inválido no escribe la fila. El siguiente válido, con la misma key, sí la escribe." data-hint="El inválido está bien formado y rompe una regla: nivel 9, estado FINALIZADA, o nombre vacío. Solicitudes consume los dos primeros tópicos en el grupo mesatech-solicitudes-kafka. Catálogo consume el tercero en mesatech-catalogo-kafka." data-notes="Cada operación exitosa publica un JSON. Los tres comparten eventId, tipoEvento y fechaEvento. La key no va dentro del JSON: Kafka la usa para elegir la partición. Solicitud creada: si el nivel es 4 o 5, la atención es preferente; si no, es normal. Cambio de estado: RESUELTA o CERRADA sale de atención; cualquier otro estado válido sigue en seguimiento. Cambio de nombre: si solo cambian mayúsculas o espacios, es una corrección; si cambia el texto, es una revisión. Un JSON inválido no escribe la fila. El siguiente válido, con la misma key, sí la escribe.">
+          <div class="brand-bar">
+            <div class="wordmark"><img src="img/marca/logo.png" alt="" /> MESATECH <span>CLOUD</span></div>
+            <div class="meta">EP3 · Hechos <small>Giannina</small></div>
+          </div>
+          <div class="lead">
+            <p class="kicker anim">El acuerdo de esta evaluación</p>
+            <h2 class="anim d1">Tópico, key y regla.</h2>
+          </div>
+          <div class="ep3-grid anim d2">
+            <article class="ep3-card is-new">
+              <h3>Solicitud creada</h3>
+              <dl>
+                <dt>Tópico</dt>
+                <dd><code>mesatech.solicitud.creada</code></dd>
+                <dt>Key</dt>
+                <dd><code>solicitud-{id}</code></dd>
+                <dt>Regla</dt>
+                <dd>Nivel 4 o 5: atención preferente. Del 1 al 3: atención normal.</dd>
+                <dt>Queda en</dt>
+                <dd><code>seguimiento_solicitud</code></dd>
+              </dl>
+            </article>
+            <article class="ep3-card is-new">
+              <h3>Cambio de estado</h3>
+              <dl>
+                <dt>Tópico</dt>
+                <dd><code>mesatech.solicitud.estado</code></dd>
+                <dt>Key</dt>
+                <dd><code>solicitud-{id}</code></dd>
+                <dt>Regla</dt>
+                <dd>RESUELTA o CERRADA sale de atención. Otro estado válido sigue en seguimiento.</dd>
+                <dt>Queda en</dt>
+                <dd><code>historial_estado_solicitud</code></dd>
+              </dl>
+            </article>
+            <article class="ep3-card is-new">
+              <h3>Nombre de prioridad</h3>
+              <dl>
+                <dt>Tópico</dt>
+                <dd><code>mesatech.catalogo.prioridad</code></dd>
+                <dt>Key</dt>
+                <dd><code>prioridad-{id}</code></dd>
+                <dt>Regla</dt>
+                <dd>Solo mayúsculas o espacios: corrección. Si cambia el texto: revisión.</dd>
+                <dt>Queda en</dt>
+                <dd><code>auditoria_prioridad</code></dd>
+              </dl>
+            </article>
+          </div>
+          <p class="ep3-note anim d3">El JSON inválido no escribe la fila. El siguiente válido, con la misma key, sí. Solicitudes lee los dos primeros. Catálogo lee el tercero.</p>
+        </section>
+
       </div>
 
       <aside class="speaker">

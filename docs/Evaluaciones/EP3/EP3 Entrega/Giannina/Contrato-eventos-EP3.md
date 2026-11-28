@@ -111,6 +111,8 @@ Ubicación: [`contratos-json/`](contratos-json/).
 | `*-valido.json` | Caso que pasa validación y dispara regla de negocio |
 | `*-invalido.json` | JSON sintácticamente válido; rompe una regla del §2 |
 
+Los seis `eventId` cumplen el regex UUID v4 del §1. El archivo inválido se rechaza solo por la regla del §2 (`prioridadNivel` 9, `estadoNuevo` `FINALIZADA`, `nombreNuevo` vacío). Si el `eventId` también fuera inválido, la prueba de la pauta no mostraría el campo de negocio.
+
 **Keys sugeridas al publicar en prueba:**
 
 | Archivo | Kafka key |

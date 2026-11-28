@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>MESATECH CLOUD · Despliegue EP3</title>
+<style>
+  :root{
+    --teal:#0f4c5c; --teal2:#0a3843; --aqua:#2ec4b6; --aqua2:#1fa89c; --mint:#e8faf6;
+    --ink:#12353c; --bg:#f7fbfa; --orange:#c45c26; --orangeBg:#fff8f2;
+    --line:rgba(15,76,92,.18); --soft:#f3fbf9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);
+    font-family:Inter,"Segoe UI",system-ui,sans-serif;color:var(--ink)}
+  .page{position:relative;width:1920px;height:1080px;padding:8px 22px 4px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+  .wires{position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;z-index:5;overflow:visible}
+  .titlebar{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:4px;border-bottom:2px solid var(--aqua);flex:0 0 auto;z-index:2}
+  .titlebar h1{font-size:28px;font-weight:700;color:var(--teal);letter-spacing:.01em}
+  .titlebar .sub{font-size:13px;font-weight:500;margin-top:1px}
+  .titlebar .right{text-align:right;font-size:13px;font-weight:500}
+  .layers{display:grid;grid-template-columns:520px 1fr 240px;gap:88px;flex:0 0 auto;z-index:2}
+  .layers .Lpair{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .L{font-size:14px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-align:center}
+  .main{display:grid;grid-template-columns:520px 1fr 240px;gap:88px;flex:0 0 auto;min-height:0;z-index:2;align-items:start}
+  .side{display:flex;flex-direction:column;gap:8px;align-self:stretch;min-height:0;min-width:0}
+  .side-top{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:10px 48px;align-items:stretch;flex:0 0 auto}
+  .side .node{min-height:0}
+  .mono{font-family:ui-monospace,Consolas,"Courier New",monospace;font-weight:700;font-size:inherit;letter-spacing:.02em;font-variant-ligatures:none}
+  .vpc{border:2.2px solid var(--aqua);border-radius:14px;background:#fff;display:flex;flex-direction:column;min-width:0;height:auto;align-self:start;overflow:visible;box-shadow:0 2px 6px rgba(15,76,92,.08)}
+  .vpc-h{background:var(--mint);padding:7px 14px;font-size:14px;font-weight:700;color:var(--teal);border-bottom:1px solid rgba(46,196,182,.35);border-radius:12px 12px 0 0}
+  .vpc-body{display:flex;flex-direction:column;gap:40px;padding:8px 14px 8px}
+  .vpc-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:88px;align-items:stretch;max-width:78%}
+  .vpc-mid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:64px;align-items:stretch;margin-top:22px}
+  .vpc-bot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr) minmax(0,1fr);gap:28px;align-items:stretch}
+  .node{background:#fff;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0;box-shadow:0 1px 3px rgba(15,76,92,.07);position:relative;z-index:3}
+  .node.warn{background:var(--orangeBg);border-color:rgba(196,92,38,.38)}
+  .node.soft{background:var(--soft)}
+  .node .hd{padding:8px 14px;font-size:22px;font-weight:700;color:#fff;line-height:1.2;overflow-wrap:normal;word-break:keep-all}
+  .node .hd.t{background:var(--teal)}
+  .node .hd.a{background:var(--aqua2)}
+  .node .hd.o{background:var(--orange)}
+  .node .hd.d{background:var(--teal2)}
+  .node .hd.r{background:#0d4a46}
+  .node .bd{padding:10px 14px 12px;display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+  .node .bd p{font-size:16px;font-weight:500;line-height:1.28;color:var(--ink);overflow-wrap:anywhere}
+  .node .bd p.em{font-weight:600;color:var(--aqua2);font-size:15px}
+  .mini{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+  .mini .box{background:var(--mint);border:1.4px solid #1a7a6d;border-radius:7px;padding:6px 10px;min-width:0}
+  .mini .box strong{display:block;font-size:15px;font-weight:700;color:#1a7a6d;margin-bottom:1px}
+  .mini .box span{display:block;font-size:14px;font-weight:600;color:var(--teal2);line-height:1.25;overflow-wrap:normal;word-break:keep-all}
+  .mini .flow{text-align:center;font-size:14px;font-weight:700;color:#1a7a6d;line-height:1.2}
+  .topics{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+  .topics .box{background:var(--mint);border:1.4px solid var(--aqua2);border-radius:7px;padding:4px 8px;min-width:0}
+  .topics .box strong{display:block;font-size:13px;font-weight:700;color:var(--teal);line-height:1.25}
+  .topics .box span{display:block;font-size:13px;font-weight:600;color:var(--teal2);line-height:1.25}
+  .sg{background:var(--soft);border:1.3px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0;align-self:stretch;box-shadow:0 1px 3px rgba(15,76,92,.07);min-height:100%}
+  .sg .hd{background:var(--teal2);color:#fff;font-size:22px;font-weight:700;padding:10px 14px}
+  .sg .bd{padding:10px 14px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .sg .bd p{font-size:15px;font-weight:500;line-height:1.3;overflow-wrap:normal;word-break:keep-all}
+  .sg .bd p.em{color:var(--aqua2);font-weight:600;font-size:15px}
+  .sg .bd hr{border:none;border-top:1px solid rgba(15,76,92,.15);margin:1px 0}
+  .inv{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:5px 12px 4px;flex:0 0 auto;z-index:2;box-shadow:0 1px 3px rgba(15,76,92,.06)}
+  .inv h2{font-size:14px;font-weight:700;color:var(--teal);margin-bottom:2px}
+  .inv table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .inv th,.inv td{font-size:11px;text-align:left;padding:1px 6px 1px 0;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+  .inv th{font-weight:700;color:var(--teal);border-bottom:1px solid rgba(15,76,92,.12)}
+  .inv td{font-weight:500;font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;color:var(--teal2)}
+  .inv td.n{font-family:Inter,"Segoe UI",system-ui,sans-serif;font-size:12px;color:var(--ink)}
+  .legend{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;flex:1 1 auto;z-index:2;display:flex;flex-direction:column;gap:5px;min-height:0;box-shadow:0 1px 3px rgba(15,76,92,.06);overflow:hidden}
+  .leg-sec{display:flex;flex-direction:column;gap:4px;min-height:0}
+  .leg-sec > h3{font-size:16px;font-weight:700;color:var(--teal);line-height:1.2;flex:0 0 auto}
+  .leg-sec.keys-sec{flex:0 0 auto}
+  .leg-sec.flow-sec{flex:1 1 auto;min-height:0}
+  .leg-sec.notes-sec{flex:0 0 auto;margin-top:0;padding-top:4px;border-top:1px solid rgba(15,76,92,.14)}
+  .keys-col{display:flex;flex-direction:column;gap:3px}
+  .keys-col .k{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;line-height:1.2;color:var(--ink)}
+  .sw{width:34px;height:0;border-top:2.6px solid var(--teal);display:inline-block;flex:0 0 auto}
+  .sw.auth{border-top-style:dashed;border-color:var(--orange);border-top-width:2.6px}
+  .sw.amqp{border-top:3.2px dotted #1a7a6d}
+  .sw.kfk{border-top:2.6px solid var(--aqua2)}
+  .sw.bn{width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:none;line-height:1}
+  .stepper{position:relative;display:flex;flex-direction:column;justify-content:space-between;flex:1 1 auto;min-height:0;padding-left:2px}
+  .stepper::before{content:"";position:absolute;left:11px;top:12px;bottom:12px;width:2px;background:rgba(15,76,92,.18);border-radius:1px;z-index:0}
+  .step{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;position:relative;z-index:1}
+  .step .sb{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex:0 0 auto;line-height:1;box-shadow:0 0 0 3px #fff}
+  .step .sb.auth{background:var(--orange)}
+  .step .sb.http{background:var(--teal)}
+  .step .sb.amqp{background:#1a7a6d}
+  .step .sb.kfk{background:var(--aqua2)}
+  .step p{font-size:13.5px;font-weight:500;line-height:1.25;color:var(--ink);margin:1px 0 0}
+  .notes-sec ul{list-style:none;display:flex;flex-direction:column;gap:2px}
+  .notes-sec li{font-size:12px;font-weight:500;line-height:1.25;color:rgba(18,53,60,.78);padding-left:12px;position:relative}
+  .notes-sec li::before{content:"";position:absolute;left:0;top:.5em;width:5px;height:5px;border-radius:50%;background:rgba(15,76,92,.35)}
+  .foot{display:flex;justify-content:space-between;font-size:11px;font-weight:500;color:var(--teal);opacity:.85;flex:0 0 auto;z-index:2}
+  .badge{position:absolute;z-index:8;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 0 4px #fff}
+  .badge.http{background:var(--teal)}
+  .badge.auth{background:var(--orange)}
+  .badge.amqp{background:#1a7a6d}
+  .badge.kfk{background:var(--aqua2)}
+  .chip{position:absolute;z-index:8;transform:translate(-50%,-50%);background:#fff;border:1.3px solid var(--teal);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap;pointer-events:none;line-height:1.2}
+  .chip.auth{border-color:var(--orange);color:var(--orange)}
+  .chip.amqp{border-color:#1a7a6d;color:#1a7a6d}
+  .chip.kfk{border-color:var(--aqua2);color:var(--teal2)}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <svg class="wires" id="wires" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="mHttp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#0f4c5c"/></marker>
+      <marker id="mAuth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#c45c26"/></marker>
+      <marker id="mAmqp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#1a7a6d"/></marker>
+      <marker id="mKfk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="#1fa89c"/></marker>
+    </defs>
+  </svg>
+
+  <header class="titlebar">
+    <div>
+      <h1>MESATECH CLOUD · Despliegue EP3</h1>
+      <div class="sub">DSY1107 · Cloud Native · us-east-1 · Learner Lab · 4 EC2 + 2 RDS · RabbitMQ se mantiene · Kafka es el borde nuevo</div>
+    </div>
+    <div class="right">Alternativa 1 · cuenta nueva<br/>EIP pendiente · sin secretos</div>
+  </header>
+
+  <div class="layers" id="layers">
+    <div class="Lpair">
+      <div class="L">Cliente</div>
+      <div class="L">Identidad</div>
+    </div>
+    <div class="L">Borde · Aplicación · Mensajería · Datos</div>
+    <div class="L">Perímetro</div>
+  </div>
+
+  <div class="main">
+    <div class="side" id="side">
+      <div class="side-top" id="side-top">
+        <div class="node" id="n-user">
+          <div class="hd t">Usuario</div>
+          <div class="bd">
+            <p>Cliente · Operador</p>
+            <p>Responsable de catálogo</p>
+          </div>
+        </div>
+        <div class="node warn" id="n-entra">
+          <div class="hd o">Entra ID</div>
+          <div class="bd">
+            <p>SPA + API · Token v2</p>
+            <p>access_as_user · roles</p>
+            <p class="em">Heredado de EP1</p>
+          </div>
+        </div>
+        <div class="node" id="n-react">
+          <div class="hd a">React + MSAL</div>
+          <div class="bd">
+            <p>SPA · Axios · solo Gateway</p>
+            <p class="em">Dev :3000 · v1 y v2 vigentes</p>
+          </div>
+        </div>
+      </div>
+      <section class="legend">
+        <div class="leg-sec keys-sec">
+          <h3>Leyenda</h3>
+          <div class="keys-col">
+            <div class="k"><span class="sw"></span><span>HTTP / SQL</span></div>
+            <div class="k"><span class="sw auth"></span><span>Autenticación Entra (1·2)</span></div>
+            <div class="k"><span class="sw amqp"></span><span>Mensaje AMQP · continuidad EP2</span></div>
+            <div class="k"><span class="sw kfk"></span><span>Kafka · seguimiento EP3</span></div>
+            <div class="k"><span class="sw bn">n</span><span>Paso del recorrido</span></div>
+          </div>
+        </div>
+        <div class="leg-sec flow-sec">
+          <h3>Recorrido del dato</h3>
+          <div class="stepper">
+            <div class="step"><span class="sb auth">1</span><p>React inicia login en Entra ID.</p></div>
+            <div class="step"><span class="sb auth">2</span><p>Entra entrega el Access Token a la SPA.</p></div>
+            <div class="step"><span class="sb http">3</span><p>React llama a la invoke URL con Bearer.</p></div>
+            <div class="step"><span class="sb http">4</span><p>Gateway reenvía. El BFF valida el JWT.</p></div>
+            <div class="step"><span class="sb http">5</span><p>BFF en EC2 A llama a :8082 o a :8081.</p></div>
+            <div class="step"><span class="sb http">6</span><p>Cada servicio escribe solo en su RDS.</p></div>
+            <div class="step"><span class="sb amqp">7</span><p>Catálogo publica categoria.creada.</p></div>
+            <div class="step"><span class="sb amqp">8</span><p>Solicitudes guarda la copia local.</p></div>
+            <div class="step"><span class="sb kfk">9</span><p>A y B publican. El consumer persiste.</p></div>
+          </div>
+        </div>
+        <div class="leg-sec notes-sec">
+          <h3>Notas</h3>
+          <ul>
+            <li>BFF en EC2 A. Sin token, el BFF responde 401.</li>
+            <li>EIP y API ID: inventario de Ari, todavía vacío.</li>
+            <li>Cuenta nueva. Las IP de la EP2 no se copian.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="vpc" id="vpc">
+      <div class="vpc-h">AWS VPC · us-east-1 · cuenta Learner Lab de Ari · Elastic IP en A, B, C y D</div>
+      <div class="vpc-body">
+        <div class="vpc-top">
+          <div class="node" id="n-gw">
+            <div class="hd t">API Gateway</div>
+            <div class="bd">
+              <p>HTTP API · pass-through</p>
+              <p>/public · /api · /v1 · /v2</p>
+              <p class="em">Invoke URL pendiente</p>
+            </div>
+          </div>
+          <div class="node" id="n-bff">
+            <div class="hd t">BFF · :8080</div>
+            <div class="bd">
+              <p>Resource Server · sin JPA</p>
+              <p>Valida JWT y rol en EC2 A</p>
+              <p class="em">Sin token → 401 · rol incorrecto → 403</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpc-mid">
+          <div class="node" id="n-eca">
+            <div class="hd t">EC2 A · Catálogo</div>
+            <div class="bd">
+              <p>ms-catalogo :8082 · BFF :8080</p>
+              <p>Persiste categoría y prioridad</p>
+              <p class="em">mesatech-<br>catalogo-kafka</p>
+            </div>
+          </div>
+          <div class="node" id="n-rmq">
+            <div class="hd r">EC2 C · RabbitMQ</div>
+            <div class="bd">
+              <p>Docker · vhost mesatech</p>
+              <div class="mini">
+                <div class="box"><strong>exchange</strong><span>catalogo.<wbr>exchange</span></div>
+                <div class="flow">↓ routing key · categoria.<wbr>creada</div>
+                <div class="box"><strong>cola</strong><span>solicitudes.<wbr>catalogo.<wbr>queue</span></div>
+              </div>
+              <p class="em">direct · durable · ack manual · sin guest</p>
+            </div>
+          </div>
+          <div class="node" id="n-ecb">
+            <div class="hd t">EC2 B · Solicitudes</div>
+            <div class="bd">
+              <p>ms-solicitudes :8081</p>
+              <p>Copia local, mismo id</p>
+              <p class="em">mesatech-<br>solicitudes-kafka</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpc-bot">
+          <div class="node soft" id="n-rdsc">
+            <div class="hd d">RDS Catálogo</div>
+            <div class="bd">
+              <p>PostgreSQL · privado</p>
+              <p>mesatech_catalogo</p>
+              <p>EP3: auditoria_prioridad</p>
+              <p class="em">solo SG A · :5432</p>
+            </div>
+          </div>
+          <div class="node" id="n-kfk">
+            <div class="hd a">EC2 D · Kafka</div>
+            <div class="bd">
+              <p>3 tópicos · 3 particiones · RF 1</p>
+              <p class="em">bootstrap privada :9092 · UI :8088</p>
+              <div class="topics">
+                <div class="box"><strong>solicitud.creada</strong><span>key solicitud-{id} · nivel ≥ 4 preferente</span></div>
+                <div class="box"><strong>solicitud.estado</strong><span>key solicitud-{id} · RESUELTA/CERRADA sale</span></div>
+                <div class="box"><strong>catalogo.prioridad</strong><span>key prioridad-{id} · formato o revisión</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="node soft" id="n-rdss">
+            <div class="hd d">RDS Solicitudes</div>
+            <div class="bd">
+              <p>PostgreSQL · privado</p>
+              <p>mesatech_solicitudes</p>
+              <p>EP3: seguimiento e historial</p>
+              <p class="em">solo SG B · :5432</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sg" id="n-sg">
+      <div class="hd">Perímetro SG</div>
+      <div class="bd">
+        <p>9092 ← solo SG A + SG B</p>
+        <p>8088 ← IP admin /32</p>
+        <p>5672 ← solo SG A + SG B</p>
+        <p>15672 ← IP admin /32</p>
+        <p>22 ← IP admin /32</p>
+        <p>5432 ← solo la EC2 dueña</p>
+        <p>8080 ← solo el Gateway</p>
+        <hr/>
+        <p>RDS sin acceso público</p>
+        <p>React → solo Gateway</p>
+        <p>MS no expuestos a Internet</p>
+        <hr/>
+        <p class="em">EIP pendiente de número</p>
+        <p class="em">Kafka y Rabbit: IP privada</p>
+        <p class="em">Sin contraseñas ni secretos</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="inv" id="inv">
+    <h2>Inventario EP3 (IDs pendientes de Ari · sin IP ni secretos)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:9%">Rol</th>
+          <th style="width:18%">Componente</th>
+          <th style="width:16%">EIP / ID</th>
+          <th style="width:12%">Red</th>
+          <th style="width:12%">Puerto</th>
+          <th style="width:33%">Qué queda registrado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="n">EC2 A</td>
+          <td class="n">Catálogo + BFF</td>
+          <td>pendiente</td>
+          <td>privada A</td>
+          <td>8082 · 8080</td>
+          <td>auditoria_prioridad · grupo mesatech-catalogo-kafka</td>
+        </tr>
+        <tr>
+          <td class="n">EC2 B</td>
+          <td class="n">Solicitudes</td>
+          <td>pendiente</td>
+          <td>privada B</td>
+          <td>8081</td>
+          <td>seguimiento_solicitud · historial_estado_solicitud</td>
+        </tr>
+        <tr>
+          <td class="n">EC2 C</td>
+          <td class="n">RabbitMQ</td>
+          <td>pendiente</td>
+          <td>privada C</td>
+          <td>5672</td>
+          <td>catalogo.exchange · categoria.creada · cola durable</td>
+        </tr>
+        <tr>
+          <td class="n">EC2 D</td>
+          <td class="n">Kafka</td>
+          <td>pendiente</td>
+          <td>privada D</td>
+          <td>9092</td>
+          <td>3 tópicos × 3 particiones · UI 8088</td>
+        </tr>
+        <tr>
+          <td class="n">RDS Cat</td>
+          <td class="n">mesatech_catalogo</td>
+          <td>endpoint pendiente</td>
+          <td>privado</td>
+          <td>5432</td>
+          <td>dueño Nicolás · solo SG de EC2 A</td>
+        </tr>
+        <tr>
+          <td class="n">RDS Sol</td>
+          <td class="n">mesatech_solicitudes</td>
+          <td>endpoint pendiente</td>
+          <td>privado</td>
+          <td>5432</td>
+          <td>dueña Skarlett · solo SG de EC2 B</td>
+        </tr>
+        <tr>
+          <td class="n">Gateway</td>
+          <td class="n">HTTP API</td>
+          <td>invoke URL pendiente</td>
+          <td>pública</td>
+          <td>443</td>
+          <td>pass-through · el JWT se valida en el BFF</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="foot">
+    <span>Equipo: Ari Araya · Nicolás Barra · Giannina Guerrero · Skarlett Tropan</span>
+    <span>Documento de despliegue EP3 · Alternativa 1 · coincidente con ARQUITECTURA-ACUERDOS</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const page = document.getElementById('page');
+  const svg = document.getElementById('wires');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function rootRect(){ return page.getBoundingClientRect(); }
+  function box(el){
+    const r = el.getBoundingClientRect();
+    const p = rootRect();
+    return { x:r.left-p.left, y:r.top-p.top, w:r.width, h:r.height, r:r.right-p.left, b:r.bottom-p.top, cx:r.left-p.left+r.width/2, cy:r.top-p.top+r.height/2 };
+  }
+  function clearDrawn(){
+    [...svg.querySelectorAll('path')].forEach(n=>n.remove());
+    [...page.querySelectorAll('.badge,.chip')].forEach(n=>n.remove());
+  }
+  function path(d, cls, marker){
+    const e = document.createElementNS(NS,'path');
+    e.setAttribute('d', d);
+    e.setAttribute('fill','none');
+    if(cls==='http'){ e.setAttribute('stroke','#0f4c5c'); e.setAttribute('stroke-width','2.4'); }
+    if(cls==='auth'){ e.setAttribute('stroke','#c45c26'); e.setAttribute('stroke-width','2.4'); e.setAttribute('stroke-dasharray','7 5'); }
+    if(cls==='amqp'){ e.setAttribute('stroke','#1a7a6d'); e.setAttribute('stroke-width','2.8'); e.setAttribute('stroke-dasharray','1.5 6'); }
+    if(cls==='kfk'){ e.setAttribute('stroke','#1fa89c'); e.setAttribute('stroke-width','2.6'); }
+    if(marker) e.setAttribute('marker-end','url(#'+marker+')');
+    svg.appendChild(e);
+  }
+  function badge(x,y,n,cls){
+    const el = document.createElement('div');
+    el.className = 'badge '+cls;
+    el.textContent = n;
+    el.style.left = x+'px';
+    el.style.top = y+'px';
+    page.appendChild(el);
+  }
+  function chip(x,y,text,cls){
+    const el = document.createElement('div');
+    el.className = 'chip '+(cls||'');
+    el.textContent = text;
+    el.style.left = x+'px';
+    el.style.top = y+'px';
+    page.appendChild(el);
+  }
+  function alignSide(){
+    const top = document.getElementById('side-top');
+    const user = document.getElementById('n-user');
+    const react = document.getElementById('n-react');
+    const entra = document.getElementById('n-entra');
+    top.innerHTML = '';
+    top.appendChild(user);
+    const ph = document.createElement('div');
+    ph.setAttribute('aria-hidden','true');
+    top.appendChild(ph);
+    top.appendChild(react);
+    top.appendChild(entra);
+  }
+  function draw(){
+    clearDrawn();
+    const react=box(document.getElementById('n-react'));
+    const entra=box(document.getElementById('n-entra'));
+    const gw=box(document.getElementById('n-gw'));
+    const bff=box(document.getElementById('n-bff'));
+    const eca=box(document.getElementById('n-eca'));
+    const ecb=box(document.getElementById('n-ecb'));
+    const rmq=box(document.getElementById('n-rmq'));
+    const kfk=box(document.getElementById('n-kfk'));
+    const rdsc=box(document.getElementById('n-rdsc'));
+    const rdss=box(document.getElementById('n-rdss'));
+    const user=box(document.getElementById('n-user'));
+    const vpc=box(document.getElementById('vpc'));
+
+    path(`M${user.cx} ${user.b} V${react.y}`,'http','mHttp');
+
+    const gAuth = react.r + (entra.x - react.r)*0.5;
+    const y1 = react.y + react.h*0.32;
+    path(`M${react.r} ${y1} H${entra.x}`,'auth','mAuth');
+    badge(gAuth, y1, '1', 'auth');
+    const y2 = react.y + react.h*0.68;
+    path(`M${entra.x} ${y2} H${react.r}`,'auth','mAuth');
+    badge(gAuth, y2, '2', 'auth');
+
+    const gEV = entra.r + (vpc.x - entra.r)*0.5;
+    const yAbove = Math.min(react.y, entra.y) - 16;
+    path(`M${react.r} ${react.y + 16} V${yAbove} H${gEV} V${gw.cy} H${gw.x}`,'http','mHttp');
+    badge(gEV, (yAbove + gw.cy) * 0.5, '3', 'http');
+
+    const gGB = gw.r + (bff.x - gw.r)*0.5;
+    path(`M${gw.r} ${gw.cy} H${bff.x}`,'http','mHttp');
+    badge(gGB, gw.cy, '4', 'http');
+
+    const midY = bff.b + (eca.y - bff.b)*0.5;
+    const dropA = bff.x + 36;
+    const dropB = bff.r - 36;
+    path(`M${dropA} ${bff.b} V${midY} H${eca.cx} V${eca.y}`,'http','mHttp');
+    badge((dropA + eca.cx) * 0.5, midY, '5', 'http');
+    path(`M${dropB} ${bff.b} V${midY} H${ecb.cx} V${ecb.y}`,'http','mHttp');
+    badge((dropB + ecb.cx) * 0.5, midY, '5', 'http');
+
+    const rowBottom = Math.max(eca.b, rmq.b, ecb.b);
+    const gapBot = Math.min(rdsc.y, kfk.y, rdss.y);
+    const yLane = rowBottom + (gapBot - rowBottom) * 0.5;
+    path(`M${eca.cx} ${rowBottom} V${rdsc.y}`,'http','mHttp');
+    badge(eca.cx, yLane, '6', 'http');
+    path(`M${ecb.cx} ${rowBottom} V${rdss.y}`,'http','mHttp');
+    badge(ecb.cx, yLane, '6', 'http');
+
+    const gARm = eca.r + (rmq.x - eca.r)*0.5;
+    const y7 = eca.y + eca.h * 0.36;
+    path(`M${eca.r} ${y7} H${rmq.x}`,'amqp','mAmqp');
+    badge(gARm, y7, '7', 'amqp');
+
+    const gRB = rmq.r + (ecb.x - rmq.r) * 0.5;
+    const y8 = eca.y + eca.h * 0.70;
+    path(`M${rmq.r} ${y8} H${ecb.x}`,'amqp','mAmqp');
+    badge(gRB, y8, '8', 'amqp');
+
+    path(`M${eca.cx} ${yLane} H${ecb.cx}`,'kfk','');
+    path(`M${kfk.cx} ${yLane} V${kfk.y}`,'kfk','mKfk');
+    badge(kfk.cx, yLane, '9', 'kfk');
+  }
+  function run(){
+    alignSide();
+    const vpcEl = document.getElementById('vpc');
+    const sgEl = document.getElementById('n-sg');
+    const sideEl = document.getElementById('side');
+    const vh = vpcEl.getBoundingClientRect().height;
+    sgEl.style.minHeight = vh + 'px';
+    sideEl.style.minHeight = vh + 'px';
+    draw();
+  }
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  else window.addEventListener('load', run);
+  setTimeout(run, 120);
+})();
+</script>
+</body>
+</html>
