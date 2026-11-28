@@ -1,21 +1,33 @@
-# Referencias Kafka (profesor)
+# Referencias Kafka — metodología lab + contrato MesaTech
 
-| Repo | URL |
+| Repo lab | `_refs/ep3-kafka-basico`, `_refs/ep3-kafka-mysql` |
+| Contrato JSON | [`../Giannina/Contrato-eventos-EP3.md`](../Giannina/Contrato-eventos-EP3.md) |
+
+## Metodología (como el curso)
+
+| Lab | `ms-catalogo` |
 | --- | --- |
-| Básico | https://github.com/pauloberrios44/seccion-1-kafka-basico.git |
-| Persistencia | https://github.com/pauloberrios44/kafka-persistencia-mysql-seccion-1.git |
+| Package `consumer` + clase `*Consumer` | **`consumer/CatalogoConsumer`** |
+| Package `service` + `registrarVenta` | **`service/CatalogoPrioridadService.registrarCambioPrioridad`** |
+| `KafkaTemplate.send(topic, key, json)` | **`CatalogoController`** (PUT prioridad real) |
+| Listener + partición / offset / key | Igual en `CatalogoConsumer` |
+| `enable-auto-commit=false` + ack manual | `KafkaConfig` + `Acknowledgment` |
 
-```powershell
-cd _refs
-git clone https://github.com/pauloberrios44/seccion-1-kafka-basico.git ep3-kafka-basico
-git clone https://github.com/pauloberrios44/kafka-persistencia-mysql-seccion-1.git ep3-kafka-mysql
+## Negocio (rúbrica / Giannina)
+
+| Lab | MesaTech |
+| --- | --- |
+| `Venta` genérico | **`record PrioridadRenombradaDTO`** + tabla **`auditoria_prioridad`** |
+| Tópico `ventas` | **`mesatech.catalogo.prioridad`** (`app.kafka.mistopicos.prioridad`) |
+
+Skarlett (misma metodología, otros DTO):
+
+- `SolicitudCreadaDTO` + **`SolicitudesConsumer`** (sugerido)
+- `SolicitudEstadoDTO` + mismo MS / segundo listener
+
+## Properties
+
+```properties
+app.kafka.mistopicos.prioridad=mesatech.catalogo.prioridad
+spring.kafka.consumer.group-id=mesatech-catalogo-kafka
 ```
-
-**Curso compose:** `docs/Evaluaciones/EP3/EP3 Contexto/Trabajando-con-Kafka-extract.txt`
-
-**Patrones a replicar en `ms-catalogo`:**
-
-- `KafkaTemplate.send(topic, key, payload)`
-- `@KafkaListener` + headers partición/offset/key
-- `enable-auto-commit=false` + ack tras persistir
-- `@Valid` en DTO del listener

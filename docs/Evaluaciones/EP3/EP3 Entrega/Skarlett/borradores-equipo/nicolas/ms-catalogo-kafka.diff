@@ -1,0 +1,1116 @@
+diff --git a/ms-catalogo/pom.xml b/ms-catalogo/pom.xml
+index 7dc0fe6..a8e6d8f 100644
+--- a/ms-catalogo/pom.xml
++++ b/ms-catalogo/pom.xml
+@@ -37,6 +37,24 @@
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-amqp</artifactId>
+         </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-kafka</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-validation</artifactId>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-test</artifactId>
++            <scope>test</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.springframework.boot</groupId>
++            <artifactId>spring-boot-starter-kafka-test</artifactId>
++            <scope>test</scope>
++        </dependency>
+         <dependency>
+             <groupId>org.postgresql</groupId>
+             <artifactId>postgresql</artifactId>
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/domain/AuditoriaPrioridad.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/domain/AuditoriaPrioridad.java
+new file mode 100644
+index 0000000..31ef20d
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/domain/AuditoriaPrioridad.java
+@@ -0,0 +1,58 @@
++package cl.duoc.mesatech.catalogo.domain;
++
++import jakarta.persistence.Column;
++import jakarta.persistence.Entity;
++import jakarta.persistence.GeneratedValue;
++import jakarta.persistence.GenerationType;
++import jakarta.persistence.Id;
++import jakarta.persistence.Table;
++import lombok.Getter;
++import lombok.Setter;
++
++import java.time.Instant;
++
++@Entity
++@Table(name = "auditoria_prioridad")
++@Getter
++@Setter
++public class AuditoriaPrioridad {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @Column(name = "event_id", nullable = false, unique = true, length = 64)
++    private String eventId;
++
++    @Column(name = "prioridad_id", nullable = false)
++    private Long prioridadId;
++
++    @Column(name = "nombre_anterior", nullable = false, length = 80)
++    private String nombreAnterior;
++
++    @Column(name = "nombre_nuevo", nullable = false, length = 80)
++    private String nombreNuevo;
++
++    private Integer nivel;
++
++    @Column(name = "tipo_cambio", nullable = false, length = 30)
++    private String tipoCambio;
++
++    @Column(nullable = false, length = 80)
++    private String topico;
++
++    @Column(nullable = false)
++    private Integer particion;
++
++    @Column(name = "offset_kafka", nullable = false)
++    private Long offsetKafka;
++
++    @Column(name = "evento_key", length = 64)
++    private String eventoKey;
++
++    @Column(name = "fecha_evento", nullable = false)
++    private Instant fechaEvento;
++
++    @Column(name = "procesado_en", nullable = false)
++    private Instant procesadoEn = Instant.now();
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/EventoInvalidoException.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/EventoInvalidoException.java
+new file mode 100644
+index 0000000..23af7ff
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/EventoInvalidoException.java
+@@ -0,0 +1,8 @@
++package cl.duoc.mesatech.catalogo.messaging;
++
++public class EventoInvalidoException extends RuntimeException {
++
++    public EventoInvalidoException(String message) {
++        super(message);
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadService.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadService.java
+new file mode 100644
+index 0000000..66e4856
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadService.java
+@@ -0,0 +1,68 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import cl.duoc.mesatech.catalogo.domain.AuditoriaPrioridad;
++import cl.duoc.mesatech.catalogo.messaging.EventoInvalidoException;
++import cl.duoc.mesatech.catalogo.repo.AuditoriaPrioridadRepository;
++import org.springframework.stereotype.Service;
++import org.springframework.transaction.annotation.Transactional;
++
++import java.time.Instant;
++import java.util.Optional;
++
++@Service
++public class AuditoriaPrioridadService {
++
++    public static final String CAMBIO_FORMATO = "CORRECCION_FORMATO";
++    public static final String CAMBIO_SUSTANTIVO = "REVISION_SUSTANTIVA";
++
++    private final AuditoriaPrioridadRepository auditoriaRepo;
++
++    public AuditoriaPrioridadService(AuditoriaPrioridadRepository auditoriaRepo) {
++        this.auditoriaRepo = auditoriaRepo;
++    }
++
++    @Transactional
++    public Optional<AuditoriaPrioridad> registrarRenombre(
++            PrioridadRenombradaEvent evento,
++            String topico,
++            int particion,
++            long offset,
++            String key
++    ) {
++        if (evento == null) {
++            throw new EventoInvalidoException("El evento de prioridad renombrada viene nulo");
++        }
++        if (auditoriaRepo.existsByEventId(evento.eventId())) {
++            return Optional.empty();
++        }
++        if (evento.nombreAnterior().equals(evento.nombreNuevo())) {
++            throw new EventoInvalidoException("nombreNuevo debe ser distinto de nombreAnterior");
++        }
++
++        String anteriorNorm = normalizar(evento.nombreAnterior());
++        String nuevoNorm = normalizar(evento.nombreNuevo());
++        String tipoCambio = anteriorNorm.equalsIgnoreCase(nuevoNorm)
++                ? CAMBIO_FORMATO
++                : CAMBIO_SUSTANTIVO;
++
++        AuditoriaPrioridad registro = new AuditoriaPrioridad();
++        registro.setEventId(evento.eventId());
++        registro.setPrioridadId(evento.prioridadId());
++        registro.setNombreAnterior(evento.nombreAnterior());
++        registro.setNombreNuevo(evento.nombreNuevo());
++        registro.setNivel(evento.nivel());
++        registro.setTipoCambio(tipoCambio);
++        registro.setTopico(topico);
++        registro.setParticion(particion);
++        registro.setOffsetKafka(offset);
++        registro.setEventoKey(key);
++        registro.setFechaEvento(evento.fechaEvento());
++        registro.setProcesadoEn(Instant.now());
++
++        return Optional.of(auditoriaRepo.save(registro));
++    }
++
++    static String normalizar(String texto) {
++        return texto == null ? "" : texto.trim().replaceAll("\\s+", " ");
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/KafkaConfig.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/KafkaConfig.java
+new file mode 100644
+index 0000000..b5f3533
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/KafkaConfig.java
+@@ -0,0 +1,133 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import cl.duoc.mesatech.catalogo.messaging.EventoInvalidoException;
++import org.apache.kafka.clients.consumer.ConsumerRecord;
++import org.apache.kafka.common.TopicPartition;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.kafka.annotation.EnableKafka;
++import org.springframework.kafka.annotation.KafkaListenerConfigurer;
++import org.springframework.kafka.config.KafkaListenerEndpointRegistrar;
++import org.springframework.kafka.core.KafkaTemplate;
++import org.springframework.kafka.listener.ConsumerRecordRecoverer;
++import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
++import org.springframework.kafka.listener.DefaultErrorHandler;
++import org.springframework.kafka.support.converter.RecordMessageConverter;
++import org.springframework.kafka.support.converter.StringJacksonJsonMessageConverter;
++import org.springframework.messaging.converter.MessageConversionException;
++import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
++import org.springframework.util.backoff.FixedBackOff;
++import org.springframework.validation.FieldError;
++import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
++import tools.jackson.core.JacksonException;
++import tools.jackson.databind.json.JsonMapper;
++
++import java.util.stream.Collectors;
++
++@EnableKafka
++@Configuration
++public class KafkaConfig implements KafkaListenerConfigurer {
++
++    private final LocalValidatorFactoryBean validator;
++
++    public KafkaConfig(LocalValidatorFactoryBean validator) {
++        this.validator = validator;
++    }
++
++    @Override
++    public void configureKafkaListeners(KafkaListenerEndpointRegistrar registrar) {
++        registrar.setValidator(this.validator);
++    }
++
++    @Bean
++    RecordMessageConverter recordMessageConverter(JsonMapper jsonMapper) {
++        return new StringJacksonJsonMessageConverter(jsonMapper);
++    }
++
++    @Bean
++    DefaultErrorHandler kafkaErrorHandler(
++            KafkaTemplate<Object, Object> kafkaTemplate,
++            OperacionLogService operacionLog,
++            @Value("${spring.kafka.consumer.group-id}") String groupId,
++            @Value("${mesatech.kafka.topics.dlq:mesatech.dlq.eventos}") String dlqTopic
++    ) {
++        DeadLetterPublishingRecoverer dlpr = new DeadLetterPublishingRecoverer(
++                kafkaTemplate,
++                (record, ex) -> new TopicPartition(dlqTopic, record.partition() >= 0 ? record.partition() % 3 : 0)
++        );
++
++        ConsumerRecordRecoverer loggingRecoverer = (ConsumerRecord<?, ?> record, Exception ex) -> {
++            String eventId = operacionLog.extraerEventId(record.value());
++            String key = record.key() != null ? record.key().toString() : null;
++            String motivo = resumirMotivo(ex);
++            String resultado = esErrorDeContrato(ex)
++                    ? "RECHAZADO_VALIDACION_DLT:" + dlqTopic
++                    : "ERROR_TRANSITORIO_AGOTADO_DLT:" + dlqTopic;
++
++            operacionLog.registrar(
++                    "ERROR",
++                    groupId,
++                    record.topic(),
++                    record.partition(),
++                    record.offset(),
++                    key,
++                    eventId,
++                    resultado,
++                    motivo
++            );
++            dlpr.accept(record, ex);
++        };
++
++        DefaultErrorHandler handler = new DefaultErrorHandler(loggingRecoverer, new FixedBackOff(1000L, 2L));
++        handler.addNotRetryableExceptions(
++                MethodArgumentNotValidException.class,
++                MessageConversionException.class,
++                JacksonException.class,
++                EventoInvalidoException.class
++        );
++        return handler;
++    }
++
++    static boolean esErrorDeContrato(Throwable ex) {
++        return buscarCausa(ex, MethodArgumentNotValidException.class) != null
++                || buscarCausa(ex, MessageConversionException.class) != null
++                || buscarCausa(ex, JacksonException.class) != null
++                || buscarCausa(ex, EventoInvalidoException.class) != null;
++    }
++
++    static String resumirMotivo(Throwable ex) {
++        MethodArgumentNotValidException validationEx = buscarCausa(ex, MethodArgumentNotValidException.class);
++        if (validationEx != null && validationEx.getBindingResult() != null) {
++            String errores = validationEx.getBindingResult().getFieldErrors().stream()
++                    .map(KafkaConfig::formatearFieldError)
++                    .collect(Collectors.joining("; "));
++            if (!errores.isBlank()) {
++                return errores;
++            }
++            if (!validationEx.getBindingResult().getGlobalErrors().isEmpty()) {
++                return validationEx.getBindingResult().getGlobalErrors().get(0).getDefaultMessage();
++            }
++        }
++        Throwable root = ex;
++        while (root.getCause() != null) {
++            root = root.getCause();
++        }
++        return root.getMessage() != null ? root.getMessage() : root.getClass().getSimpleName();
++    }
++
++    private static String formatearFieldError(FieldError err) {
++        return err.getField() + ": " + err.getDefaultMessage();
++    }
++
++    private static <T extends Throwable> T buscarCausa(Throwable ex, Class<T> target) {
++        Throwable cur = ex;
++        while (cur != null) {
++            if (target.isInstance(cur)) {
++                return target.cast(cur);
++            }
++            cur = cur.getCause();
++        }
++        return null;
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/OperacionLogService.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/OperacionLogService.java
+new file mode 100644
+index 0000000..881907d
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/OperacionLogService.java
+@@ -0,0 +1,78 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.stereotype.Service;
++import tools.jackson.databind.JsonNode;
++import tools.jackson.databind.json.JsonMapper;
++
++import java.time.Instant;
++import java.util.LinkedHashMap;
++import java.util.Map;
++
++@Service
++public class OperacionLogService {
++
++    private static final Logger opLog = LoggerFactory.getLogger("OPERACION_JSONL");
++    private static final Logger fallbackLog = LoggerFactory.getLogger(OperacionLogService.class);
++    private static final String SERVICIO = "ms-catalogo";
++
++    private final JsonMapper jsonMapper;
++
++    public OperacionLogService(JsonMapper jsonMapper) {
++        this.jsonMapper = jsonMapper;
++    }
++
++    public void registrar(
++            String nivel,
++            String grupo,
++            String topico,
++            Integer particion,
++            Long offset,
++            String key,
++            String eventId,
++            String resultado,
++            String detalle
++    ) {
++        Map<String, Object> entry = new LinkedHashMap<>();
++        entry.put("timestampUtc", Instant.now().toString());
++        entry.put("nivel", nivel);
++        entry.put("servicio", SERVICIO);
++        entry.put("grupo", grupo);
++        entry.put("topico", topico);
++        entry.put("particion", particion);
++        entry.put("offset", offset);
++        entry.put("key", key);
++        entry.put("eventId", eventId);
++        entry.put("resultado", resultado);
++        if (detalle != null && !detalle.isBlank()) {
++            entry.put("detalle", detalle);
++        }
++        try {
++            String line = jsonMapper.writeValueAsString(entry);
++            if ("ERROR".equalsIgnoreCase(nivel)) {
++                opLog.error(line);
++            } else if ("WARN".equalsIgnoreCase(nivel)) {
++                opLog.warn(line);
++            } else {
++                opLog.info(line);
++            }
++        } catch (Exception ex) {
++            fallbackLog.warn("No se pudo serializar registro operativo: {}", ex.getMessage());
++        }
++    }
++
++    public String extraerEventId(Object rawPayload) {
++        if (rawPayload == null) {
++            return null;
++        }
++        try {
++            String text = rawPayload.toString();
++            JsonNode node = jsonMapper.readTree(text);
++            JsonNode idNode = node.get("eventId");
++            return idNode != null && idNode.isTextual() ? idNode.asText() : null;
++        } catch (Exception ignored) {
++            return null;
++        }
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadKafkaProducer.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadKafkaProducer.java
+new file mode 100644
+index 0000000..6a34cb8
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadKafkaProducer.java
+@@ -0,0 +1,101 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import cl.duoc.mesatech.catalogo.domain.Prioridad;
++import org.apache.kafka.clients.producer.RecordMetadata;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.kafka.core.KafkaTemplate;
++import org.springframework.stereotype.Component;
++import tools.jackson.databind.json.JsonMapper;
++
++import java.time.Instant;
++import java.util.UUID;
++
++@Component
++public class PrioridadKafkaProducer {
++
++    private static final Logger log = LoggerFactory.getLogger(PrioridadKafkaProducer.class);
++
++    private final KafkaTemplate<Object, Object> kafkaTemplate;
++    private final JsonMapper jsonMapper;
++    private final OperacionLogService operacionLog;
++    private final String topicPrioridad;
++    private final String groupId;
++
++    public PrioridadKafkaProducer(
++            KafkaTemplate<Object, Object> kafkaTemplate,
++            JsonMapper jsonMapper,
++            OperacionLogService operacionLog,
++            @Value("${mesatech.kafka.topics.catalogo-prioridad}") String topicPrioridad,
++            @Value("${spring.kafka.consumer.group-id}") String groupId
++    ) {
++        this.kafkaTemplate = kafkaTemplate;
++        this.jsonMapper = jsonMapper;
++        this.operacionLog = operacionLog;
++        this.topicPrioridad = topicPrioridad;
++        this.groupId = groupId;
++    }
++
++    public String publicarPrioridadRenombrada(String nombreAnterior, Prioridad prioridadActualizada) {
++        String eventId = UUID.randomUUID().toString();
++        String key = "prioridad-" + prioridadActualizada.getId();
++        PrioridadRenombradaEvent evento = new PrioridadRenombradaEvent(
++                eventId,
++                PrioridadRenombradaEvent.TIPO,
++                Instant.now(),
++                prioridadActualizada.getId(),
++                nombreAnterior,
++                prioridadActualizada.getNombre(),
++                prioridadActualizada.getNivel()
++        );
++        try {
++            String json = jsonMapper.writeValueAsString(evento);
++            kafkaTemplate.send(topicPrioridad, key, json).whenComplete((result, ex) -> {
++                if (ex != null) {
++                    log.error("Error enviando evento {} a {} key={}: {}", eventId, topicPrioridad, key, ex.getMessage());
++                    operacionLog.registrar(
++                            "ERROR",
++                            groupId,
++                            topicPrioridad,
++                            null,
++                            null,
++                            key,
++                            eventId,
++                            "PRODUCTOR_FALLO_ENVIO",
++                            ex.getMessage()
++                    );
++                    return;
++                }
++                RecordMetadata meta = result != null ? result.getRecordMetadata() : null;
++                Integer partition = meta != null ? meta.partition() : null;
++                Long offset = meta != null ? meta.offset() : null;
++                operacionLog.registrar(
++                        "INFO",
++                        groupId,
++                        topicPrioridad,
++                        partition,
++                        offset,
++                        key,
++                        eventId,
++                        "PRODUCTOR_ENVIADO_ACK",
++                        null
++                );
++            });
++        } catch (Exception ex) {
++            log.error("No se pudo serializar o encolar evento {} para {}: {}", eventId, topicPrioridad, ex.getMessage());
++            operacionLog.registrar(
++                    "ERROR",
++                    groupId,
++                    topicPrioridad,
++                    null,
++                    null,
++                    key,
++                    eventId,
++                    "PRODUCTOR_ERROR_SERIALIZACION",
++                    ex.getMessage()
++            );
++        }
++        return eventId;
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaEvent.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaEvent.java
+new file mode 100644
+index 0000000..a7f2f2b
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaEvent.java
+@@ -0,0 +1,45 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import jakarta.validation.constraints.Max;
++import jakarta.validation.constraints.Min;
++import jakarta.validation.constraints.NotBlank;
++import jakarta.validation.constraints.NotNull;
++import jakarta.validation.constraints.Pattern;
++import jakarta.validation.constraints.Positive;
++import jakarta.validation.constraints.Size;
++
++import java.time.Instant;
++
++public record PrioridadRenombradaEvent(
++        @NotBlank(message = "es obligatorio")
++        @Pattern(
++                regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
++                message = "debe ser un UUID v4 válido"
++        )
++        String eventId,
++
++        @NotBlank(message = "es obligatorio")
++        @Pattern(regexp = "^catalogo\\.prioridad\\.renombrada$", message = "debe ser catalogo.prioridad.renombrada")
++        String tipoEvento,
++
++        @NotNull(message = "es obligatorio en formato ISO-8601 UTC")
++        Instant fechaEvento,
++
++        @NotNull(message = "es obligatorio")
++        @Positive(message = "debe ser mayor a 0")
++        Long prioridadId,
++
++        @NotBlank(message = "es obligatorio")
++        @Size(max = 80, message = "máximo 80 caracteres")
++        String nombreAnterior,
++
++        @NotBlank(message = "es obligatorio")
++        @Size(max = 80, message = "máximo 80 caracteres")
++        String nombreNuevo,
++
++        @Min(value = 1, message = "debe estar entre 1 y 5")
++        @Max(value = 5, message = "debe estar entre 1 y 5")
++        Integer nivel
++) {
++    public static final String TIPO = "catalogo.prioridad.renombrada";
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListener.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListener.java
+new file mode 100644
+index 0000000..76f300b
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListener.java
+@@ -0,0 +1,61 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import jakarta.validation.Valid;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.kafka.annotation.KafkaListener;
++import org.springframework.kafka.support.Acknowledgment;
++import org.springframework.kafka.support.KafkaHeaders;
++import org.springframework.messaging.handler.annotation.Header;
++import org.springframework.messaging.handler.annotation.Payload;
++import org.springframework.stereotype.Component;
++
++@Component
++public class PrioridadRenombradaKafkaListener {
++
++    private final AuditoriaPrioridadService auditoriaService;
++    private final OperacionLogService operacionLog;
++    private final String groupId;
++
++    public PrioridadRenombradaKafkaListener(
++            AuditoriaPrioridadService auditoriaService,
++            OperacionLogService operacionLog,
++            @Value("${spring.kafka.consumer.group-id}") String groupId
++    ) {
++        this.auditoriaService = auditoriaService;
++        this.operacionLog = operacionLog;
++        this.groupId = groupId;
++    }
++
++    @KafkaListener(
++            id = "prioridadRenombradaListener",
++            topics = "${mesatech.kafka.topics.catalogo-prioridad}",
++            groupId = "${spring.kafka.consumer.group-id}",
++            concurrency = "${mesatech.kafka.listener.concurrency:3}"
++    )
++    public void onPrioridadRenombrada(
++            @Payload @Valid PrioridadRenombradaEvent evento,
++            @Header(KafkaHeaders.RECEIVED_TOPIC) String topico,
++            @Header(KafkaHeaders.RECEIVED_PARTITION) int particion,
++            @Header(KafkaHeaders.OFFSET) long offset,
++            @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String key,
++            Acknowledgment acknowledgment
++    ) {
++        var guardado = auditoriaService.registrarRenombre(evento, topico, particion, offset, key);
++        acknowledgment.acknowledge();
++
++        String resultado = guardado
++                .map(a -> "CONSUMIDO_GUARDADO_" + a.getTipoCambio())
++                .orElse("IGNORADO_DUPLICADO_IDEMPOTENTE");
++        operacionLog.registrar(
++                "INFO",
++                groupId,
++                topico,
++                particion,
++                offset,
++                key,
++                evento.eventId(),
++                resultado,
++                "prioridadId=" + evento.prioridadId()
++        );
++    }
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/repo/AuditoriaPrioridadRepository.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/repo/AuditoriaPrioridadRepository.java
+new file mode 100644
+index 0000000..b76f356
+--- /dev/null
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/repo/AuditoriaPrioridadRepository.java
+@@ -0,0 +1,9 @@
++package cl.duoc.mesatech.catalogo.repo;
++
++import cl.duoc.mesatech.catalogo.domain.AuditoriaPrioridad;
++import org.springframework.data.jpa.repository.JpaRepository;
++
++public interface AuditoriaPrioridadRepository extends JpaRepository<AuditoriaPrioridad, Long> {
++
++    boolean existsByEventId(String eventId);
++}
+diff --git a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/web/CatalogoController.java b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/web/CatalogoController.java
+index aa606c3..d1bd5ca 100644
+--- a/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/web/CatalogoController.java
++++ b/ms-catalogo/src/main/java/cl/duoc/mesatech/catalogo/web/CatalogoController.java
+@@ -4,6 +4,7 @@ import cl.duoc.mesatech.catalogo.domain.Categoria;
+ import cl.duoc.mesatech.catalogo.domain.Prioridad;
+ import cl.duoc.mesatech.catalogo.messaging.CategoriaEventPublisher;
+ import cl.duoc.mesatech.catalogo.messaging.PublicacionEventoException;
++import cl.duoc.mesatech.catalogo.messaging.kafka.PrioridadKafkaProducer;
+ import cl.duoc.mesatech.catalogo.repo.CategoriaRepository;
+ import cl.duoc.mesatech.catalogo.repo.PrioridadRepository;
+ import org.springframework.http.HttpStatus;
+@@ -25,15 +26,18 @@ public class CatalogoController {
+     private final CategoriaRepository categorias;
+     private final PrioridadRepository prioridades;
+     private final CategoriaEventPublisher eventos;
++    private final PrioridadKafkaProducer prioridadKafkaProducer;
+ 
+     public CatalogoController(
+             CategoriaRepository categorias,
+             PrioridadRepository prioridades,
+-            CategoriaEventPublisher eventos
++            CategoriaEventPublisher eventos,
++            PrioridadKafkaProducer prioridadKafkaProducer
+     ) {
+         this.categorias = categorias;
+         this.prioridades = prioridades;
+         this.eventos = eventos;
++        this.prioridadKafkaProducer = prioridadKafkaProducer;
+     }
+ 
+     @GetMapping("/v1/catalogo")
+@@ -95,12 +99,21 @@ public class CatalogoController {
+         if (body.getNombre() == null || body.getNombre().isBlank()) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre");
+         }
+-        if (body.getNivel() == null || body.getNivel() < 1) {
+-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nivel válido");
++        if (body.getNivel() == null || body.getNivel() < 1 || body.getNivel() > 5) {
++            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nivel válido (1 a 5)");
+         }
+-        existente.setNombre(body.getNombre().trim());
++        String nombreAnterior = existente.getNombre();
++        String nombreNuevo = body.getNombre().trim();
++        existente.setNombre(nombreNuevo);
+         existente.setNivel(body.getNivel());
+-        return prioridades.save(existente);
++        Prioridad actualizada = prioridades.save(existente);
++        if (nombreAnterior == null || !nombreAnterior.equals(nombreNuevo)) {
++            prioridadKafkaProducer.publicarPrioridadRenombrada(
++                    nombreAnterior == null ? "" : nombreAnterior,
++                    actualizada
++            );
++        }
++        return actualizada;
+     }
+ 
+     @DeleteMapping("/v1/catalogo/prioridades/{id}")
+diff --git a/ms-catalogo/src/main/resources/application.properties b/ms-catalogo/src/main/resources/application.properties
+index e27996a..efce77f 100644
+--- a/ms-catalogo/src/main/resources/application.properties
++++ b/ms-catalogo/src/main/resources/application.properties
+@@ -23,3 +23,25 @@ spring.rabbitmq.publisher-returns=true
+ mesatech.rabbitmq.exchange=catalogo.exchange
+ mesatech.rabbitmq.routing-key=categoria.creada
+ mesatech.rabbitmq.declare=${RABBITMQ_DECLARE:true}
++
++# Apache Kafka EP3 (Alternativa 1: mesatech-catalogo-kafka)
++spring.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
++spring.kafka.producer.acks=all
++spring.kafka.producer.retries=3
++spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
++spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer
++
++spring.kafka.consumer.group-id=${KAFKA_CATALOGO_GROUP_ID:mesatech-catalogo-kafka}
++spring.kafka.consumer.auto-offset-reset=earliest
++spring.kafka.consumer.enable-auto-commit=false
++spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
++spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
++
++spring.kafka.listener.ack-mode=manual
++# Una sola fuente: KAFKA_LISTENER_CONCURRENCY controla el @KafkaListener de prioridad.
++mesatech.kafka.listener.concurrency=${KAFKA_LISTENER_CONCURRENCY:3}
++spring.kafka.listener.concurrency=${mesatech.kafka.listener.concurrency}
++
++mesatech.kafka.topics.catalogo-prioridad=${KAFKA_TOPIC_CATALOGO_PRIORIDAD:mesatech.catalogo.prioridad}
++mesatech.kafka.topics.dlq=${KAFKA_TOPIC_DLQ:mesatech.dlq.eventos}
++mesatech.operacion.log-path=${OPERACION_LOG_PATH:logs/operacion.jsonl}
+diff --git a/ms-catalogo/src/main/resources/logback-spring.xml b/ms-catalogo/src/main/resources/logback-spring.xml
+new file mode 100644
+index 0000000..f03547c
+--- /dev/null
++++ b/ms-catalogo/src/main/resources/logback-spring.xml
+@@ -0,0 +1,29 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<configuration>
++    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
++    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
++
++    <springProperty scope="context" name="OPERACION_LOG_PATH"
++                    source="mesatech.operacion.log-path"
++                    defaultValue="logs/operacion.jsonl"/>
++
++    <appender name="OPERACION_JSONL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
++        <file>${OPERACION_LOG_PATH}</file>
++        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
++            <fileNamePattern>${OPERACION_LOG_PATH}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
++            <maxFileSize>10MB</maxFileSize>
++            <maxHistory>7</maxHistory>
++        </rollingPolicy>
++        <encoder>
++            <pattern>%msg%n</pattern>
++        </encoder>
++    </appender>
++
++    <logger name="OPERACION_JSONL" level="INFO" additivity="true">
++        <appender-ref ref="OPERACION_JSONL_FILE"/>
++    </logger>
++
++    <root level="INFO">
++        <appender-ref ref="CONSOLE"/>
++    </root>
++</configuration>
+diff --git a/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadServiceTest.java b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadServiceTest.java
+new file mode 100644
+index 0000000..42dae81
+--- /dev/null
++++ b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/AuditoriaPrioridadServiceTest.java
+@@ -0,0 +1,99 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import cl.duoc.mesatech.catalogo.domain.AuditoriaPrioridad;
++import cl.duoc.mesatech.catalogo.messaging.EventoInvalidoException;
++import cl.duoc.mesatech.catalogo.repo.AuditoriaPrioridadRepository;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++
++import java.time.Instant;
++import java.util.Optional;
++
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertThrows;
++import static org.junit.jupiter.api.Assertions.assertTrue;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++class AuditoriaPrioridadServiceTest {
++
++    private AuditoriaPrioridadRepository repo;
++    private AuditoriaPrioridadService service;
++
++    @BeforeEach
++    void setUp() {
++        repo = mock(AuditoriaPrioridadRepository.class);
++        when(repo.save(any())).thenAnswer(inv -> inv.getArgument(0));
++        service = new AuditoriaPrioridadService(repo);
++    }
++
++    @Test
++    void clasificaCorreccionFormatoCuandoNormalizadoEsIgual() {
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "  alta   operacional ",
++                "Alta Operacional",
++                4
++        );
++
++        Optional<AuditoriaPrioridad> res = service.registrarRenombre(ev, "mesatech.catalogo.prioridad", 1, 0L, "prioridad-2");
++        assertTrue(res.isPresent());
++        assertEquals(AuditoriaPrioridadService.CAMBIO_FORMATO, res.get().getTipoCambio());
++    }
++
++    @Test
++    void clasificaRevisionSustantivaCuandoCambiaSignificado() {
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica operacional",
++                null
++        );
++
++        Optional<AuditoriaPrioridad> res = service.registrarRenombre(ev, "mesatech.catalogo.prioridad", 1, 1L, "prioridad-2");
++        assertTrue(res.isPresent());
++        assertEquals(AuditoriaPrioridadService.CAMBIO_SUSTANTIVO, res.get().getTipoCambio());
++    }
++
++    @Test
++    void ignoraEventoDuplicadoPorEventId() {
++        when(repo.existsByEventId("e6f7a8b9-0123-4cde-a012-3456789abcde")).thenReturn(true);
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica",
++                4
++        );
++
++        Optional<AuditoriaPrioridad> res = service.registrarRenombre(ev, "mesatech.catalogo.prioridad", 1, 1L, "prioridad-2");
++        assertTrue(res.isEmpty());
++        verify(repo, never()).save(any());
++    }
++
++    @Test
++    void rechazaSiNombreLiteralEsIdentico() {
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Alta",
++                4
++        );
++        assertThrows(EventoInvalidoException.class,
++                () -> service.registrarRenombre(ev, "mesatech.catalogo.prioridad", 1, 1L, "prioridad-2"));
++    }
++}
+diff --git a/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadEventosValidationTest.java b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadEventosValidationTest.java
+new file mode 100644
+index 0000000..259977d
+--- /dev/null
++++ b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadEventosValidationTest.java
+@@ -0,0 +1,64 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import jakarta.validation.ConstraintViolation;
++import jakarta.validation.Validation;
++import jakarta.validation.Validator;
++import org.junit.jupiter.api.Test;
++
++import java.time.Instant;
++import java.util.Set;
++
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.junit.jupiter.api.Assertions.assertTrue;
++
++class PrioridadEventosValidationTest {
++
++    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
++
++    @Test
++    void aceptaContratoPrioridadValidoDeGiannina() {
++        PrioridadRenombradaEvent valido = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                "catalogo.prioridad.renombrada",
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica operacional",
++                4
++        );
++        assertTrue(validator.validate(valido).isEmpty());
++    }
++
++    @Test
++    void rechazaContratoPrioridadInvalidoPorNombreNuevoVacio() {
++        PrioridadRenombradaEvent invalido = new PrioridadRenombradaEvent(
++                "f7a8b9c0-1234-4def-8123-456789abcdef",
++                "catalogo.prioridad.renombrada",
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "",
++                4
++        );
++        Set<ConstraintViolation<PrioridadRenombradaEvent>> violaciones = validator.validate(invalido);
++        assertEquals(1, violaciones.size());
++        ConstraintViolation<PrioridadRenombradaEvent> v = violaciones.iterator().next();
++        assertEquals("nombreNuevo", v.getPropertyPath().toString());
++    }
++
++    @Test
++    void rechazaUuidNoV4() {
++        PrioridadRenombradaEvent invalido = new PrioridadRenombradaEvent(
++                "f7a8b9c0-1234-1def-8123-456789abcdef",
++                "catalogo.prioridad.renombrada",
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica",
++                4
++        );
++        Set<ConstraintViolation<PrioridadRenombradaEvent>> violaciones = validator.validate(invalido);
++        assertEquals(1, violaciones.size());
++        assertEquals("eventId", violaciones.iterator().next().getPropertyPath().toString());
++    }
++}
+diff --git a/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListenerTest.java b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListenerTest.java
+new file mode 100644
+index 0000000..04fc3c7
+--- /dev/null
++++ b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/messaging/kafka/PrioridadRenombradaKafkaListenerTest.java
+@@ -0,0 +1,75 @@
++package cl.duoc.mesatech.catalogo.messaging.kafka;
++
++import cl.duoc.mesatech.catalogo.domain.AuditoriaPrioridad;
++import org.junit.jupiter.api.Test;
++import org.springframework.kafka.support.Acknowledgment;
++import tools.jackson.databind.json.JsonMapper;
++
++import java.time.Instant;
++import java.util.Optional;
++
++import static org.junit.jupiter.api.Assertions.assertThrows;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.ArgumentMatchers.anyInt;
++import static org.mockito.ArgumentMatchers.anyLong;
++import static org.mockito.ArgumentMatchers.anyString;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++class PrioridadRenombradaKafkaListenerTest {
++
++    @Test
++    void confirmaOffsetSoloDespuesDeGuardar() {
++        AuditoriaPrioridadService service = mock(AuditoriaPrioridadService.class);
++        OperacionLogService logService = new OperacionLogService(JsonMapper.builder().build());
++        Acknowledgment ack = mock(Acknowledgment.class);
++
++        AuditoriaPrioridad guardada = new AuditoriaPrioridad();
++        guardada.setTipoCambio(AuditoriaPrioridadService.CAMBIO_SUSTANTIVO);
++        when(service.registrarRenombre(any(), anyString(), anyInt(), anyLong(), anyString()))
++                .thenReturn(Optional.of(guardada));
++
++        PrioridadRenombradaKafkaListener listener =
++                new PrioridadRenombradaKafkaListener(service, logService, "mesatech-catalogo-kafka");
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica operacional",
++                4
++        );
++
++        listener.onPrioridadRenombrada(ev, "mesatech.catalogo.prioridad", 2, 0L, "prioridad-2", ack);
++        verify(ack).acknowledge();
++    }
++
++    @Test
++    void noConfirmaOffsetSiFallaPersistencia() {
++        AuditoriaPrioridadService service = mock(AuditoriaPrioridadService.class);
++        OperacionLogService logService = new OperacionLogService(JsonMapper.builder().build());
++        Acknowledgment ack = mock(Acknowledgment.class);
++
++        when(service.registrarRenombre(any(), anyString(), anyInt(), anyLong(), anyString()))
++                .thenThrow(new RuntimeException("rds down"));
++
++        PrioridadRenombradaKafkaListener listener =
++                new PrioridadRenombradaKafkaListener(service, logService, "mesatech-catalogo-kafka");
++        PrioridadRenombradaEvent ev = new PrioridadRenombradaEvent(
++                "e6f7a8b9-0123-4cde-a012-3456789abcde",
++                PrioridadRenombradaEvent.TIPO,
++                Instant.parse("2026-11-24T21:14:00Z"),
++                2L,
++                "Alta",
++                "Crítica operacional",
++                4
++        );
++
++        assertThrows(RuntimeException.class,
++                () -> listener.onPrioridadRenombrada(ev, "mesatech.catalogo.prioridad", 2, 0L, "prioridad-2", ack));
++        verify(ack, never()).acknowledge();
++    }
++}
+diff --git a/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/web/CatalogoControllerTest.java b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/web/CatalogoControllerTest.java
+new file mode 100644
+index 0000000..eaa5085
+--- /dev/null
++++ b/ms-catalogo/src/test/java/cl/duoc/mesatech/catalogo/web/CatalogoControllerTest.java
+@@ -0,0 +1,87 @@
++package cl.duoc.mesatech.catalogo.web;
++
++import cl.duoc.mesatech.catalogo.domain.Categoria;
++import cl.duoc.mesatech.catalogo.domain.Prioridad;
++import cl.duoc.mesatech.catalogo.messaging.CategoriaEventPublisher;
++import cl.duoc.mesatech.catalogo.messaging.kafka.PrioridadKafkaProducer;
++import cl.duoc.mesatech.catalogo.repo.CategoriaRepository;
++import cl.duoc.mesatech.catalogo.repo.PrioridadRepository;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++
++import java.util.Optional;
++
++import static org.junit.jupiter.api.Assertions.assertEquals;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++class CatalogoControllerTest {
++
++    private CategoriaRepository categorias;
++    private PrioridadRepository prioridades;
++    private CategoriaEventPublisher rabbitPublisher;
++    private PrioridadKafkaProducer kafkaProducer;
++    private CatalogoController controller;
++
++    @BeforeEach
++    void setUp() {
++        categorias = mock(CategoriaRepository.class);
++        prioridades = mock(PrioridadRepository.class);
++        rabbitPublisher = mock(CategoriaEventPublisher.class);
++        kafkaProducer = mock(PrioridadKafkaProducer.class);
++        controller = new CatalogoController(categorias, prioridades, rabbitPublisher, kafkaProducer);
++    }
++
++    @Test
++    void actualizarPrioridadPublicaEventoKafkaCuandoCambiaNombre() {
++        Prioridad existente = new Prioridad();
++        existente.setId(2L);
++        existente.setNombre("Alta");
++        existente.setNivel(4);
++        when(prioridades.findById(2L)).thenReturn(Optional.of(existente));
++        when(prioridades.save(any())).thenAnswer(inv -> inv.getArgument(0));
++
++        Prioridad body = new Prioridad();
++        body.setNombre("Crítica operacional");
++        body.setNivel(4);
++
++        Prioridad res = controller.actualizarPrioridad(2L, body);
++        assertEquals("Crítica operacional", res.getNombre());
++        verify(kafkaProducer).publicarPrioridadRenombrada("Alta", res);
++    }
++
++    @Test
++    void actualizarPrioridadNoPublicaSiNombreLiteralEsIgual() {
++        Prioridad existente = new Prioridad();
++        existente.setId(2L);
++        existente.setNombre("Alta");
++        existente.setNivel(3);
++        when(prioridades.findById(2L)).thenReturn(Optional.of(existente));
++        when(prioridades.save(any())).thenAnswer(inv -> inv.getArgument(0));
++
++        Prioridad body = new Prioridad();
++        body.setNombre("Alta");
++        body.setNivel(4);
++
++        controller.actualizarPrioridad(2L, body);
++        verify(kafkaProducer, never()).publicarPrioridadRenombrada(any(), any());
++    }
++
++    @Test
++    void crearCategoriaMantienePublicacionRabbitEp2() {
++        Categoria body = new Categoria();
++        body.setNombre("Redes");
++        when(categorias.save(any())).thenAnswer(inv -> {
++            Categoria c = inv.getArgument(0);
++            c.setId(7L);
++            return c;
++        });
++
++        Categoria res = controller.crearCategoria(body);
++        assertEquals(7L, res.getId());
++        verify(rabbitPublisher).publicarCategoriaCreada(res);
++    }
++}
