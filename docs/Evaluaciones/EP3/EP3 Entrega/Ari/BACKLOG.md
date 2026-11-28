@@ -1,113 +1,76 @@
 # Backlog Ari — Infraestructura EP3
 
-**Criterios pauta:** Continuidad EP2, red (C4), broker Kafka estable, soporte a lag.
+**Criterios pauta:** Continuidad EP2, red, broker Kafka estable, soporte a lag.  
+**Estado (2026-11-28, America/Santiago):** A0–A8 **hechos**. Inventario enviado al equipo.
 
 ---
 
-## A0 — Preparación cuenta
+## A0 — Preparación de la cuenta — Hecho (2026-11-27)
 
-1. Iniciar Learner Lab (cuenta vigente).
-2. Acordar horario apagado EC2/RDS (créditos).
-3. Canal privado del equipo para secretos (no Git).
+Se reutilizó la **misma cuenta Learner Lab de la EP2** (decisión del 27-nov por créditos restantes). Horario de apagado y canal privado para secretos, acordados con el equipo.
 
 ---
 
-## A1 — Elastic IPs (antes del handoff)
+## A1 — Elastic IPs — Hecho (2026-11-27)
 
-| Paso | Acción |
-| --- | --- |
-| A1.1 | EC2 → Elastic IPs → Allocate (mínimo 4). |
-| A1.2 | Asociar EIP a instancia A/B/C/D al crearlas. |
-| A1.3 | Registrar en `Inventario_AWS_EP3.md`: Instance ID, **EIP**, privada, AZ. |
-| A1.4 | Avisar: **SSH y scripts usan EIP**, no IP efímera del panel. |
+Se asignaron 4 EIP y se asociaron a A, B, C y D. SSH y scripts usan la EIP, no la IP efímera. Registradas en [`Inventario_AWS_EP3.md`](Inventario_AWS_EP3.md).
 
 ---
 
-## A2 — EC2 (4 instancias)
+## A2 — EC2 (4 instancias) — Hecho (2026-11-27)
 
 | ID | Rol | Puertos |
 | --- | --- | --- |
-| A | Catálogo (+ BFF opcional) | 8082, 8080? |
+| A | Catálogo + BFF (acordado) | 8082, 8080 |
 | B | Solicitudes | 8081 |
-| C | Rabbit EP2 | 5672, 15672 |
-| D | Kafka | 9092, UI 8088 |
+| C | Rabbit (reutilizado de EP2) | 5672, 15672 |
+| D | Kafka (nueva: `mesatech-ep3-kafka`) | 9092, UI 8088 |
 
-Por instancia: Ubuntu 24.04, `t3.medium` (o documentar si `small`), key `mesatech-ep2.pem`, SG según A6, `~/apps/` en A/B.
-
----
-
-## A3 — RDS (2)
-
-1. `mesatech-ep2-catalogo` → `mesatech_catalogo` (SG solo desde A).
-2. `mesatech-ep2-solicitudes` → `mesatech_solicitudes` (SG solo desde B).
-3. Sin acceso público; endpoints JDBC en inventario (sin passwords).
+Todas: Ubuntu 24.04, `t3.medium`, AZ `us-east-1b`, par de claves `mesatech-ep2` (formato `.ppk` en PuTTY).
 
 ---
 
-## A4 — Rabbit en C (continuidad EP2)
+## A3 — RDS (2) — Hecho (2026-11-27/28)
 
-1. Docker + compose `rabbitmq:4.2-management`, volumen, hostname fijo.
-2. vhost `mesatech`, usuarios app (no guest), `catalogo.exchange`, `solicitudes.catalogo.queue`, `categoria.creada`.
-3. Entregar **IP privada C** para `RABBITMQ_HOST` en A y B.
-4. Captura: `docker compose ps`, binding en UI (sin passwords).
+Se reutilizaron `mesatech-ep2-catalogo` (`mesatech_catalogo`) y `mesatech-ep2-solicitudes` (`mesatech_solicitudes`). Acceso público = No. SG 5432 solo desde la EC2 dueña. Endpoints JDBC en el inventario, sin passwords. AZ de los RDS: `us-east-1d` (misma VPC que las EC2).
 
 ---
 
-## A5 — Kafka en D
+## A4 — Rabbit en C — Hecho (2026-11-28)
 
-1. `~/kafka/docker-compose.yml` desde `docs/Evaluaciones/EP3/EP3 Contexto/Trabajando con Kafka.docx` (extracto: `Trabajando-con-Kafka-extract.txt`).
-2. `KAFKA_ADVERTISED_LISTENERS` EXTERNAL = `PLAINTEXT://<IP_PRIVADA_D>:9092`.
-3. Kafka UI: mapear `8088:8080`; no exponer UI a 0.0.0.0 sin SG admin.
-4. `docker compose up -d` → healthy.
-5. Crear tópicos acordados en `ARQUITECTURA-ACUERDOS.md` con **--partitions 3 --replication-factor 1**.
-
-```bash
-docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --create \
-  --topic mesatech.solicitud.creada --partitions 3 --replication-factor 1
-```
+Broker de la EP2 **reutilizado y verificado**: `~/rabbitmq/compose.yaml`, imagen `rabbitmq:4.2-management` (4.2.9, Erlang 27.3.4.19), contenedor `rabbitmq-rabbitmq-1`. Vhost `mesatech`, binding `catalogo.exchange` → `solicitudes.catalogo.queue` con `categoria.creada`. Evidencia ARI3-03 en el Word (terminal + UI). Credenciales solo por canal privado.
 
 ---
 
-## A6 — Security groups
+## A5 — Kafka en D — Hecho (2026-11-27/28)
 
-| Destino | Puerto | Origen |
+Compose en `~/kafka/compose.yaml`: `apache/kafka:3.8.0` (KRaft) + Kafka UI en 8088. `KAFKA_ADVERTISED_LISTENERS`: `PLAINTEXT://172.31.19.10:9092`. Tópicos `mesatech.solicitud.creada`, `mesatech.solicitud.estado` y `mesatech.catalogo.prioridad` con 3 particiones y RF=1.
+
+---
+
+## A6 — Security groups — Hecho (2026-11-27/28)
+
+Matriz según inventario. El 28-nov se corrigió la regla 15672 del SG de Rabbit (no había quedado guardada para la IP de Ari); la UI ya entra. Actualizar la IP admin `/32` si cambia.
+
+---
+
+## A7 — API Gateway (base AWS) — Hecho (2026-11-28)
+
+API HTTP `mesatech-ep3-api`, ID `v2khybjs2j`, invoke URL y CORS listos. Integración `ANY` hacia `http://184.196.102.98:8080/{proxy}`. Las rutas v1/v2 las ajusta Giannina. Hoy responde **503** hasta que el BFF esté en A.
+
+---
+
+## A8 — Handoff — Hecho (2026-11-28)
+
+Inventario completado (EIP, privadas, JDBC, brokers, API ID) y **enviado al equipo**. Credenciales de Rabbit solo por canal privado.
+
+---
+
+## Pendientes
+
+| Qué | Con quién | Nota |
 | --- | --- | --- |
-| A,B,C,D | 22 | IP admin `/32` |
-| C | 5672 | SG A + B |
-| C | 15672 | IP admin |
-| D | 9092 | SG A + B |
-| D | 8088 | IP admin (opcional) |
-| RDS | 5432 | SG EC2 dueña |
-| BFF 8080 | 8080 | Solo tráfico Gateway / SG acordado |
-
-Actualizar IP admin cuando cambie (lección EP2).
-
----
-
-## A7 — API Gateway (base AWS; rutas: Giannina)
-
-1. HTTP API (v2) misma región.
-2. Integración HTTP hacia BFF (`http://<EIP o privada>:8080`).
-3. Entregar a Giannina: **API ID**, invoke URL, región.
-4. No commitear stage keys.
-
----
-
-## A8 — Handoff
-
-Completar inventario y enviar:
-
-| Para | Datos |
-| --- | --- |
-| Nico | EIP A, JDBC catálogo, privada C, privada D, creds Rabbit publicador |
-| Skarlett | EIP B, JDBC solicitudes, mismas privadas brokers, creds Rabbit consumidor |
-| Giannina | Todas EIP/privadas, API ID |
-| Todos | Fecha última actualización inventario |
-
----
-
-## Soporte consumer lag (con Skarlett)
-
-- Acceso SSH a D para `kafka-consumer-groups --describe`.
-- Mantener broker estable durante prueba de carga.
-- Capturas UI/CLI de offsets por partición (evidencias ARI3-L01..).
+| Deploy BFF + JAR de catálogo con Kafka en A | Nico (sábado) | Hasta entonces el Gateway sigue en 503 |
+| Soporte consumer lag (ARI3-L01) | Skarlett | `kafka-consumer-groups --describe` en D, antes / durante / después; concurrencia 1 y 3 |
+| Aporte al informe y defensa | Equipo | Versiones, EC2, dueño de cada RDS; EIP vs IP privada; key → partición → offset |
+| Revisar PR #22 | Skarlett | Opcional |

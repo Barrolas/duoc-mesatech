@@ -138,3 +138,15 @@ Ubicación: [`contratos-json/`](contratos-json/).
 | Giannina | Redacción contrato + JSON | 2026-11-24 |
 | Nicolás | Productor/consumer prioridad | pendiente review |
 | Skarlett | Productor/listeners solicitud | pendiente review |
+
+---
+
+## 7. Implementación Java (metodología lab, nombres dominio)
+
+| Contrato §2.3 | Código Nico (`ms-catalogo`) |
+| --- | --- |
+| JSON del contrato | `record PrioridadRenombradaDTO` en package `dto` |
+| Consumer Kafka | `CatalogoConsumer` en package `consumer` |
+| Regla + persistencia | `CatalogoPrioridadService` → `auditoria_prioridad` |
+
+Mismo patrón que `VentaConsumer` / `VentaService` del laboratorio; nombres alineados al **catálogo** y a esta rúbrica.

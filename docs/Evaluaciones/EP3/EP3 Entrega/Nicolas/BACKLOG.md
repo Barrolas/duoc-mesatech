@@ -3,13 +3,15 @@
 **Tópico dueño:** `mesatech.catalogo.prioridad` (key `prioridad-{id}`)  
 **Mantener EP2:** publicador Rabbit `categoria.creada` sin regresiones.
 
+**Orden de trabajo:** ver [`PLANIFICACION.md`](PLANIFICACION.md) (fases 1→5).
+
 ---
 
 ## N0 — Estudio repos
 
 1. Clonar repos en `REFERENCIAS-KAFKA.md`.
 2. Ejecutar lab básico local si hace falta.
-3. Listar packages a crear: `messaging/kafka/` en `ms-catalogo`.
+3. Metodología lab + dominio: `PrioridadRenombradaDTO`, `CatalogoConsumer`, `CatalogoPrioridadService` (ver `REFERENCIAS-KAFKA.md`).
 
 ---
 
